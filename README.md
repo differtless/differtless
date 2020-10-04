@@ -18,3 +18,7 @@ Travis CI set up.
 ### Codecov badge
 
 [![codecov](https://codecov.io/gh/differtless/cs107-FinalProject/branch/master/graph/badge.svg?token=AN6QT71WV9)](undefined)
+
+### Travis CI badge
+
+[![Build Status](https://travis-ci.com/differtless/cs107-FinalProject.svg?token=ZrM8oyab1Y4rgKUpwoqF&branch=master)](https://travis-ci.com/differtless/cs107-FinalProject)
