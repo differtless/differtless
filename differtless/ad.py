@@ -38,7 +38,7 @@ class FuncInput():
         return f'FuncInput({self.val_}, {self.ders_})'
 
 
-    # Wrapper that will make sure certain specifications are met
+    # Wrapper that will make sure certain specifications are met for the inputs
     def validate_input(func):
         def wrapper(self, other):
             if isinstance(other, FuncInput):
@@ -49,10 +49,13 @@ class FuncInput():
                 elif not isinstance(other.val_, numbers.Real):
                     raise TypeError('FuncInput value must be a real number')
 
-                # make sure all derivatives are real numbers
-                for der in other.ders_:
-                    if  not isinstance(der, numbers.Real):
-                        raise TypeError('All gradient values must be real numbers')
+                ### had this check in here to make sure all of the elements were real numbers, but I think we should do this in preprocessing
+                # # make sure all derivatives are real numbers
+                # for der in other.ders_:
+                #     if  not isinstance(der, numbers.Real):
+                #         raise TypeError('All gradient values must be real numbers')
+                ###
+
             # if not funcinput, make sure other is  real number
             elif not isinstance(other, numbers.Real):
                 raise TypeError('Inputs must be type FuncInput or a real number')
@@ -80,16 +83,44 @@ class FuncInput():
 
         return FuncInput(new_val, new_ders)
 
-    # # Multiplication
-    # def __mul__(self, other):
-    #     if isinstance(other, FuncInput):
-    #         new_val = self.val_ * other.val_
-    #
-    #         if len(self.ders_) == len(other.ders_):
-    #             new_ders = [(self.val_ * other.ders_[i]) + (self.ders_[i] * other.val_)for i in range(len(self.ders_))]
-    #         else:
-    #             raise ValueError('Both inputs must have the same amount of partial derivatives')
-    #     else:
-    #         try:
-    #             new_val = self.val_ * other
-    #             new_ders
+    # Multiplication
+    @validate_input
+    def __mul__(self, other):
+        if isinstance(other, FuncInput):
+            new_val = self.val_ * other.val_
+            new_ders = [(self.val_ * other.ders_[i]) + (self.ders_[i] * other.val_)for i in range(len(self.ders_))]
+        else:
+            new_val = self.val_ * other
+            new_ders = [self_der * other for self_der in self.ders_]
+
+        return FuncInput(new_val, new_ders)
+
+    # True Division
+    @validate_input
+    def __truediv__(self, other):
+        def quot_rule(high,low,dhigh,dlow): return (low * dhigh - high * dlow)/(low ** 2)
+
+        if isinstance(other, FuncInput):
+            new_val = self.val_ / other.val_
+            der_vals = [quot_rule(self.val_, other.val_, self.ders_[i], other.ders_[i]) for i in range(len(self.ders_))]
+        else:
+            new_val = self.val_ / other
+            new_ders = [quot_rule(self.val_, other, self_der, 0) for self_der in self.ders_]
+
+        return FuncInput(new_val, new_ders)
+
+    # floor Division
+    @validate_input
+    def __floordiv__(self, other):
+        def floor_quot_rule(high,low,dhigh,dlow): return (low * dhigh - high * dlow)//(low ** 2)
+
+        if isinstance(other, FuncInput):
+            new_val = self.val_ // other.val_
+            der_vals = [floor_quot_rule(self.val_, other.val_, self.ders_[i], other.ders_[i]) for i in range(len(self.ders_))]
+        else:
+            new_val = self.val_ // other
+            new_ders = [floor_quot_rule(self.val_, other, self_der, 0) for self_der in self.ders_]
+
+        return FuncInput(new_val, new_ders)
+
+    
