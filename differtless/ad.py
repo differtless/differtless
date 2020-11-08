@@ -134,3 +134,15 @@ class FuncInput():
             new_ders = [floor_quot_rule(self.val_, other, self_der, 0) for self_der in self.ders_]
 
         return FuncInput(new_val, new_ders)
+
+    # Exponentiation
+    @validate_input
+    def __pow__(self, other):
+        def pow_rule(x, exp, dx): return (exp * x ** (exp - 1)) * dx
+
+        if isinstance(other, FuncInput):
+            new_val = self.val_ ** other.val_
+            new_ders = [pow_rule(self.val_, other.val_, self_der) for self_der in self.ders_]
+        else:
+            new_val = self.val_ ** other
+            new_ders = [pow_rule(self.val_, other, self_der) for self_der in self.ders_]
