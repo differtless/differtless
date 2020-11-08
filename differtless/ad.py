@@ -83,6 +83,18 @@ class FuncInput():
 
         return FuncInput(new_val, new_ders)
 
+    # Subtraction
+    @validate_input
+    def __sub__(self, other):
+        if isinstance(other, FuncInput):
+            new_val = self.val_ - other.val_
+            new_ders = [self.ders_[i] - other.ders_[i] for i in range(len(self.ders_))]
+        else:
+            new_val = self.val_ - other
+            new_ders = self.ders_
+
+        return FuncInput(new_val, new_ders)
+
     # Multiplication
     @validate_input
     def __mul__(self, other):
@@ -122,5 +134,3 @@ class FuncInput():
             new_ders = [floor_quot_rule(self.val_, other, self_der, 0) for self_der in self.ders_]
 
         return FuncInput(new_val, new_ders)
-
-    
