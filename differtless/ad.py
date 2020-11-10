@@ -110,11 +110,11 @@ class FuncInput():
     # True Division
     @validate_input
     def __truediv__(self, other):
-        def quot_rule(high,low,dhigh,dlow): return (low * dhigh - high * dlow)/(low ** 2)
+        def quot_rule(high,low,dhigh,dlow): return ((low * dhigh) - (high * dlow))/(low ** 2)
 
         if isinstance(other, FuncInput):
             new_val = self.val_ / other.val_
-            der_vals = [quot_rule(self.val_, other.val_, self.ders_[i], other.ders_[i]) for i in range(len(self.ders_))]
+            new_ders = [quot_rule(self.val_, other.val_, self.ders_[i], other.ders_[i]) for i in range(len(self.ders_))]
         else:
             new_val = self.val_ / other
             new_ders = [quot_rule(self.val_, other, self_der, 0) for self_der in self.ders_]
@@ -124,11 +124,11 @@ class FuncInput():
     # floor Division
     @validate_input
     def __floordiv__(self, other):
-        def floor_quot_rule(high,low,dhigh,dlow): return (low * dhigh - high * dlow)//(low ** 2)
+        def floor_quot_rule(high,low,dhigh,dlow): return ((low * dhigh) - (high * dlow))//(low ** 2)
 
         if isinstance(other, FuncInput):
             new_val = self.val_ // other.val_
-            der_vals = [floor_quot_rule(self.val_, other.val_, self.ders_[i], other.ders_[i]) for i in range(len(self.ders_))]
+            new_ders = [floor_quot_rule(self.val_, other.val_, self.ders_[i], other.ders_[i]) for i in range(len(self.ders_))]
         else:
             new_val = self.val_ // other
             new_ders = [floor_quot_rule(self.val_, other, self_der, 0) for self_der in self.ders_]
@@ -138,7 +138,7 @@ class FuncInput():
     # Exponentiation
     @validate_input
     def __pow__(self, other):
-        def pow_rule(x, exp, dx): return (exp * x ** (exp - 1)) * dx
+        def pow_rule(x, exp, dx): return (exp * (x ** (exp - 1))) * dx
 
         if isinstance(other, FuncInput):
             new_val = self.val_ ** other.val_
@@ -146,3 +146,12 @@ class FuncInput():
         else:
             new_val = self.val_ ** other
             new_ders = [pow_rule(self.val_, other, self_der) for self_der in self.ders_]
+
+        return FuncInput(new_val, new_ders)
+
+    # Reverse commutative operations
+    __radd__ = __add__
+    __rsub__ = __sub__
+    __rmul__ = __mul__
+
+    # Non-commutative reverse operations
