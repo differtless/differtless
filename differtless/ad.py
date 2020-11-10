@@ -149,9 +149,38 @@ class FuncInput():
 
         return FuncInput(new_val, new_ders)
 
-    # Reverse commutative operations
+
+    """
+    Reverse commutative operations
+    """
     __radd__ = __add__
     __rsub__ = __sub__
     __rmul__ = __mul__
 
-    # Non-commutative reverse operations
+    """
+    Non-commutative reverse operations
+    """
+
+    # Reverse true division
+    def __rtruediv__(self, other):
+        if isinstance(other, numbers.Real):
+            new_val = other / self.val_
+            new_ders = [-(other * self_der) for self_der in self.ders_]
+            return FuncInput(new_val, new_ders)
+        else:
+            raise TypeError('Inputs must be FuncInput or real numbers')
+
+    # Reverse floor division
+    def __rtruediv__(self, other):
+        if isinstance(other, numbers.Real):
+            new_val = other // self.val_
+            new_ders = [-(other * self_der) for self_der in self.ders_]
+            return FuncInput(new_val, new_ders)
+        else:
+            raise TypeError('Inputs must be FuncInput or real numbers')
+
+    # Reverse power
+    def __rpow__(self, other):
+        if isinstance(other, numbers.Real):
+            new_val = other ** self.val_
+            new_ders = np.zeros(len(self.ders_))
