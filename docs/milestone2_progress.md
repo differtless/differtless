@@ -21,7 +21,7 @@
 ## Will Wang
 * Task: work on test suite
 * Progress: 
-    * in progress
+    * Working on testing add, substract, multiplicate, divide, exponential, etc.
 
 ## Other tasks for Milestone 2: 
 
