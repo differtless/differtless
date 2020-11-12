@@ -22,6 +22,7 @@ TODO: Write actual DocString
 """
 # ADDITIONAL DEPENDENCY (good catchall for checking if it's a number)
 import numbers
+import numpy as np
 
 
 
@@ -114,10 +115,10 @@ class FuncInput():
 
         if isinstance(other, FuncInput):
             new_val = self.val_ / other.val_
-            new_ders = [quot_rule(self.val_, other.val_, self.ders_[i], other.ders_[i]) for i in range(len(self.ders_))]
+            new_ders = [quot_rule(self.val_[0], other.val_[0], self.ders_[i], other.ders_[i]) for i in range(len(self.ders_))]
         else:
             new_val = self.val_ / other
-            new_ders = [quot_rule(self.val_, other, self_der, 0) for self_der in self.ders_]
+            new_ders = [quot_rule(self.val_[0], other, self_der, 0) for self_der in self.ders_]
 
         return FuncInput(new_val, new_ders)
 
@@ -128,10 +129,10 @@ class FuncInput():
 
         if isinstance(other, FuncInput):
             new_val = self.val_ // other.val_
-            new_ders = [floor_quot_rule(self.val_, other.val_, self.ders_[i], other.ders_[i]) for i in range(len(self.ders_))]
+            new_ders = [floor_quot_rule(self.val_[0], other.val_[0], self.ders_[i], other.ders_[i]) for i in range(len(self.ders_))]
         else:
             new_val = self.val_ // other
-            new_ders = [floor_quot_rule(self.val_, other, self_der, 0) for self_der in self.ders_]
+            new_ders = [floor_quot_rule(self.val_[0], other, self_der, 0) for self_der in self.ders_]
 
         return FuncInput(new_val, new_ders)
 
@@ -142,10 +143,10 @@ class FuncInput():
 
         if isinstance(other, FuncInput):
             new_val = self.val_ ** other.val_
-            new_ders = [pow_rule(self.val_, other.val_, self_der) for self_der in self.ders_]
+            new_ders = [pow_rule(self.val_[0], other.val_[0], self_der) for self_der in self.ders_]
         else:
             new_val = self.val_ ** other
-            new_ders = [pow_rule(self.val_, other, self_der) for self_der in self.ders_]
+            new_ders = [pow_rule(self.val_[0], other, self_der) for self_der in self.ders_]
 
         return FuncInput(new_val, new_ders)
 
@@ -183,4 +184,7 @@ class FuncInput():
     def __rpow__(self, other):
         if isinstance(other, numbers.Real):
             new_val = other ** self.val_
-            new_ders = np.zeros(len(self.ders_))
+            new_ders = np.zeros(len(self.ders_[0]))
+            return FuncInput(new_val, new_ders)
+        else:
+            raise TypeError('Inputs must be FuncInput or real numbers')
