@@ -9,24 +9,35 @@ Contents:
     - Minimize function
 
 """
-
-"""
-
-FuncInput class.
-
-Takes a value and a seed (list of derivatives). Fundmanetal operations (addition, multiplication, etc.)
-are overwritten so that they will return a FuncInput object with updated value and derivative values.
-
-TODO: Write actual DocString
-
-"""
-# ADDITIONAL DEPENDENCY (good catchall for checking if it's a number)
 import numbers
 import numpy as np
 
 
-
 class FuncInput():
+    """
+
+    Class to represent the inputs to forward mode of automatic differentiation.
+
+    ATTRIBUTES
+    ==========
+        val_ : np.array()
+            NumPy array containing the value(s) of the input
+        ders_ : np.array()
+            NumPy array containing the value(s) of the gradient of the input with respect to all inputs
+
+    METHODS
+    ========
+        Overwritten basic operation dunder methods: __add__, __sub__, __mul__, __truediv__, __floordiv__, and __pow__ as well as the their reverse counter-parts.
+        All operations are pairwise by component.
+
+    EXAMPLE
+    ========
+    >>> ex = FuncInput(np.array([1]), np.array([1, 0, 0]))
+    FuncInput([1], [1 0 0])
+    >>> print(ex)
+    FuncInput object with value [1] and gradients [1 0 0] with respect to each input
+
+    """
 
     def __init__(self, value, seed):
         self.val_ = value
@@ -39,7 +50,7 @@ class FuncInput():
         return f'FuncInput({self.val_}, {self.ders_})'
 
 
-    # Wrapper that will make sure certain specifications are met for the inputs
+    # Wrapper that will make sure all inputs are type FuncInput or a real number
     def validate_input(func):
         def wrapper(self, other):
             if not isinstance(other, FuncInput) or not isinstance(other, numbers.Real):
@@ -49,10 +60,7 @@ class FuncInput():
 
 
 
-
-    """
-    Overwritten basic functions
-    """
+    ## Overwritten basic functions ##
 
     # Addition
     @validate_input
@@ -133,16 +141,14 @@ class FuncInput():
         return FuncInput(new_val, new_ders)
 
 
-    """
-    Reverse commutative operations
-    """
+    ## Reverse commutative operations ##
+
     __radd__ = __add__
     __rsub__ = __sub__
     __rmul__ = __mul__
 
-    """
-    Non-commutative reverse operations
-    """
+
+    ## Non-commutative reverse operations ##
 
     # Reverse true division
     def __rtruediv__(self, other):
