@@ -42,27 +42,9 @@ class FuncInput():
     # Wrapper that will make sure certain specifications are met for the inputs
     def validate_input(func):
         def wrapper(self, other):
-            if isinstance(other, FuncInput):
-                # make sure same amount of derivatives
-                if len(self.ders_) != len(other.ders_):
-                    raise ValueError('Both inputs must have the same number of gradients')
-                # make sure other's value is a real number
-                elif not isinstance(other.val_, numbers.Real):
-                    raise TypeError('FuncInput value must be a real number')
-
-                ### had this check in here to make sure all of the elements were real numbers, but I think we should do this in preprocessing
-                # # make sure all derivatives are real numbers
-                # for der in other.ders_:
-                #     if  not isinstance(der, numbers.Real):
-                #         raise TypeError('All gradient values must be real numbers')
-                ###
-
-            # if not funcinput, make sure other is  real number
-            elif not isinstance(other, numbers.Real):
+            if not isinstance(other, FuncInput) or not isinstance(other, numbers.Real):
                 raise TypeError('Inputs must be type FuncInput or a real number')
-
             return func(self, other)
-
         return wrapper
 
 
