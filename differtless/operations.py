@@ -36,8 +36,14 @@ def expm1(x):
 def exp2(x):
     raise NotImplementedError('Function not yet implemented in differtless')
 
+@validate_input
 def log(x):
-    return FuncInput(np.log(x), 1/x)
+    if isinstance(x, FuncInput):
+        new_vals = np.log(x.val_)
+        new_ders = x.ders_ * (1/x.val_
+        return FuncInput(new_vals, new_ders)
+    elif isinput(x, numbers.Real)
+        return np.log(x)
 
 def log10(x):
     raise NotImplementedError('Function not yet implemented in differtless')
