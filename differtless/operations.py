@@ -11,7 +11,7 @@ Re-defining numpy and scipy functions to return FuncInput objects of (value, gra
 Numpy
 '''
 
-# Wrapper that will make sure certain specifications are met for the inputs
+# Wrapper that will make sure the input is either type FuncInput or a real number
 def validate_input(func):
     def wrapper(self):
         if not isinstance(self, FuncInput) or not isinstance(self, numbers.Real):
@@ -45,8 +45,14 @@ def log(x):
     elif isinput(x, numbers.Real)
         return np.log(x)
 
+@validate_input
 def log10(x):
-    raise NotImplementedError('Function not yet implemented in differtless')
+    if isinstance(x, FuncInput):
+        new_vals = np.log10(x.val_)
+        new_ders = x.ders_ * (1/(10 * np.log(x.val_)))
+        return FuncInput(new_vals, new_ders)
+    elif isinput(x, numbers.Real):
+        return np.log10(x)
 
 def log1p(x):
     raise NotImplementedError('Function not yet implemented in differtless')
