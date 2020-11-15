@@ -40,7 +40,7 @@ def exp2(x):
 def log(x):
     if isinstance(x, FuncInput):
         new_vals = np.log(x.val_)
-        new_ders = x.ders_ * (1/x.val_
+        new_ders = x.ders_ * (1/x.val_)
         return FuncInput(new_vals, new_ders)
     elif isinput(x, numbers.Real)
         return np.log(x)
@@ -58,15 +58,31 @@ def logaddexp2(x1, x2):
     raise NotImplementedError('Function not yet implemented in differtless')
 
 # Trigonometric functions
-
+@validate_input
 def sin(x):
-    return FuncInput(np.sin(x), np.cos(x))
+    if isinstance(x, FuncInput):
+        new_vals = np.sin(x.val_)
+        new_ders = x.ders_ * np.cos(x.val_)
+        return FuncInput(new_vals, new_ders)
+    elif isinput(x, numbers.Real)
+        return np.sin(x)
 
+@validate_input
 def cos(x):
-    return FuncInput(np.cos(x), -np.sin(x))
+    if isinstance(x, FuncInput):
+        new_vals = np.cos(x.val_)
+        new_ders = x.ders_ * (-np.sin(x.val_))
+        return FuncInput(new_vals, new_ders)
+    elif isinput(x, numbers.Real)
+        return np.cos(x)
 
 def tan(x):
-    return FuncInput(np.tan(x), 1/np.cos(x))
+    if isinstance(x, FuncInput):
+        new_vals = np.tan(x.val_)
+        new_ders = x.ders_ * (1/np.cos(x.val_))
+        return FuncInput(new_vals, new_ders)
+    elif isinput(x, numbers.Real)
+        return np.tan(x)
 
 def arcsin(x):
     raise NotImplementedError('Function not yet implemented in differtless')
