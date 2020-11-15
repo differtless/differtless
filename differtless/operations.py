@@ -54,14 +54,25 @@ def log10(x):
     elif isinput(x, numbers.Real):
         return np.log10(x)
 
+@validate_input
+def log2(x):
+    if isinstance(x, FuncInput):
+        new_vals = np.log2(x.val_)
+        new_ders = x.ders_ * (1/(2 * np.log(x.val_)))
+        return FuncInput(new_vals, new_ders)
+    elif isinput(x, numbers.Real):
+        return np.log2(x)
+
+
+@validate_input
 def log1p(x):
-    raise NotImplementedError('Function not yet implemented in differtless')
+    return log(1 + x)
 
 def logaddexp(x1, x2):
-    raise NotImplementedError('Function not yet implemented in differtless')
+    return log(exp(x1) + exp(x2))
 
 def logaddexp2(x1, x2):
-    raise NotImplementedError('Function not yet implemented in differtless')
+    return log2(x1**2 + x2**2)
 
 # Trigonometric functions
 @validate_input
