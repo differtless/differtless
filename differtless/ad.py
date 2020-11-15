@@ -29,6 +29,7 @@ class FuncInput():
     ========
         Overwritten basic operation dunder methods: __add__, __sub__, __mul__, __truediv__, __floordiv__, and __pow__ as well as the their reverse counter-parts.
         All operations are pairwise by component.
+        Overwritten unary dunder methods: __neg__
 
     EXAMPLE
     ========
@@ -139,6 +140,12 @@ class FuncInput():
             new_ders = [pow_rule(self.val_[0], other, self_der) for self_der in self.ders_]
 
         return FuncInput(new_val, new_ders)
+
+    ## Unary operations ##
+    def __neg__(self):
+        new_vals = -self.val_
+        new_ders = -self.ders_
+        return FuncInput(new_vals, new_ders)
 
 
     ## Reverse commutative operations ##
