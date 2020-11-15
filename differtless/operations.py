@@ -31,10 +31,10 @@ def exp(x):
         return np.exp(x)
 
 def expm1(x):
-    raise NotImplementedError('Function not yet implemented in differtless')
+    return exp(x) - 1
 
 def exp2(x):
-    raise NotImplementedError('Function not yet implemented in differtless')
+    return 2**x
 
 @validate_input
 def log(x):
