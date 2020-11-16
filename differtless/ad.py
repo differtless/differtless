@@ -34,15 +34,17 @@ class FuncInput():
     EXAMPLE
     ========
     >>> x = FuncInput(np.array([1]), np.array([1, 0]))
-    FuncInput([1], [1 0])
+    FuncInput([2], [1 0])
     >>> print(x)
-    FuncInput object with value [1] and gradients [1 0] with respect to each input
-    >>> y = FuncInput(np.array([4]), np.array([0, 1]))
-    FuncInput([4], [0 1])
+    FuncInput object with value [2] and gradients [1 0] with respect to each input
+    >>> y = FuncInput(np.array([3]), np.array([0, 1]))
+    FuncInput([3], [0 1])
     >>> x + y
     FuncInput([5], [1, 1])
     >>> x * y
-    FuncInput([])
+    FuncInput([6], [3 2])
+    >>> 2 * x + y
+    FuncInput([7], [2 1])
 
     """
 
