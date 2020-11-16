@@ -4,9 +4,9 @@ import numbers
 import pytest
 
 def test_add():
-    x1=1
-    x2=2
-    x3=2
+    x1=ad.FuncInput(1,1)
+    x2=ad.FuncInput(2,1)
+    x3=ad.FuncInput(3,1)
     f = x1+x2+x3
-    assert f.val == 5, "error with add"
+    assert f.val == 6, "error with add"
     assert (f.ders == np.array([1,1,1])).all(), "error with add"
