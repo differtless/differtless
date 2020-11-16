@@ -70,9 +70,12 @@ def preprocess(inputs, seeds = []):
         for element in row: 
           if not isinstance(element, numbers.Real): 
             raise TypeError("Please make sure all inputs are Real Numbers") 
+
+            ##################### TO DO: MAKE SEEDS INTO NP.ARRAYS!!
   
   new_inputs = []
-  # make scalar values and tuples into lists for inputs
+  # make scalar values and tuples into np.arrays for inputs
+  ##################### TO DO: MAKE INTO NP.ARRAYS!!
   for val in inputs:
     if (isinstance(val, numbers.Real)):
       new_inputs.append([val])
