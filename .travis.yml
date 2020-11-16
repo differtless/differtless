@@ -4,4 +4,4 @@ python:
 before_install:
     - pip install pytest pytest-cov
 script:
-    - pytest
+    - python -m pytest ./differtless/test.py
