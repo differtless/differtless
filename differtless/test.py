@@ -8,5 +8,5 @@ def test_add():
     x2=2
     x3=2
     f = x1+x2+x3
-    assert f.x == 5, "error with add"
-    assert (f.dx == np.array([1,1,1])).all(), "error with add"
+    assert f.val == 5, "error with add"
+    assert (f.ders == np.array([1,1,1])).all(), "error with add"
