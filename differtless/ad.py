@@ -9,18 +9,6 @@ Contents:
     - Minimize function
 """
 
-"""
-Preprocessing Function
-Allows us to deal with scalars and vectors
-Takes in a list or numpy.array of inputs (1 x N) and an optional matrix seeds (N x N)
-If the user inputs a scalar it will be converted to a 1 x 1 vector
-seeds defaults to None, in which case we will use an N x N identity matrix where N = len(inputs)
-For each value in inputs (and if the inputs are vectors, each component in each vector) and row in seeds we will instantiate the FuncInput object described below
-
-
-check input for - real number, check that derivatives seeds are the same length (square matrix)
-raise TypeErrors/ ArgumentErrors
-"""
 import numbers 
 import numpy as np
 
@@ -36,7 +24,7 @@ def preprocess(inputs, seeds = []):
   - seeds must be an NxN matrix (if inputted)
 
   Returns: list of N FuncInput's, where the i'th FuncInput corresponds to the 
-  i'th input and the i'th seed derivatives
+  i'th input (as an np.array) and the i'th seed derivatives (as an np.array)
   """
 
   N = len(inputs)
@@ -71,27 +59,30 @@ def preprocess(inputs, seeds = []):
           if not isinstance(element, numbers.Real): 
             raise TypeError("Please make sure all inputs are Real Numbers") 
 
-            ##################### TO DO: MAKE SEEDS INTO NP.ARRAYS!!
-  
+  # make seed rows into np.arrays
+  new_seeds = []
+  for row in seeds: 
+      new_seeds.append(np.array(row))
+
   new_inputs = []
   # make scalar values and tuples into np.arrays for inputs
-  ##################### TO DO: MAKE INTO NP.ARRAYS!!
   for val in inputs:
     if (isinstance(val, numbers.Real)):
-      new_inputs.append([val])
+      new_inputs.append(np.array([val]))
     elif (isinstance(val, list)):
-      new_inputs.append(val)
+      new_inputs.append(np.array(val))
     elif (isinstance(val, tuple)):
       holder = []
       for i in val: 
         holder.append(i)
-      new_inputs.append(holder)
+      new_inputs.append(np.array(holder))
 
   r = []
   for i in range(N): 
-    r.append(FuncInput(new_inputs[i], seeds[i]))
-    # r.append((new_inputs[i], seeds[i]))
+    r.append(FuncInput(new_inputs[i], new_seeds[i]))
 
+    # #for testing
+    # r.append((new_inputs[i], new_seeds[i]))
   return r
 
 
@@ -99,7 +90,7 @@ def preprocess(inputs, seeds = []):
 # inputs = [1,2,3]
 # seeds = [[42, 1, 1], [2, 42, 2], [3, 3, 42]]
 
-# print(preprocess(inputs, seeds))
+print(preprocess(inputs, seeds))
 # # #  = [FuncInput([1], [42, 1, 1]), FuncInput([2], [2, 42, 2]), FuncInput([3], [3, 3, 42])] 
 
 # inputs = [(1,2),2,3]
