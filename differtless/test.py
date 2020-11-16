@@ -1,4 +1,6 @@
 import differtless.ad as ad
+import numpy as np
+import pytest
 
 def test_add():
     fn=ad.FuncInput(3)
