@@ -4,18 +4,79 @@ import numpy as np
 import pytest
 
 def test_add():
-    x1 = FuncInput(np.array([1]),np.array([1,0,0]))
-    x2 = FuncInput(np.array([2]),np.array([0,1,0]))
-    x3 = FuncInput(np.array([3]),np.array([0,0,1]))
-    f = x1 + x2 + x3
-    assert f.val_ == 6, "Add function is not correct"
-    assert (f.ders_ == np.array([1,1,1])).all(), "Add function is not correct"
-
+    x = FuncInput(np.array([1]),np.array([1,0]))
+    y = FuncInput(np.array([2]),np.array([0,1]))
+    f = x + y
+    assert f.val_ == 3, "Add function is not correct"
+    assert (f.ders_ == np.array([1,1])).all(), "Add function is not correct"
 
 def test_sub():
-    x1 = FuncInput(np.array([1]),np.array([1,0,0]))
-    x2 = FuncInput(np.array([2]),np.array([0,1,0]))
-    x3 = FuncInput(np.array([3]),np.array([0,0,1]))
-    f = x1 - x2 - x3
-    assert f.val_ == -4, "Sub function is not correct"
-    assert (f.ders_ == np.array([1,-1,-1])).all(), "Sub function is not correct"
+    x = FuncInput(np.array([1]),np.array([1,0]))
+    y = FuncInput(np.array([2]),np.array([0,1]))
+    f = x - y
+    assert f.val_ == -1, "Sub function is not correct"
+    assert (f.ders_ == np.array([1,-1])).all(), "Sub function is not correct"
+
+def test_mul():
+    x = FuncInput(np.array([1]),np.array([1,0]))
+    y = FuncInput(np.array([2]),np.array([0,1]))
+    f = x * y
+    assert f.val_ == 2, "Mul function is not correct"
+    assert (f.ders_ == np.array([2,1])).all(), "Mul function is not correct"
+
+def test_truediv():
+    x = FuncInput(np.array([1]),np.array([1,0]))
+    y = FuncInput(np.array([2]),np.array([0,1]))
+    f = x / y
+    assert f.val_ == 0.5, "Truediv function is not correct"
+    assert (f.ders_ == np.array([0.5,-0.25])).all(), "Truediv function is not correct"
+
+def test_floordiv():
+    x = FuncInput(np.array([2]),np.array([1,0]))
+    y = FuncInput(np.array([-5]),np.array([0,1]))
+    f = x // y
+    assert f.val_ == -3, "Floordiv function is not correct"
+    assert (f.ders_ == np.array([1,0])).all(), "Floordiv function is not correct"
+
+def test_pow():
+    x = FuncInput(np.array([2]),np.array([1,0]))
+    f = x ** 3
+    assert f.val_ == 8, "Pow function is not correct"
+    assert (f.ders_ == np.array([12,0])).all(), "Pow function is not correct"
+
+def test_neg():
+    x = FuncInput(np.array([2]),np.array([1,0]))
+    f = -x
+    assert f.val_ == -2, "Neg function is not correct"
+    assert (f.ders_ == np.array([-1,0])).all(), "Neg function is not correct"
+
+# def test_abs():
+#     x = FuncInput(np.array([-2]),np.array([1,0]))
+#     f = abs(x)
+#     assert f.val_ == -2, "Neg function is not correct"
+#     assert (f.ders_ == np.array([-1,0])).all(), "Neg function is not correct"
+
+def test_radd():
+    x = FuncInput(np.array([1]),np.array([1,0]))
+    y = FuncInput(np.array([2]),np.array([0,1]))
+    f = x + y
+    assert f.val_ == 3, "rAdd function is not correct"
+    assert (f.ders_ == np.array([1,1])).all(), "rAdd function is not correct"
+
+def test_rsub():
+    x = FuncInput(np.array([1]),np.array([1,0]))
+    y = FuncInput(np.array([2]),np.array([0,1]))
+    f = x - y
+    assert f.val_ == -1, "rSub function is not correct"
+    assert (f.ders_ == np.array([1,-1])).all(), "rSub function is not correct"
+
+def test_rmul():
+    x = FuncInput(np.array([1]),np.array([1,0]))
+    y = FuncInput(np.array([2]),np.array([0,1]))
+    f = x * y
+    assert f.val_ == 2, "rMul function is not correct"
+    assert (f.ders_ == np.array([2,1])).all(), "rMul function is not correct"
+
+# x = FuncInput(np.array([-2]),np.array([1,0]))
+# f = abs(x)
+# print(f)
