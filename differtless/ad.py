@@ -59,8 +59,6 @@ class FuncInput():
             return func(self, other)
         return wrapper
 
-
-
     ## Overwritten basic functions ##
 
     # Addition
@@ -152,17 +150,23 @@ class FuncInput():
 
     # Positive
     def __pos__(self):
-        new_vals = abs(self.val_)
-        new_ders = abs(self.ders_)
+        if self.val_ < 0:
+            new_vals = -self.val_
+            new_ders = -self.ders_
+        else:
+            new_vals = self.val_
+            new_ders = self.ders_    
         return FuncInput(new_vals, new_ders)
 
     # Absolute value
     def __abs__(self):
-        new_vals = abs(self.val_)
-        new_ders = abs(self.ders_)
+        if self.val_ < 0:
+            new_vals = -self.val_
+            new_ders = -self.ders_
+        else:
+            new_vals = self.val_
+            new_ders = self.ders_ 
         return FuncInput(new_vals, new_ders)
-
-
 
     ## Reverse commutative operations ##
     __radd__ = __add__

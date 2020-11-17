@@ -34,7 +34,7 @@ def test_truediv():
 def test_floordiv():
     x = FuncInput(np.array([2]),np.array([1,0]))
     y = FuncInput(np.array([-5]),np.array([0,1]))
-    f = x // y
+    f = y // x
     assert f.val_ == -3, "Floordiv function is not correct"
     assert (f.ders_ == np.array([1,0])).all(), "Floordiv function is not correct"
 
@@ -50,11 +50,17 @@ def test_neg():
     assert f.val_ == -2, "Neg function is not correct"
     assert (f.ders_ == np.array([-1,0])).all(), "Neg function is not correct"
 
-# def test_abs():
-#     x = FuncInput(np.array([-2]),np.array([1,0]))
-#     f = abs(x)
-#     assert f.val_ == -2, "Neg function is not correct"
-#     assert (f.ders_ == np.array([-1,0])).all(), "Neg function is not correct"
+def test_pos():
+    x = FuncInput(np.array([-2]),np.array([1,0]))
+    f = abs(x)
+    assert f.val_ == 2, "Pos function is not correct"
+    assert (f.ders_ == np.array([-1,0])).all(), "Pos function is not correct"
+
+def test_abs():
+    x = FuncInput(np.array([-2]),np.array([1,0]))
+    f = abs(x)
+    assert f.val_ == 2, "Abs function is not correct"
+    assert (f.ders_ == np.array([-1,0])).all(), "Abs function is not correct"
 
 def test_radd():
     x = FuncInput(np.array([1]),np.array([1,0]))
@@ -77,6 +83,8 @@ def test_rmul():
     assert f.val_ == 2, "rMul function is not correct"
     assert (f.ders_ == np.array([2,1])).all(), "rMul function is not correct"
 
-# x = FuncInput(np.array([-2]),np.array([1,0]))
-# f = abs(x)
-# print(f)
+x = FuncInput(np.array([-2]),np.array([1,0]))
+f = abs(x)
+
+
+print(f)
