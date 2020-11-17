@@ -13,10 +13,10 @@ Numpy
 
 # Wrapper that will make sure the input is either type FuncInput or a real number
 def validate_input(func):
-    def wrapper(self):
-        if not isinstance(self, FuncInput) or not isinstance(self, numbers.Real):
+    def wrapper(x):
+        if not isinstance(x, FuncInput) and not isinstance(x, numbers.Real):
             raise TypeError('Inputs must be type FuncInput or a real number')
-        return func(self, other)
+        return func(x)
     return wrapper
 
 
@@ -42,7 +42,7 @@ def log(x):
         new_vals = np.log(x.val_)
         new_ders = x.ders_ * (1/x.val_)
         return FuncInput(new_vals, new_ders)
-    elif isinput(x, numbers.Real)
+    elif isinput(x, numbers.Real):
         return np.log(x)
 
 @validate_input
@@ -81,7 +81,7 @@ def sin(x):
         new_vals = np.sin(x.val_)
         new_ders = x.ders_ * np.cos(x.val_)
         return FuncInput(new_vals, new_ders)
-    elif isinput(x, numbers.Real)
+    elif isinput(x, numbers.Real):
         return np.sin(x)
 
 @validate_input
@@ -90,7 +90,7 @@ def cos(x):
         new_vals = np.cos(x.val_)
         new_ders = x.ders_ * (-np.sin(x.val_))
         return FuncInput(new_vals, new_ders)
-    elif isinput(x, numbers.Real)
+    elif isinput(x, numbers.Real):
         return np.cos(x)
 
 def tan(x):
@@ -98,7 +98,7 @@ def tan(x):
         new_vals = np.tan(x.val_)
         new_ders = x.ders_ * (1/np.cos(x.val_))
         return FuncInput(new_vals, new_ders)
-    elif isinput(x, numbers.Real)
+    elif isinput(x, numbers.Real):
         return np.tan(x)
 
 def arcsin(x):
