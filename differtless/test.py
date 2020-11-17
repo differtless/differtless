@@ -63,25 +63,22 @@ def test_abs():
     assert (f.ders_ == np.array([-1,0])).all(), "Abs function is not correct"
 
 def test_radd():
-    x = FuncInput(np.array([1]),np.array([1,0]))
     y = FuncInput(np.array([2]),np.array([0,1]))
     f = 1 + y
     assert f.val_ == 3, "radd function is not correct"
     assert (f.ders_ == np.array([0,1])).all(), "radd function is not correct"
 
 def test_rsub():
-    x = FuncInput(np.array([1]),np.array([1,0]))
     y = FuncInput(np.array([2]),np.array([0,1]))
     f = 1 - y
     assert f.val_ == -1, "rsub function is not correct"
     assert (f.ders_ == np.array([0,-1])).all(), "rsub function is not correct"
 
 def test_rmul():
-    x = FuncInput(np.array([1]),np.array([1,0]))
     y = FuncInput(np.array([2]),np.array([0,1]))
-    f = 1 * y
-    assert f.val_ == 2, "rmul function is not correct"
-    assert (f.ders_ == np.array([0,1])).all(), "rmul function is not correct"
+    f = 2 * y
+    assert f.val_ == 4, "rmul function is not correct"
+    assert (f.ders_ == np.array([0,2])).all(), "rmul function is not correct"
 
 def test_rtruediv():
     x = FuncInput(np.array([2]),np.array([1,0]))
@@ -101,6 +98,9 @@ def rpow():
     assert f.val_ == 4, "rfloordiv function is not correct"
     assert np.linalg.norm(f.ders_ - np.array([2.77258872,0]))<1e-6.all(), "rfloordiv function is not correct"
 
+# y = FuncInput(np.array([2]),np.array([0,2]))
+# f = 3 - y
+# print(f)
 # x = FuncInput(np.array([2]),np.array([1,0]))
 # print(2**x)
 # print(np.linalg.norm(np.array([2.7725887,0]) - np.array([2.77258872,0]))<1e-6)

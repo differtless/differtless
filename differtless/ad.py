@@ -170,11 +170,20 @@ class FuncInput():
 
     ## Reverse commutative operations ##
     __radd__ = __add__
-    __rsub__ = __sub__
     __rmul__ = __mul__
 
-
     ## Non-commutative reverse operations ##
+
+    @validate_input
+    def __rsub__(self, other):
+        if isinstance(other, FuncInput):
+            new_val = self.val_ - other.val_
+            new_ders = self.ders_ - other.ders_
+        else:
+            new_val = self.val_ - other
+            new_ders = self.ders_
+
+        return -self.__sub__(other)
 
     # Reverse true division
     def __rtruediv__(self, other):
