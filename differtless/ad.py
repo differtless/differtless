@@ -139,14 +139,14 @@ class FuncInput():
     # Exponentiation
     @validate_input
     def __pow__(self, other):
-        def pow_rule(x, exp, dx): return (exp * (x ** (exp - 1))) * dx
+        def pow_rule(x, exp, dx, dexp): return (x ** exp) * (((exp * dx)/x) + dexp*np.log(x))
 
         if isinstance(other, FuncInput):
             new_val = self.val_ ** other.val_
-            new_ders = pow_rule(self.val_, other.val_, self.ders_)
+            new_ders = pow_rule(self.val_, other.val_, self.ders_, other.ders_)
         else:
             new_val = self.val_ ** other
-            new_ders = pow_rule(self.val_, other, self.ders_)
+            new_ders = pow_rule(self.val_, other, self.ders_, 0)
 
         return FuncInput(new_val, new_ders)
 
@@ -200,9 +200,11 @@ class FuncInput():
 
     # Reverse power
     def __rpow__(self, other):
+        def pow_rule(x, exp, dx, dexp): return (x ** exp) * (((exp * dx)/x) + dexp*np.log(x))
+
         if isinstance(other, numbers.Real):
             new_val = other ** self.val_
-            new_ders = np.log(other) * new_val * self.ders_
+            new_ders = pow_rule(other, self.val_, 0, self.ders_)
             return FuncInput(new_val, new_ders)
         else:
             raise TypeError('Inputs must be FuncInput or real numbers')
