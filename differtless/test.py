@@ -65,26 +65,44 @@ def test_abs():
 def test_radd():
     x = FuncInput(np.array([1]),np.array([1,0]))
     y = FuncInput(np.array([2]),np.array([0,1]))
-    f = x + y
-    assert f.val_ == 3, "rAdd function is not correct"
-    assert (f.ders_ == np.array([1,1])).all(), "rAdd function is not correct"
+    f = 1 + y
+    assert f.val_ == 3, "radd function is not correct"
+    assert (f.ders_ == np.array([0,1])).all(), "radd function is not correct"
 
 def test_rsub():
     x = FuncInput(np.array([1]),np.array([1,0]))
     y = FuncInput(np.array([2]),np.array([0,1]))
-    f = x - y
-    assert f.val_ == -1, "rSub function is not correct"
-    assert (f.ders_ == np.array([1,-1])).all(), "rSub function is not correct"
+    f = 1 - y
+    assert f.val_ == -1, "rsub function is not correct"
+    assert (f.ders_ == np.array([0,-1])).all(), "rsub function is not correct"
 
 def test_rmul():
     x = FuncInput(np.array([1]),np.array([1,0]))
     y = FuncInput(np.array([2]),np.array([0,1]))
-    f = x * y
-    assert f.val_ == 2, "rMul function is not correct"
-    assert (f.ders_ == np.array([2,1])).all(), "rMul function is not correct"
+    f = 1 * y
+    assert f.val_ == 2, "rmul function is not correct"
+    assert (f.ders_ == np.array([0,1])).all(), "rmul function is not correct"
 
-x = FuncInput(np.array([-2]),np.array([1,0]))
-f = abs(x)
+def test_rtruediv():
+    x = FuncInput(np.array([2]),np.array([1,0]))
+    f = 1 / x
+    assert f.val_ == 0.5, "rtruediv function is not correct"
+    assert (f.ders_ == np.array([-0.25,0])).all(), "rtruediv function is not correct"
 
+def test_rfloordiv():
+    x = FuncInput(np.array([2]),np.array([1,0]))
+    f = -5 // x
+    assert f.val_ == -3, "rfloordiv function is not correct"
+    assert (f.ders_ == np.array([1,0])).all(), "rfloordiv function is not correct"
 
-print(f)
+def rpow():
+    x = FuncInput(np.array([2]),np.array([1,0]))
+    f = 2**x
+    assert f.val_ == 4, "rfloordiv function is not correct"
+    assert np.linalg.norm(f.ders_ - np.array([2.77258872,0]))<1e-6.all(), "rfloordiv function is not correct"
+
+# x = FuncInput(np.array([2]),np.array([1,0]))
+# print(2**x)
+# print(np.linalg.norm(np.array([2.7725887,0]) - np.array([2.77258872,0]))<1e-6)
+# print(1/(2*x))
+# print(1/(x*x))
