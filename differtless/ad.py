@@ -190,7 +190,7 @@ class FuncInput():
             raise TypeError('Inputs must be FuncInput or real numbers')
 
     # Reverse floor division
-    def __rtruediv__(self, other):
+    def __rfloordiv__(self, other):
         if isinstance(other, numbers.Real):
             new_val = other // self.val_
             new_ders = -(other * self.ders_)
