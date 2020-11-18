@@ -224,39 +224,17 @@ def test_preprocess():
     assert (preprocess(inputs_1, seed_1)[0].ders_ == np.array([1,1])).all(), 'preprocess is not creating correct gradients'
     assert (preprocess(inputs_1, seed_1)[1].ders_ == np.array([2,2])).all(), 'preprocess is not creating correct gradients'
 
-    # assert f.val_ == 2, "mul function is not correct"
-    # assert (f.ders_ == np.array([2,1])).all(), "mul function is not correct"
-
-# def test_forward():
-#     inputs = [1, 2]
-#     seeds = [[1, 0], [0, 1]]
-#     def simple_func(x, y):
-#         return (x + y) ** 2
-#     forward(simple_func, inputs, seeds) == FuncInput([9], [6.0,6.0])
+def test_forward():
+    inputs = [1, 2]
+    seeds = [[1, 0], [0, 1]]
+    def simple_func(x, y):
+        return (x + y) ** 2
+    assert forward(simple_func, inputs, seeds).val_ == np.array([9]), 'forward mode is not correct'
+    assert (forward(simple_func, inputs, seeds).ders_ == np.array([6.,6.])).all(), 'forward mode is not correct'
 
 # inputs = [1, 2]
 # seeds = [[1, 0], [0, 1]]
 # def simple_func(x, y):
 #     return (x + y) ** 2
-# print(forward(simple_func, inputs, seeds) == FuncInput(np.array([9]), np.array([6.,6.])))
-# print(forward(simple_func, inputs, seeds))
-# print(FuncInput(np.array([9]), np.array([6.,6.])))
-# print(forward(simple_func, inputs, seeds).val_)
-# print(forward(simple_func, inputs, seeds)[1])
-# print(FuncInput(np.array([9]), np.array([6.,6.]))[0])
-# print(FuncInput(np.array([9]), np.array([6.,6.]))[1])
+# print((forward(simple_func, inputs, seeds).ders_ == np.array([6.,6.])).all())
 
-inputs_1 = [1, 2]
-seed_1 = [[1,1],[2,2]]
-print(preprocess(inputs_1)[0].val_ == np.array([1]))
-# print(preprocess(inputs_1)[i].val_ == [FuncInput(np.array([1]), np.array([1,0])), FuncInput(np.array([2]), np.array([0,1]))][i].val_ for i in range(2))
-# print(preprocess(inputs_1)[0].val_ == [FuncInput(np.array([1]), np.array([1,0])), FuncInput(np.array([2]), np.array([0,1]))][0].val_)
-# print(preprocess(inputs_1).all())
-# print(preprocess(inputs_1)[1])
-# print(FuncInput(np.array([1]), np.array([1, 0])).val_)
-# print(FuncInput(np.array([1]), np.array([1, 0])) == preprocess(inputs_1)[0])
-# print([FuncInput(np.array([1]), np.array([1,0])), FuncInput(np.array([2]), np.array([0,1]))])
-# print(preprocess(inputs_1)[0]==[FuncInput(np.array([1]), np.array([1,0])), FuncInput(np.array([2]), np.array([0,1]))][0])
-# print(preprocess(inputs_1, seed_1))
-# print(preprocess(inputs_1)==[FuncInput(np.array([1]), np.array([1,0])), FuncInput(np.array([2]), np.array([0,1]))])
-# print(preprocess(inputs_1, seed_1) == [FuncInput(np.array([1]), np.array([1,1])), FuncInput(np.array([2]), np.array([2,2]))])
