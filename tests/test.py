@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 import sys
 sys.path.append('../')
-from differtless.ad import FuncInput
+from differtless.ad import FuncInput, preprocess
 import differtless.operations as op
 
 def test_add():
@@ -173,7 +173,12 @@ def test_tan():
     f = op.tan(x)
     assert (abs(f.val_ - 1.73205081) < 1e-6).all(), "tan function is not correct"
     assert (abs(f.ders_ - np.array([4.,0.]))<1e-6).all(), "tan function is not correct"
-    
+
+def test_preprocess():
+    inputs_1 = [1, 2]
+    assert preprocess(inputs_1) == [FuncInputs(np.array([1]), np.array([1,0])), FuncInputs(np.array([2]), np.array([0,1]))], 'preprocess is mishandling seed = []'
+
+
 x = FuncInput(np.array([2]),np.array([1,0]))
 f = 2**x
 print(f)
