@@ -8,3 +8,5 @@ script:
     - pytest --cov=./differtless/test.py
 after_success:
     - codecov
+codecov:
+  token: a2d58c18-0a84-4c6a-9f2c-4f3cb1c1ab1d

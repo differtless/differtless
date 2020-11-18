@@ -11,14 +11,10 @@
 
 It's a portmanteau of "differentiation" and "effortless"
 
-## M1B
+## Codecov badge
 
-Travis CI set up.
+[![codecov](https://codecov.io/gh/differtless/cs107-FinalProject/branch/master/graph/badge.svg?token=AN6QT71WV9)](https://codecov.io/gh/differtless/cs107-FinalProject)
 
-### Codecov badge
-
-[![Coverage Status](https://codecov.io/gh/differtless/cs107-FinalProject/branch/testdev/graph/badge.svg)](https://codecov.io/gh/differtless/cs107-FinalProject)
-
-### Travis CI badge
+## Travis CI badge
 
 [![Build Status](https://travis-ci.com/differtless/cs107-FinalProject.svg?token=ZrM8oyab1Y4rgKUpwoqF&branch=testdev)](https://travis-ci.com/differtless/cs107-FinalProject)
