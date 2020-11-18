@@ -232,9 +232,21 @@ def test_forward():
     assert forward(simple_func, inputs, seeds).val_ == np.array([9]), 'forward mode is not correct'
     assert (forward(simple_func, inputs, seeds).ders_ == np.array([6.,6.])).all(), 'forward mode is not correct'
 
-# inputs = [1, 2]
-# seeds = [[1, 0], [0, 1]]
-# def simple_func(x, y):
-#     return (x + y) ** 2
-# print((forward(simple_func, inputs, seeds).ders_ == np.array([6.,6.])).all())
+def test_validate_input():
+
+    x = FuncInput(np.array([0]),np.array([1,0]))
+    def func(x):
+        return x ** 2
+    
+    assert func(x).val_ == op.validate_input(func)(x).val_, 'validate input function is not correct'
+    assert (func(x).ders_ == op.validate_input(func)(x).ders_).all(), 'validate input function is not correct'
+
+# x = FuncInput(np.array([1]),np.array([1,0]))
+# def func(x):
+#     return x ** 2
+
+# print((func(x).ders_ == op.validate_input(func)(x).ders_).all())
+
+# print(func == op.validate_input(func))
+
 
