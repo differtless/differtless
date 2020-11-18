@@ -96,7 +96,7 @@ def rpow():
     x = FuncInput(np.array([2]),np.array([1,0]))
     f = 2**x
     assert f.val_ == 4, "rpow function is not correct"
-    assert np.linalg.norm(f.ders_ - np.array([2.77258872,0]))<1e-6.all(), "rpow function is not correct"
+    assert (abs(f.ders_ - np.array([2.77258872,0]))<1e-6).all(), "rpow function is not correct"
 
 def test_exp():
     x = FuncInput(np.array([0]),np.array([1,0]))
@@ -114,13 +114,13 @@ def test_exp2():
     x = FuncInput(np.array([2]),np.array([1,0]))
     f = op.exp2(x)
     assert f.val_ == 4, "exp2 function is not correct"
-    assert (abs(f.ders_ - np.array([2.77258872,0])))<1e-6.all(), "exp2 function is not correct"
+    assert (abs(f.ders_ - np.array([2.77258872,0]))<1e-6).all(), "exp2 function is not correct"
 
 def test_log():
     x = FuncInput(np.array([3]),np.array([1,0]))
     f = op.log(x)
     assert abs(f.val_ - 1.09861229) < 1e-6, "log function is not correct"
-    assert (f.ders_ == np.array([0.33333333,0])).all(), "log function is not correct"
+    assert (abs(f.ders_ - np.array([0.33333333,0]))<1e-6).all(), "log function is not correct"
 
 def test_log10():
     x = FuncInput(np.array([3]),np.array([1,0]))
@@ -145,7 +145,7 @@ def test_logaddexp():
     y = FuncInput(np.array([1]),np.array([0,1]))
     f = op.logaddexp(x,y)
     assert abs(f.val_ - 1.31326169) < 1e-6, "logaddexp function is not correct"
-    assert (abs(f.ders_ - np.array([0.26894142,0.73105858])))<1e-6.all(), "logaddexp function is not correct"
+    assert (abs(f.ders_ - np.array([0.26894142,0.73105858]))<1e-6).all(), "logaddexp function is not correct"
 
 def test_logaddexp2():
     x = FuncInput(np.array([2]),np.array([1,0]))
@@ -158,13 +158,13 @@ def test_sin():
     x = FuncInput(np.array([np.pi/6]),np.array([1,0]))
     f = op.sin(x)
     assert f.val_ == 0.5, "sin function is not correct"
-    assert (abs(f.ders_ - np.array([0.8660254,0])))<1e-6.all(), "sin function is not correct"
+    assert (abs(f.ders_ - np.array([0.8660254,0.]))<1e-6).all(), "sin function is not correct"
 
 def test_cos():
     x = FuncInput(np.array([np.pi/3]),np.array([1,0]))
     f = op.cos(x)
     assert f.val_ == 0.5, "cos function is not correct"
-    assert (abs(f.ders_ - np.array([0.8660254,0])))<1e-6.all(), "cos function is not correct"
+    assert (abs(f.ders_ - np.array([0.8660254,0.]))<1e-6).all(), "cos function is not correct"
 
 def test_tan():
     x = FuncInput(np.array([np.pi/3]),np.array([1,0]))
@@ -173,6 +173,6 @@ def test_tan():
     assert (f.ders_ == np.array([4.,0.])).all(), "tan function is not correct"
 
 
-# x = FuncInput(np.array([np.pi/3]),np.array([1,0]))
-# f = op.tan(x)
-# print(f)
+x = FuncInput(np.array([np.pi/6]),np.array([1,0]))
+f = op.sin(x)
+print(f)
