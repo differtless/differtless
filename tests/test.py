@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 import sys
 sys.path.append('../')
-from differtless.ad import FuncInput, preprocess
+from differtless.ad import FuncInput, preprocess, forward
 import differtless.operations as op
 
 def test_add():
@@ -214,15 +214,39 @@ def test_arctanh():
 def test_preprocess():
     inputs_1 = [1, 2]
     seed_1 = [[1,1],[2,2]]
-    assert preprocess(inputs_1) != [FuncInput(np.array([1]), np.array([1,0])), FuncInput(np.array([2]), np.array([0,1]))], 'preprocess is mishandling seed = []'
-    assert preprocess(inputs_1, seed_1) != [FuncInput(np.array([1]), np.array([1,1])), FuncInput(np.array([2]), np.array([2,2]))], 'preprocess is not creating correct gradients'
+    assert preprocess(inputs_1)[0].val_ == [FuncInput(np.array([1]), np.array([1,0])), FuncInput(np.array([2]), np.array([0,1]))][0].val_, 'preprocess is mishandling seed = []'
+    assert preprocess(inputs_1)[1].val_ == [FuncInput(np.array([1]), np.array([1,0])), FuncInput(np.array([2]), np.array([0,1]))][1].val_, 'preprocess is mishandling seed = []'
+    assert preprocess(inputs_1)[0].ders_ == [FuncInput(np.array([1]), np.array([1,0])), FuncInput(np.array([2]), np.array([0,1]))][0].ders_, 'preprocess is mishandling seed = []'
+    assert preprocess(inputs_1)[1].ders_ == [FuncInput(np.array([1]), np.array([1,0])), FuncInput(np.array([2]), np.array([0,1]))][1].ders_, 'preprocess is mishandling seed = []'
 
+    # assert preprocess(inputs_1, seed_1) != [FuncInput(np.array([1]), np.array([1,1])), FuncInput(np.array([2]), np.array([2,2]))], 'preprocess is not creating correct gradients'
 
+# def test_forward():
+#     inputs = [1, 2]
+#     seeds = [[1, 0], [0, 1]]
+#     def simple_func(x, y):
+#         return (x + y) ** 2
+#     forward(simple_func, inputs, seeds) == FuncInput([9], [6.0,6.0])
 
+# inputs = [1, 2]
+# seeds = [[1, 0], [0, 1]]
+# def simple_func(x, y):
+#     return (x + y) ** 2
+# print(forward(simple_func, inputs, seeds) == FuncInput(np.array([9]), np.array([6.,6.])))
+# print(forward(simple_func, inputs, seeds))
+# print(FuncInput(np.array([9]), np.array([6.,6.])))
+# print(forward(simple_func, inputs, seeds).val_)
+# print(forward(simple_func, inputs, seeds)[1])
+# print(FuncInput(np.array([9]), np.array([6.,6.]))[0])
+# print(FuncInput(np.array([9]), np.array([6.,6.]))[1])
 # inputs_1 = [1, 2]
 # seed_1 = [[1,1],[2,2]]
-
-# print(preprocess(inputs_1))
+# print(preprocess(inputs_1)[i].val_ == [FuncInput(np.array([1]), np.array([1,0])), FuncInput(np.array([2]), np.array([0,1]))][i].val_ for i in range(2))
+# print(preprocess(inputs_1)[0].val_ == [FuncInput(np.array([1]), np.array([1,0])), FuncInput(np.array([2]), np.array([0,1]))][0].val_)
+# print(preprocess(inputs_1).all())
+# print(preprocess(inputs_1)[1])
+# print(FuncInput(np.array([1]), np.array([1, 0])).val_)
+# print(FuncInput(np.array([1]), np.array([1, 0])) == preprocess(inputs_1)[0])
 # print([FuncInput(np.array([1]), np.array([1,0])), FuncInput(np.array([2]), np.array([0,1]))])
 # print(preprocess(inputs_1)[0]==[FuncInput(np.array([1]), np.array([1,0])), FuncInput(np.array([2]), np.array([0,1]))][0])
 # print(preprocess(inputs_1, seed_1))
