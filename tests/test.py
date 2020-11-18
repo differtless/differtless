@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 import sys
 sys.path.append('../')
-from differtless.ad import FuncInput
+from differtless.ad import FuncInput, preprocess
 import differtless.operations as op
 
 def test_add():
@@ -173,11 +173,18 @@ def test_tan():
     f = op.tan(x)
     assert (abs(f.val_ - 1.73205081) < 1e-6).all(), "tan function is not correct"
     assert (abs(f.ders_ - np.array([4.,0.]))<1e-6).all(), "tan function is not correct"
+
     
 def test_arcsin():
-    raise NotImplementedError('Function not yet implemented in differtless')
+    assert NotImplementedError('Function not yet implemented in differtless')
 
-# x = FuncInput(np.array([2]),np.array([1,0]))
-# f = 2**x
-# print(f)
-# print(abs(f.val_ - 2.32192809) < 1e-6)
+
+def test_preprocess():
+    inputs_1 = [1, 2]
+    seed_1 = [[1,1],[2,2]]
+    assert preprocess(inputs_1) == [FuncInputs(np.array([1]), np.array([1,0])), FuncInputs(np.array([2]), np.array([0,1]))], 'preprocess is mishandling seed = []'
+    assert preprocess(inputs_1, seed_1) == [FuncInputs(np.array([1]), np.array([1,1])), FuncInputs(np.array([2]), np.array([2,2]))], 'preprocess is not creating correct gradients'
+
+
+
+
