@@ -320,18 +320,12 @@ def forward(fun, inputs, seeds = []):
         Results of pre-defined function: updated values and gradients
     EXAMPLE
     ========
-    >>> x = FuncInput(np.array([1]), np.array([1, 0]))
-    FuncInput([2], [1 0])
-    >>> print(x)
-    FuncInput object with value [2] and gradients [1 0] with respect to each input
-    >>> y = FuncInput(np.array([3]), np.array([0, 1]))
-    FuncInput([3], [0 1])
-    >>> x + y
-    FuncInput([5], [1, 1])
-    >>> x * y
-    FuncInput([6], [3 2])
-    >>> 2 * x + y
-    FuncInput([7], [2 1])
+    >>> inputs = [1, 2]
+    >>> seeds = [[1, 0], [0, 1]]
+    >>> def simple_func(x, y):
+    ...     return (x + y) ** 2
+    >>> forward(simple_func, inputs, seeds)
+    FuncInput([9], [6. 6.])
     """
 
     func_inputs = preprocess(inputs, seeds)
