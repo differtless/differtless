@@ -48,9 +48,12 @@ def test_floordiv():
 
 def test_pow():
     x = FuncInput(np.array([2]),np.array([1,0]))
+    y = FuncInput(np.array([3]),np.array([0,1]))
     f = x ** 3
+    f_2 = x ** y
     assert f.val_ == 8, "pow function is not correct"
     assert (f.ders_ == np.array([12,0])).all(), "pow function is not correct"
+    assert f_2.val_ == 8, "pow function is not correct"
 
 def test_neg():
     x = FuncInput(np.array([2]),np.array([1,0]))
