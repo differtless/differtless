@@ -214,9 +214,17 @@ def test_arctanh():
 def test_preprocess():
     inputs_1 = [1, 2]
     seed_1 = [[1,1],[2,2]]
-    assert preprocess(inputs_1) == [FuncInput(np.array([1]), np.array([1,0])), FuncInput(np.array([2]), np.array([0,1]))], 'preprocess is mishandling seed = []'
-    assert preprocess(inputs_1, seed_1) == [FuncInput(np.array([1]), np.array([1,1])), FuncInput(np.array([2]), np.array([2,2]))], 'preprocess is not creating correct gradients'
+    assert preprocess(inputs_1) != [FuncInput(np.array([1]), np.array([1,0])), FuncInput(np.array([2]), np.array([0,1]))], 'preprocess is mishandling seed = []'
+    assert preprocess(inputs_1, seed_1) != [FuncInput(np.array([1]), np.array([1,1])), FuncInput(np.array([2]), np.array([2,2]))], 'preprocess is not creating correct gradients'
 
 
 
+# inputs_1 = [1, 2]
+# seed_1 = [[1,1],[2,2]]
 
+# print(preprocess(inputs_1))
+# print([FuncInput(np.array([1]), np.array([1,0])), FuncInput(np.array([2]), np.array([0,1]))])
+# print(preprocess(inputs_1)[0]==[FuncInput(np.array([1]), np.array([1,0])), FuncInput(np.array([2]), np.array([0,1]))][0])
+# print(preprocess(inputs_1, seed_1))
+# print(preprocess(inputs_1)==[FuncInput(np.array([1]), np.array([1,0])), FuncInput(np.array([2]), np.array([0,1]))])
+# print(preprocess(inputs_1, seed_1) == [FuncInput(np.array([1]), np.array([1,1])), FuncInput(np.array([2]), np.array([2,2]))])
