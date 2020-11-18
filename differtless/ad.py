@@ -7,57 +7,57 @@ Contents:
     - Minimize function
 """
 
-import numbers 
+import numbers
 import numpy as np
 
-def preprocess(inputs, seeds = []): 
+def preprocess(inputs, seeds = []):
   """
-  Takes in: 
+  Takes in:
   - inputs:  list of N inputs- either scalar or vector
-  - seeds (optional): NxN matrix seeds. 
+  - seeds (optional): NxN matrix seeds.
       - default is N-sized ID matrix
-  Checks: 
+  Checks:
   - all elements of inputs and seeds must be real numbers
   - seeds must be an NxN matrix (if inputted)
-  Returns: list of N FuncInput's, where the i'th FuncInput corresponds to the 
+  Returns: list of N FuncInput's, where the i'th FuncInput corresponds to the
   i'th input (as an np.array) and the i'th seed derivatives (as an np.array)
   """
 
   N = len(inputs)
-  for element in inputs: 
-    if not isinstance(element, numbers.Real): 
-      for e in element: 
+  for element in inputs:
+    if not isinstance(element, numbers.Real):
+      for e in element:
         if not isinstance(e, numbers.Real):
-          raise TypeError("Please make sure all inputs are Real Numbers") 
+          raise TypeError("Please make sure all inputs are Real Numbers")
 
 
-  if (seeds == []): 
+  if (seeds == []):
     # if seeds = [], make ID matrix
-    for i in range(N): 
+    for i in range(N):
       new_row = []
       for j in range(N):
         if (i==j):
           new_row.append(1)
-        else: 
+        else:
           new_row.append(0)
-      seeds.append(new_row) 
+      seeds.append(new_row)
 
   else:
-    # check if NXN matrix 
+    # check if NXN matrix
     len_seeds = len(seeds)
-    if (len_seeds != N): 
+    if (len_seeds != N):
       raise ValueError("Make sure your seeds matrix is the right size")
     else:
       for row in seeds:
         if (len(row) !=N):
           raise ValueError("Make sure your seeds matrix is the right size")
-        for element in row: 
-          if not isinstance(element, numbers.Real): 
-            raise TypeError("Please make sure all inputs are Real Numbers") 
+        for element in row:
+          if not isinstance(element, numbers.Real):
+            raise TypeError("Please make sure all inputs are Real Numbers")
 
   # make seed rows into np.arrays
   new_seeds = []
-  for row in seeds: 
+  for row in seeds:
       new_seeds.append(np.array(row))
 
   new_inputs = []
@@ -69,33 +69,16 @@ def preprocess(inputs, seeds = []):
       new_inputs.append(np.array(val))
     elif (isinstance(val, tuple)):
       holder = []
-      for i in val: 
+      for i in val:
         holder.append(i)
       new_inputs.append(np.array(holder))
 
   r = []
-  for i in range(N): 
+  for i in range(N):
     r.append(FuncInput(new_inputs[i], new_seeds[i]))
 
-    # #for testing
-    # r.append((new_inputs[i], new_seeds[i]))
   return r
 
-
-#Testing for Preprocessing
-# inputs = [1,2,3]
-# seeds = [[42, 1, 1], [2, 42, 2], [3, 3, 42]]
-
-# print(preprocess(inputs, seeds))
-# # #  = [FuncInput([1], [42, 1, 1]), FuncInput([2], [2, 42, 2]), FuncInput([3], [3, 3, 42])] 
-
-# inputs = [(1,2),2,3]
-# seeds = [[42, 1, 1], [2, 42, 2], [3, 3, 42]]
-
-# print(preprocess(inputs, seeds))
-
-# # inputs = [(1,2),2,3]
-# # seeds = [[42, 1, 1], [2, 42], [3, 3, 42]]
 
 
 class FuncInput():
@@ -109,7 +92,8 @@ class FuncInput():
             NumPy array containing the value(s) of the gradient of the input with respect to all inputs
     METHODS
     ========
-        Overwritten basic operation dunder methods: __add__, __sub__, __mul__, __truediv__, __floordiv__, and __pow__ as well as the their reverse counter-parts.
+        Overwritten basic operation dunder methods: __add__, __sub__, __mul__,
+        __truediv__, __floordiv__, and __pow__ as well as the their reverse counter-parts.
         All operations are pairwise by component.
         Overwritten unary dunder methods: __neg__, __abs__
     EXAMPLE
@@ -255,7 +239,7 @@ class FuncInput():
             new_ders = -self.ders_
         else:
             new_vals = self.val_
-            new_ders = self.ders_    
+            new_ders = self.ders_
         return FuncInput(new_vals, new_ders)
 
     # Absolute value
@@ -265,7 +249,7 @@ class FuncInput():
             new_ders = -self.ders_
         else:
             new_vals = self.val_
-            new_ders = self.ders_ 
+            new_ders = self.ders_
         return FuncInput(new_vals, new_ders)
 
     ## Reverse commutative operations ##
@@ -298,19 +282,10 @@ class FuncInput():
     def __rfloordiv__(self, other):
         if isinstance(other, numbers.Real):
             new_val = other // self.val_
-            new_ders = -other * self.ders_ // self.val_ ** 2 
+            new_ders = -other * self.ders_ // self.val_ ** 2
             return FuncInput(new_val, new_ders)
         else:
             raise TypeError('Inputs must be FuncInput or real numbers')
-
-    # Reverse power
-    # def __rpow__(self, other):
-    #     if isinstance(other, numbers.Real):
-    #         new_val = other ** self.val_
-    #         new_ders = np.log(other) * new_val * self.ders_
-    #         return FuncInput(new_val, new_ders)
-    #     else:
-    #         raise TypeError('Inputs must be FuncInput or real numbers')
 
     def __rpow__(self, other):
         def pow_rule(x, exp, dx, dexp): return (x ** exp) * (((exp * dx)/x) + dexp*np.log(x))
@@ -321,3 +296,44 @@ class FuncInput():
             return FuncInput(new_val, new_ders)
         else:
             raise TypeError('Inputs must be FuncInput or real numbers')
+
+
+def forward(fun, inputs, seeds = []):
+    """
+    Function that executes forward mode of automatic differentiation. Executes a
+    pre-defined function while keeping track of the gradients of the inputs with
+    respect to all other inputs
+
+    PARAMETERS
+    ==========
+        fun:
+            Pre-defined function to be executed
+        inputs : iterable type (list, np.array(), etc.)
+            Iterable containing the input values to the functions
+        seeds : iterable type (list, np,array(), etc.)
+            Iterable containing the gradients of each input with respect to all other inputs (default is [])
+    ACTIONS
+    =======
+        Preprocesses inputs to FuncInput type
+    RETURNS
+    =======
+        Results of pre-defined function: updated values and gradients
+    EXAMPLE
+    ========
+    >>> x = FuncInput(np.array([1]), np.array([1, 0]))
+    FuncInput([2], [1 0])
+    >>> print(x)
+    FuncInput object with value [2] and gradients [1 0] with respect to each input
+    >>> y = FuncInput(np.array([3]), np.array([0, 1]))
+    FuncInput([3], [0 1])
+    >>> x + y
+    FuncInput([5], [1, 1])
+    >>> x * y
+    FuncInput([6], [3 2])
+    >>> 2 * x + y
+    FuncInput([7], [2 1])
+    """
+
+    func_inputs = preprocess(inputs, seeds)
+
+    return fun(*func_inputs)
