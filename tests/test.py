@@ -174,7 +174,10 @@ def test_tan():
     assert (abs(f.val_ - 1.73205081) < 1e-6).all(), "tan function is not correct"
     assert (abs(f.ders_ - np.array([4.,0.]))<1e-6).all(), "tan function is not correct"
     
-x = FuncInput(np.array([2]),np.array([1,0]))
-f = 2**x
-print(f)
+def test_arcsin():
+    raise NotImplementedError('Function not yet implemented in differtless')
+
+# x = FuncInput(np.array([2]),np.array([1,0]))
+# f = 2**x
+# print(f)
 # print(abs(f.val_ - 2.32192809) < 1e-6)
