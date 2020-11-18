@@ -181,21 +181,26 @@ def test_logaddexp2():
 def test_sin():
     x = FuncInput(np.array([np.pi/6]),np.array([1,0]))
     f = op.sin(x)
+    f2 = op.sin(np.pi/6)
     assert (abs(f.val_ - 0.5)<1e-6).all(), "sin function is not correct"
     assert (abs(f.ders_ - np.array([0.8660254,0.]))<1e-6).all(), "sin function is not correct"
+    assert (abs(f2-np.sin(np.pi/6))<1e-6), "sin function is not correct"
 
 def test_cos():
     x = FuncInput(np.array([np.pi/3]),np.array([1,0]))
     f = op.cos(x)
+    f2 = op.cos(np.pi/3)
     assert (abs(f.val_ - 0.5)<1e-6).all(), "cos function is not correct"
     assert (abs(f.ders_ - np.array([-0.8660254,0.]))<1e-6).all(), "cos function is not correct"
+    assert (abs(f2-np.cos(np.pi/3))<1e-6), "sin function is not correct"
 
 def test_tan():
     x = FuncInput(np.array([np.pi/3]),np.array([1,0]))
     f = op.tan(x)
+    f2 = op.tan(np.pi/3)
     assert (abs(f.val_ - 1.73205081) < 1e-6).all(), "tan function is not correct"
     assert (abs(f.ders_ - np.array([4.,0.]))<1e-6).all(), "tan function is not correct"
-
+    assert (abs(f2-np.tan(np.pi/3))<1e-6), "sin function is not correct"
     
 def test_arcsin():
     assert NotImplementedError('Function not yet implemented in differtless')

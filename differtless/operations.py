@@ -43,7 +43,7 @@ def log(x):
         new_vals = np.log(x.val_)
         new_ders = x.ders_ * (1/x.val_)
         return FuncInput(new_vals, new_ders)
-    elif isinput(x, numbers.Real):
+    elif isinstance(x, numbers.Real):
         return np.log(x)
 
 @validate_input
@@ -52,7 +52,7 @@ def log10(x):
         new_vals = np.log10(x.val_)
         new_ders = x.ders_ * (1/(x.val_ * np.log(10)))
         return FuncInput(new_vals, new_ders)
-    elif isinput(x, numbers.Real):
+    elif isinstance(x, numbers.Real):
         return np.log10(x)
 
 @validate_input
@@ -61,7 +61,7 @@ def log2(x):
         new_vals = np.log2(x.val_)
         new_ders = x.ders_ * (1/(x.val_ * np.log(2)))
         return FuncInput(new_vals, new_ders)
-    elif isinput(x, numbers.Real):
+    elif isinstance(x, numbers.Real):
         return np.log2(x)
 
 
@@ -82,7 +82,7 @@ def sin(x):
         new_vals = np.sin(x.val_)
         new_ders = x.ders_ * np.cos(x.val_)
         return FuncInput(new_vals, new_ders)
-    elif isinput(x, numbers.Real):
+    elif isinstance(x, numbers.Real):
         return np.sin(x)
 
 @validate_input
@@ -91,7 +91,7 @@ def cos(x):
         new_vals = np.cos(x.val_)
         new_ders = x.ders_ * (-np.sin(x.val_))
         return FuncInput(new_vals, new_ders)
-    elif isinput(x, numbers.Real):
+    elif isinstance(x, numbers.Real):
         return np.cos(x)
 
 def tan(x):
@@ -99,7 +99,7 @@ def tan(x):
         new_vals = np.tan(x.val_)
         new_ders = x.ders_ * (1/np.cos(x.val_))**2
         return FuncInput(new_vals, new_ders)
-    elif isinput(x, numbers.Real):
+    elif isinstance(x, numbers.Real):
         return np.tan(x)
 
 def arcsin(x):
