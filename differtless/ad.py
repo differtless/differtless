@@ -94,7 +94,7 @@ def preprocess(inputs, seeds = []):
 class FuncInput():
     """
     Class to represent the inputs to forward mode of automatic differentiation.
-    
+
     ATTRIBUTES
     ==========
         val_ : np.array()
@@ -132,6 +132,14 @@ class FuncInput():
 
     def __repr__(self):
         return f'FuncInput({self.val_}, {self.ders_})'
+
+    @property
+    def value(self):
+        return self.val_
+
+    @property
+    def gradients(self):
+        return self.ders_
 
 
     # Wrapper that will make sure all inputs are type FuncInput or a real number
@@ -210,19 +218,6 @@ class FuncInput():
         return FuncInput(new_val, new_ders)
 
     # Exponentiation
-    @validate_input
-    # def __pow__(self, other):
-    #     def pow_rule(x, exp, dx): return (exp * (x ** (exp - 1))) * dx
-
-    #     if isinstance(other, FuncInput):
-    #         new_val = self.val_ ** other.val_
-    #         new_ders = pow_rule(self.val_, other.val_, self.ders_)
-    #     else:
-    #         new_val = self.val_ ** other
-    #         new_ders = pow_rule(self.val_, other, self.ders_)
-
-    #     return FuncInput(new_val, new_ders)
-
     def __pow__(self, other):
         def pow_rule(x, exp, dx, dexp): return (x ** exp) * (((exp * dx)/x) + dexp*np.log(x))
 
@@ -338,3 +333,37 @@ def forward(fun, inputs, seeds = []):
     func_inputs = preprocess(inputs, seeds)
 
     return fun(*func_inputs)
+
+def Jacobian(fun, inputs):
+    """
+    Function that executes forward mode of automatic differentiation. Executes a
+    pre-defined function while keeping track of the gradients of the inputs with
+    respect to all other inputs
+
+    PARAMETERS
+    ==========
+        fun:
+            Pre-defined function to be executed
+        inputs : iterable type (list, np.array(), etc.)
+            Iterable containing the input values to the functions
+    ACTIONS
+    =======
+        - Preprocesses inputs to FuncInput type
+        - Execute forward mode with inputs and default seed (identity)
+    RETURNS
+    =======
+        Return the resulting gradients from forward mode which will be the Jacobian
+    EXAMPLE
+    ========
+    >>> inputs = [1, 2]
+    >>> seeds = [[1, 0], [0, 1]]
+    >>> def simple_func(x, y):
+    ...     return (x + y) ** 2
+    >>> forward(simple_func, inputs, seeds)
+    FuncInput([9], [6. 6.])
+    """
+
+    func_inputs = preprocess(inputs)
+    output = fun(*func_inputs)
+
+    return output.gradients
