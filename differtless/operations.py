@@ -28,7 +28,7 @@ def exp(x):
         new_vals = np.exp(x.val_)
         new_ders = x.ders_ * np.exp(x.val_)
         return FuncInput(new_vals, new_ders)
-    elif isinput(x, numbers.Real):
+    elif isinstance(x, numbers.Real):
         return np.exp(x)
 
 def expm1(x):
