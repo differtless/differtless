@@ -6,7 +6,7 @@ before_install:
     - pip install codecov
     - pip install scipy
 script:
-    - python -m pytest ./differtless/test.py --cov=./
+    - python -m pytest ./tests/test.py --cov=./
 after_success:
     - codecov
 
