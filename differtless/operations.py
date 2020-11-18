@@ -13,10 +13,11 @@ Numpy
 # Wrapper that will make sure the input is either type FuncInput or a real number
 def validate_input(func):
     def wrapper(self):
-        if not isinstance(self, FuncInput) or not isinstance(self, numbers.Real):
+        if not isinstance(self, FuncInput) and not isinstance(self, numbers.Real):
             raise TypeError('Inputs must be type FuncInput or a real number')
-        return func(self, other)
+        return func(self)
     return wrapper
+
 
 
 # Exponents and logarithms
@@ -48,7 +49,7 @@ def log(x):
 def log10(x):
     if isinstance(x, FuncInput):
         new_vals = np.log10(x.val_)
-        new_ders = x.ders_ * (1/(10 * np.log(x.val_)))
+        new_ders = x.ders_ * (1/(x.val_ * np.log(10)))
         return FuncInput(new_vals, new_ders)
     elif isinput(x, numbers.Real):
         return np.log10(x)
@@ -57,7 +58,7 @@ def log10(x):
 def log2(x):
     if isinstance(x, FuncInput):
         new_vals = np.log2(x.val_)
-        new_ders = x.ders_ * (1/(2 * np.log(x.val_)))
+        new_ders = x.ders_ * (1/(x.val_ * np.log(2)))
         return FuncInput(new_vals, new_ders)
     elif isinput(x, numbers.Real):
         return np.log2(x)
@@ -95,7 +96,7 @@ def cos(x):
 def tan(x):
     if isinstance(x, FuncInput):
         new_vals = np.tan(x.val_)
-        new_ders = x.ders_ * (1/np.cos(x.val_))
+        new_ders = x.ders_ * (1/np.cos(x.val_))**2
         return FuncInput(new_vals, new_ders)
     elif isinput(x, numbers.Real):
         return np.tan(x)
