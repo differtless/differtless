@@ -17,4 +17,4 @@ It's a portmanteau of "differentiation" and "effortless"
 
 ## Travis CI badge
 
-[![Build Status](https://travis-ci.com/differtless/cs107-FinalProject.svg?token=ZrM8oyab1Y4rgKUpwoqF&branch=testdev)](https://travis-ci.com/differtless/cs107-FinalProject)
+[![Build Status](https://travis-ci.com/differtless/cs107-FinalProject.svg?token=ZrM8oyab1Y4rgKUpwoqF&branch=master)](https://travis-ci.com/differtless/cs107-FinalProject)
