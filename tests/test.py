@@ -203,38 +203,60 @@ def test_tan():
     assert (abs(f2-np.tan(np.pi/3))<1e-6), "sin function is not correct"
     
 def test_arcsin():
+    x = FuncInput(np.array([1]),np.array([1,0]))
+    f = op.arcsin(x)
     assert NotImplementedError('Function not yet implemented in differtless')
 
 def test_arccos():
+    x = FuncInput(np.array([1]),np.array([1,0]))
+    f = op.arccos(x)
     assert NotImplementedError('Function not yet implemented in differtless')
 
 def test_arctan():
+    x = FuncInput(np.array([1]),np.array([1,0]))
+    f = op.arctan(x)
     assert NotImplementedError('Function not yet implemented in differtless')
 
 def test_hypot():
+    x = FuncInput(np.array([1]),np.array([1,0]))
+    f = op.hypot(x)
     assert NotImplementedError('Function not yet implemented in differtless')
 
 def test_arctan2():
+    x = FuncInput(np.array([1]),np.array([1,0]))
+    f = op.arctan2(x)    
     assert NotImplementedError('Function not yet implemented in differtless')
 
 # Hyperbolic functions
 
 def test_sinh():
+    x = FuncInput(np.array([1]),np.array([1,0]))
+    f = op.sinh(x)
     assert NotImplementedError('Function not yet implemented in differtless')
 
 def test_cosh():
+    x = FuncInput(np.array([1]),np.array([1,0]))
+    f = op.cosh(x)
     assert NotImplementedError('Function not yet implemented in differtless')
 
 def test_tanh():
+    x = FuncInput(np.array([1]),np.array([1,0]))
+    f = op.tanh(x)
     assert NotImplementedError('Function not yet implemented in differtless')
 
 def test_arcsinh():
+    x = FuncInput(np.array([1]),np.array([1,0]))
+    f = op.arcsinh(x)
     assert NotImplementedError('Function not yet implemented in differtless')
 
 def test_arccosh():
+    x = FuncInput(np.array([1]),np.array([1,0]))
+    f = op.arccosh(x)
     assert NotImplementedError('Function not yet implemented in differtless')
 
 def test_arctanh():
+    x = FuncInput(np.array([1]),np.array([1,0]))
+    f = op.arctanh(x)
     assert NotImplementedError('Function not yet implemented in differtless')
 
 
@@ -259,9 +281,9 @@ def test_forward():
     assert forward(simple_func, inputs, seeds).val_ == np.array([9]), 'forward mode is not correct'
     assert (forward(simple_func, inputs, seeds).ders_ == np.array([6.,6.])).all(), 'forward mode is not correct'
 
-x = FuncInput(np.array([2]),np.array([1,0]))
-f = + x
-print(f)
+# x = FuncInput(np.array([1]),np.array([1,0]))
+# f = op.sinh(x)
+# print(f)
 
 # def test_validate_input():
 #     x = FuncInput(np.array([1]),np.array([1,0]))
