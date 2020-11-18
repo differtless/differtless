@@ -12,15 +12,25 @@ import numpy as np
 
 def preprocess(inputs, seeds = []):
   """
-  Takes in:
-  - inputs:  list of N inputs- either scalar or vector
-  - seeds (optional): NxN matrix seeds.
-      - default is N-sized ID matrix
-  Checks:
-  - all elements of inputs and seeds must be real numbers
-  - seeds must be an NxN matrix (if inputted)
-  Returns: list of N FuncInput's, where the i'th FuncInput corresponds to the
-  i'th input (as an np.array) and the i'th seed derivatives (as an np.array)
+  Function that produces a list of FuncInput objects with respect to each input.
+  To be used within forward() to process inputs.
+
+  PARAMETERS
+  ==========
+      inputs : iterable type (list, np.array(), etc.)
+          Iterable containing the input values to the functions
+      seeds : iterable type (list, np,array(), etc.)
+          Iterable containing the gradients of each input with respect to all other inputs (default is [])
+  RETURNS
+  =======
+      A list of FuncInput objects with the appropriate gradients (if no seed is
+      specified the gradients are assigned to be unit vectors)
+  EXAMPLE
+  ========
+  >>> inputs = [1, 2]
+  >>> seeds = [[1, 0], [0, 1]]
+  >>> preprocess(inputs, seeds)
+  [FuncInput([1], [1 0]), FuncInput([2], [0 1])]
   """
 
   N = len(inputs)
@@ -84,6 +94,7 @@ def preprocess(inputs, seeds = []):
 class FuncInput():
     """
     Class to represent the inputs to forward mode of automatic differentiation.
+    
     ATTRIBUTES
     ==========
         val_ : np.array()
