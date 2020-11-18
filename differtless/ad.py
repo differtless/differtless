@@ -94,7 +94,7 @@ def preprocess(inputs, seeds = []):
 class FuncInput():
     """
     Class to represent the inputs to forward mode of automatic differentiation.
-    
+
     ATTRIBUTES
     ==========
         val_ : np.array()
@@ -132,6 +132,14 @@ class FuncInput():
 
     def __repr__(self):
         return f'FuncInput({self.val_}, {self.ders_})'
+
+    @property
+    def value(self):
+        return self.val_
+
+    @property
+    def gradients(self):
+        return self.ders_
 
 
     # Wrapper that will make sure all inputs are type FuncInput or a real number
@@ -210,19 +218,6 @@ class FuncInput():
         return FuncInput(new_val, new_ders)
 
     # Exponentiation
-    @validate_input
-    # def __pow__(self, other):
-    #     def pow_rule(x, exp, dx): return (exp * (x ** (exp - 1))) * dx
-
-    #     if isinstance(other, FuncInput):
-    #         new_val = self.val_ ** other.val_
-    #         new_ders = pow_rule(self.val_, other.val_, self.ders_)
-    #     else:
-    #         new_val = self.val_ ** other
-    #         new_ders = pow_rule(self.val_, other, self.ders_)
-
-    #     return FuncInput(new_val, new_ders)
-
     def __pow__(self, other):
         def pow_rule(x, exp, dx, dexp): return (x ** exp) * (((exp * dx)/x) + dexp*np.log(x))
 
