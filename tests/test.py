@@ -178,12 +178,44 @@ def test_tan():
 def test_arcsin():
     assert NotImplementedError('Function not yet implemented in differtless')
 
+def test_arccos():
+    assert NotImplementedError('Function not yet implemented in differtless')
+
+def test_arctan():
+    assert NotImplementedError('Function not yet implemented in differtless')
+
+def test_hypot():
+    assert NotImplementedError('Function not yet implemented in differtless')
+
+def test_arctan2():
+    assert NotImplementedError('Function not yet implemented in differtless')
+
+# Hyperbolic functions
+
+def test_sinh():
+    assert NotImplementedError('Function not yet implemented in differtless')
+
+def test_cosh():
+    assert NotImplementedError('Function not yet implemented in differtless')
+
+def test_tanh():
+    assert NotImplementedError('Function not yet implemented in differtless')
+
+def test_arcsinh():
+    assert NotImplementedError('Function not yet implemented in differtless')
+
+def test_arccosh():
+    assert NotImplementedError('Function not yet implemented in differtless')
+
+def test_arctanh():
+    assert NotImplementedError('Function not yet implemented in differtless')
+
 
 def test_preprocess():
     inputs_1 = [1, 2]
     seed_1 = [[1,1],[2,2]]
-    assert preprocess(inputs_1) == [FuncInputs(np.array([1]), np.array([1,0])), FuncInputs(np.array([2]), np.array([0,1]))], 'preprocess is mishandling seed = []'
-    assert preprocess(inputs_1, seed_1) == [FuncInputs(np.array([1]), np.array([1,1])), FuncInputs(np.array([2]), np.array([2,2]))], 'preprocess is not creating correct gradients'
+    assert preprocess(inputs_1) == [FuncInput(np.array([1]), np.array([1,0])), FuncInput(np.array([2]), np.array([0,1]))], 'preprocess is mishandling seed = []'
+    assert preprocess(inputs_1, seed_1) == [FuncInput(np.array([1]), np.array([1,1])), FuncInput(np.array([2]), np.array([2,2]))], 'preprocess is not creating correct gradients'
 
 
 
