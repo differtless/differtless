@@ -2,7 +2,8 @@ import numpy as np
 import pytest
 import sys
 sys.path.append('../')
-from differtless.ad import FuncInput, preprocess
+from differtless.ad import FuncInput
+from differtless.ad import preprocess
 import differtless.operations as op
 
 def test_add():
