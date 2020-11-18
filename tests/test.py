@@ -117,8 +117,10 @@ def rpow():
 def test_exp():
     x = FuncInput(np.array([0]),np.array([1,0]))
     f = op.exp(x)
+    f2 = op.exp(1)
     assert f.val_ == 1, "exp function is not correct"
     assert (f.ders_ == np.array([1,0])).all(), "exp function is not correct"
+    assert f2 == np.exp(1), "exp function is not correct"
 
 def test_expm1():
     x = FuncInput(np.array([0]),np.array([1,0]))
@@ -135,20 +137,26 @@ def test_exp2():
 def test_log():
     x = FuncInput(np.array([3]),np.array([1,0]))
     f = op.log(x)
+    f2 = op.log(3)
     assert (abs(f.val_ - 1.09861229) < 1e-6).all(), "log function is not correct"
     assert (abs(f.ders_ - np.array([0.33333333,0]))<1e-6).all(), "log function is not correct"
+    assert (abs(f2-np.log(3))<1e-6), "log function is not correct"
 
 def test_log10():
     x = FuncInput(np.array([3]),np.array([1,0]))
     f = op.log10(x)
+    f2 = op.log10(3)
     assert (abs(f.val_ - 0.47712125) < 1e-6).all(), "log10 function is not correct"
     assert (abs(f.ders_ - np.array([0.14476483,0]))<1e-6).all(), "log10 function is not correct"
+    assert (abs(f2-np.log10(3))<1e-6), "log10 function is not correct"
 
 def test_log2():
     x = FuncInput(np.array([3]),np.array([1,0]))
     f = op.log2(x)
+    f2 = op.log2(3)
     assert (abs(f.val_ - 1.5849625) < 1e-6).all(), "log2 function is not correct"
     assert (abs(f.ders_ - np.array([0.48089835,0]))<1e-6).all(), "log2 function is not correct"
+    assert (abs(f2-np.log2(3))<1e-6), "log2 function is not correct"
 
 def test_log1p():
     x = FuncInput(np.array([0]),np.array([1,0]))
@@ -245,6 +253,10 @@ def test_forward():
         return (x + y) ** 2
     assert forward(simple_func, inputs, seeds).val_ == np.array([9]), 'forward mode is not correct'
     assert (forward(simple_func, inputs, seeds).ders_ == np.array([6.,6.])).all(), 'forward mode is not correct'
+
+x = FuncInput(np.array([2]),np.array([1,0]))
+f = + x
+print(f)
 
 # def test_validate_input():
 #     x = FuncInput(np.array([1]),np.array([1,0]))
