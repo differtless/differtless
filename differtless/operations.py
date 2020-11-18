@@ -1,7 +1,7 @@
 import numpy as np
 import scipy as sp
 import numbers
-from ad import FuncInput
+from differtless.ad import FuncInput
 
 '''
 Re-defining numpy and scipy functions to return FuncInput objects of (value, gradient)
