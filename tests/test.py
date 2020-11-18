@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 import sys
 sys.path.append('../')
-from differtless.ad import FuncInput, preprocess, forward,validate_input2
+from differtless.ad import FuncInput, preprocess, forward
 import differtless.operations as op
 
 def test_add():
@@ -240,18 +240,20 @@ def test_validate_input():
     assert func(x).val_ == op.validate_input(func)(x).val_, 'validate input function is not correct'
     assert (func(x).ders_ == op.validate_input(func)(x).ders_).all(), 'validate input function is not correct'
 
-def test_validate_input2():
+def test_validate_input():
     x = FuncInput(np.array([1]),np.array([1,0]))
-    def func(x):
-        return x ** 2
+    y = FuncInput(np.array([2]),np.array([0,1]))
+    def func(x,y):
+        return x+y
     
-    assert func(x).val_ == op.validate_input2(func)(x).val_, 'validate input function is not correct'
-    assert (func(x).ders_ == op.validate_input2(func)(x).ders_).all(), 'validate input function is not correct'
-# x = FuncInput(np.array([1]),np.array([1,0]))
-# def func(x):
-#     return x ** 2
+    assert func(x,y).val_ == FuncInput.validate_input(func)(x,y).val_, 'validate input function is not correct'
+    assert (func(x,y).ders_ == FuncInput.validate_input(func)(x,y).ders_).all(), 'validate input function is not correct'
 
-# print((func(x).ders_ == op.validate_input(func)(x).ders_).all())
+# x = FuncInput(np.array([1]),np.array([1,0]))
+# y = FuncInput(np.array([2]),np.array([0,1]))
+# def func(x,y):
+#     return x+y
+# print(func(x,y).val_ == FuncInput.validate_input(func)(x,y).val_)
 
 # print(func == op.validate_input(func))
 

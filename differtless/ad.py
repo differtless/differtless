@@ -135,7 +135,7 @@ class FuncInput():
 
 
     # Wrapper that will make sure all inputs are type FuncInput or a real number
-    def validate_input2(func):
+    def validate_input(func):
         def wrapper(self, other):
             if not isinstance(other, FuncInput) and not isinstance(other, numbers.Real):
                 raise TypeError('Inputs must be type FuncInput or a real number')
@@ -145,7 +145,7 @@ class FuncInput():
     ## Overwritten basic functions ##
 
     # Addition
-    @validate_input2
+    @validate_input
     def __add__(self, other):
         if isinstance(other, FuncInput):
             new_val = self.val_ + other.val_
@@ -157,7 +157,7 @@ class FuncInput():
         return FuncInput(new_val, new_ders)
 
     # Subtraction
-    @validate_input2
+    @validate_input
     def __sub__(self, other):
         if isinstance(other, FuncInput):
             new_val = self.val_ - other.val_
@@ -169,7 +169,7 @@ class FuncInput():
         return FuncInput(new_val, new_ders)
 
     # Multiplication
-    @validate_input2
+    @validate_input
     def __mul__(self, other):
         if isinstance(other, FuncInput):
             new_val = self.val_ * other.val_
@@ -181,7 +181,7 @@ class FuncInput():
         return FuncInput(new_val, new_ders)
 
     # True Division
-    @validate_input2
+    @validate_input
     def __truediv__(self, other):
         def quot_rule(high,low,dhigh,dlow): return ((low * dhigh) - (high * dlow))/(low ** 2)
 
@@ -195,7 +195,7 @@ class FuncInput():
         return FuncInput(new_val, new_ders)
 
     # floor Division
-    @validate_input2
+    @validate_input
     def __floordiv__(self, other):
         def floor_quot_rule(high,low,dhigh,dlow): return ((low * dhigh) - (high * dlow))//(low ** 2)
 
@@ -210,7 +210,7 @@ class FuncInput():
         return FuncInput(new_val, new_ders)
 
     # Exponentiation
-    @validate_input2
+    @validate_input
     # def __pow__(self, other):
     #     def pow_rule(x, exp, dx): return (exp * (x ** (exp - 1))) * dx
 
@@ -269,7 +269,7 @@ class FuncInput():
 
     ## Non-commutative reverse operations ##
 
-    @validate_input2
+    @validate_input
     def __rsub__(self, other):
         if isinstance(other, FuncInput):
             new_val = self.val_ - other.val_
