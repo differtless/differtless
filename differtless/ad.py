@@ -1,7 +1,5 @@
 """
-
 Auto-Differentiation Module:
-
 Contents:
     - Preprocessing function
     - FuncInput class
@@ -18,11 +16,9 @@ def preprocess(inputs, seeds = []):
   - inputs:  list of N inputs- either scalar or vector
   - seeds (optional): NxN matrix seeds. 
       - default is N-sized ID matrix
-
   Checks: 
   - all elements of inputs and seeds must be real numbers
   - seeds must be an NxN matrix (if inputted)
-
   Returns: list of N FuncInput's, where the i'th FuncInput corresponds to the 
   i'th input (as an np.array) and the i'th seed derivatives (as an np.array)
   """
@@ -90,7 +86,7 @@ def preprocess(inputs, seeds = []):
 # inputs = [1,2,3]
 # seeds = [[42, 1, 1], [2, 42, 2], [3, 3, 42]]
 
-print(preprocess(inputs, seeds))
+# print(preprocess(inputs, seeds))
 # # #  = [FuncInput([1], [42, 1, 1]), FuncInput([2], [2, 42, 2]), FuncInput([3], [3, 3, 42])] 
 
 # inputs = [(1,2),2,3]
@@ -104,22 +100,18 @@ print(preprocess(inputs, seeds))
 
 class FuncInput():
     """
-
     Class to represent the inputs to forward mode of automatic differentiation.
-
     ATTRIBUTES
     ==========
         val_ : np.array()
             NumPy array containing the value(s) of the input
         ders_ : np.array()
             NumPy array containing the value(s) of the gradient of the input with respect to all inputs
-
     METHODS
     ========
         Overwritten basic operation dunder methods: __add__, __sub__, __mul__, __truediv__, __floordiv__, and __pow__ as well as the their reverse counter-parts.
         All operations are pairwise by component.
         Overwritten unary dunder methods: __neg__, __abs__
-
     EXAMPLE
     ========
     >>> x = FuncInput(np.array([1]), np.array([1, 0]))
@@ -134,7 +126,6 @@ class FuncInput():
     FuncInput([6], [3 2])
     >>> 2 * x + y
     FuncInput([7], [2 1])
-
     """
 
     def __init__(self, value, seed):
@@ -155,8 +146,6 @@ class FuncInput():
                 raise TypeError('Inputs must be type FuncInput or a real number')
             return func(self, other)
         return wrapper
-
-
 
     ## Overwritten basic functions ##
 
@@ -227,6 +216,18 @@ class FuncInput():
 
     # Exponentiation
     @validate_input
+    # def __pow__(self, other):
+    #     def pow_rule(x, exp, dx): return (exp * (x ** (exp - 1))) * dx
+
+    #     if isinstance(other, FuncInput):
+    #         new_val = self.val_ ** other.val_
+    #         new_ders = pow_rule(self.val_, other.val_, self.ders_)
+    #     else:
+    #         new_val = self.val_ ** other
+    #         new_ders = pow_rule(self.val_, other, self.ders_)
+
+    #     return FuncInput(new_val, new_ders)
+
     def __pow__(self, other):
         def pow_rule(x, exp, dx, dexp): return (x ** exp) * (((exp * dx)/x) + dexp*np.log(x))
 
@@ -249,31 +250,46 @@ class FuncInput():
 
     # Positive
     def __pos__(self):
-        new_vals = abs(self.val_)
-        new_ders = abs(self.ders_)
+        if self.val_ < 0:
+            new_vals = -self.val_
+            new_ders = -self.ders_
+        else:
+            new_vals = self.val_
+            new_ders = self.ders_    
         return FuncInput(new_vals, new_ders)
 
     # Absolute value
     def __abs__(self):
-        new_vals = abs(self.val_)
-        new_ders = abs(self.ders_)
+        if self.val_ < 0:
+            new_vals = -self.val_
+            new_ders = -self.ders_
+        else:
+            new_vals = self.val_
+            new_ders = self.ders_ 
         return FuncInput(new_vals, new_ders)
-
-
 
     ## Reverse commutative operations ##
     __radd__ = __add__
-    __rsub__ = __sub__
     __rmul__ = __mul__
 
-
     ## Non-commutative reverse operations ##
+
+    @validate_input
+    def __rsub__(self, other):
+        if isinstance(other, FuncInput):
+            new_val = self.val_ - other.val_
+            new_ders = self.ders_ - other.ders_
+        else:
+            new_val = self.val_ - other
+            new_ders = self.ders_
+
+        return -self.__sub__(other)
 
     # Reverse true division
     def __rtruediv__(self, other):
         if isinstance(other, numbers.Real):
             new_val = other / self.val_
-            new_ders = -(other * self.ders_)
+            new_ders = -other * self.ders_ / self.val_ ** 2
             return FuncInput(new_val, new_ders)
         else:
             raise TypeError('Inputs must be FuncInput or real numbers')
@@ -282,12 +298,20 @@ class FuncInput():
     def __rfloordiv__(self, other):
         if isinstance(other, numbers.Real):
             new_val = other // self.val_
-            new_ders = -(other * self.ders_)
+            new_ders = -other * self.ders_ // self.val_ ** 2 
             return FuncInput(new_val, new_ders)
         else:
             raise TypeError('Inputs must be FuncInput or real numbers')
 
     # Reverse power
+    # def __rpow__(self, other):
+    #     if isinstance(other, numbers.Real):
+    #         new_val = other ** self.val_
+    #         new_ders = np.log(other) * new_val * self.ders_
+    #         return FuncInput(new_val, new_ders)
+    #     else:
+    #         raise TypeError('Inputs must be FuncInput or real numbers')
+
     def __rpow__(self, other):
         def pow_rule(x, exp, dx, dexp): return (x ** exp) * (((exp * dx)/x) + dexp*np.log(x))
 
