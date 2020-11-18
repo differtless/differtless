@@ -1,5 +1,5 @@
-from ad import FuncInput
-import operations as op
+from differtless.ad import FuncInput
+import differtless.operations as op
 import numpy as np
 import pytest
 
