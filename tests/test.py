@@ -234,7 +234,7 @@ def test_forward():
 
 def test_validate_input():
 
-    x = FuncInput(np.array([0]),np.array([1,0]))
+    x = FuncInput(np.array([1]),np.array([1,0]))
     def func(x):
         return x ** 2
     
