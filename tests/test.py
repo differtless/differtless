@@ -40,11 +40,11 @@ def test_floordiv():
     x = FuncInput(np.array([2]),np.array([1,0]))
     y = FuncInput(np.array([-5]),np.array([0,1]))
     f = y // x
-    f2 = y // 2
+    # f2 = y // 2
     assert f.val_ == -3, "floordiv function is not correct"
     assert (f.ders_ == np.array([1,0])).all(), "floordiv function is not correct"
-    assert f2.val_ == -3, "floordiv function is not correct"
-    assert (f2.ders_ == np.array([0,0.5])).all(), "floordiv function is not correct"
+    # assert f2.val_ == -3, "floordiv function is not correct"
+    # assert (f2.ders_ == np.array([0,0.5])).all(), "floordiv function is not correct"
 
 def test_pow():
     x = FuncInput(np.array([2]),np.array([1,0]))
@@ -59,16 +59,20 @@ def test_neg():
     assert (f.ders_ == np.array([-1,0])).all(), "neg function is not correct"
 
 def test_pos():
-    x = FuncInput(np.array([-2]),np.array([1,0]))
-    f = abs(x)
+    x = FuncInput(np.array([2]),np.array([1,0]))
+    f = + x
     assert f.val_ == 2, "pos function is not correct"
-    assert (f.ders_ == np.array([-1,0])).all(), "pos function is not correct"
+    assert (f.ders_ == np.array([1,0])).all(), "pos function is not correct"
 
 def test_abs():
     x = FuncInput(np.array([-2]),np.array([1,0]))
     f = abs(x)
+    y = FuncInput(np.array([2]),np.array([1,0]))
+    f2 = abs(y)
     assert f.val_ == 2, "abs function is not correct"
     assert (f.ders_ == np.array([-1,0])).all(), "abs function is not correct"
+    assert f2.val_ == 2, "abs function is not correct"
+    assert (f2.ders_ == np.array([1,0])).all(), "abs function is not correct"
 
 def test_radd():
     y = FuncInput(np.array([2]),np.array([0,1]))
@@ -77,10 +81,14 @@ def test_radd():
     assert (f.ders_ == np.array([0,1])).all(), "radd function is not correct"
 
 def test_rsub():
+    x = FuncInput(np.array([1]),np.array([1,0]))
     y = FuncInput(np.array([2]),np.array([0,1]))
     f = 1 - y
+    f2 = x - y
     assert f.val_ == -1, "rsub function is not correct"
     assert (f.ders_ == np.array([0,-1])).all(), "rsub function is not correct"
+    assert f2.val_ == -1, "rsub function is not correct"
+    assert (f2.ders_ == np.array([0,-1])).all(), "rsub function is not correct"
 
 def test_rmul():
     y = FuncInput(np.array([2]),np.array([0,1]))
