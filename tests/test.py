@@ -1,7 +1,9 @@
-from ad import FuncInput
-import operations as op
 import numpy as np
 import pytest
+import sys
+sys.path.append('../')
+from differtless.ad import FuncInput
+import differtless.operations as op
 
 def test_add():
     x = FuncInput(np.array([1]),np.array([1,0]))
