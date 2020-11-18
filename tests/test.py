@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 import sys
 sys.path.append('../')
-from differtless.ad import FuncInput, preprocess, forward
+from differtless.ad import FuncInput, preprocess, forward,validate_input2
 import differtless.operations as op
 
 def test_add():
@@ -233,7 +233,6 @@ def test_forward():
     assert (forward(simple_func, inputs, seeds).ders_ == np.array([6.,6.])).all(), 'forward mode is not correct'
 
 def test_validate_input():
-
     x = FuncInput(np.array([1]),np.array([1,0]))
     def func(x):
         return x ** 2
@@ -241,6 +240,13 @@ def test_validate_input():
     assert func(x).val_ == op.validate_input(func)(x).val_, 'validate input function is not correct'
     assert (func(x).ders_ == op.validate_input(func)(x).ders_).all(), 'validate input function is not correct'
 
+def test_validate_input2():
+    x = FuncInput(np.array([1]),np.array([1,0]))
+    def func(x):
+        return x ** 2
+    
+    assert func(x).val_ == op.validate_input2(func)(x).val_, 'validate input function is not correct'
+    assert (func(x).ders_ == op.validate_input2(func)(x).ders_).all(), 'validate input function is not correct'
 # x = FuncInput(np.array([1]),np.array([1,0]))
 # def func(x):
 #     return x ** 2
