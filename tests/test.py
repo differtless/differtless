@@ -88,7 +88,7 @@ def test_rsub():
     assert f.val_ == -1, "rsub function is not correct"
     assert (f.ders_ == np.array([0,-1])).all(), "rsub function is not correct"
     assert f2.val_ == -1, "rsub function is not correct"
-    assert (f2.ders_ == np.array([0,-1])).all(), "rsub function is not correct"
+    assert (f2.ders_ == np.array([1,-1])).all(), "rsub function is not correct"
 
 def test_rmul():
     y = FuncInput(np.array([2]),np.array([0,1]))

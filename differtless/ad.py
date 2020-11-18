@@ -245,12 +245,8 @@ class FuncInput():
 
     # Positive
     def __pos__(self):
-        if self.val_ < 0:
-            new_vals = -self.val_
-            new_ders = -self.ders_
-        else:
-            new_vals = self.val_
-            new_ders = self.ders_
+        new_vals = -self.val_
+        new_ders = -self.ders_
         return FuncInput(new_vals, new_ders)
 
     # Absolute value
