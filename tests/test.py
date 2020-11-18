@@ -29,16 +29,22 @@ def test_mul():
 def test_truediv():
     x = FuncInput(np.array([1]),np.array([1,0]))
     y = FuncInput(np.array([2]),np.array([0,1]))
-    f = x / y
-    assert f.val_ == 0.5, "truediv function is not correct"
-    assert (f.ders_ == np.array([0.5,-0.25])).all(), "truediv function is not correct"
+    f1 = x / y
+    f2 = x / 2
+    assert f1.val_ == 0.5, "truediv function is not correct"
+    assert (f1.ders_ == np.array([0.5,-0.25])).all(), "truediv function is not correct"
+    assert f2.val_ == 0.5, "truediv function is not correct"
+    assert (f2.ders_ == np.array([0.5,0])).all(), "truediv function is not correct"
 
 def test_floordiv():
     x = FuncInput(np.array([2]),np.array([1,0]))
     y = FuncInput(np.array([-5]),np.array([0,1]))
     f = y // x
+    f2 = y // 2
     assert f.val_ == -3, "floordiv function is not correct"
     assert (f.ders_ == np.array([1,0])).all(), "floordiv function is not correct"
+    assert f2.val_ == -3, "floordiv function is not correct"
+    assert (f2.ders_ == np.array([0,0.5])).all(), "floordiv function is not correct"
 
 def test_pow():
     x = FuncInput(np.array([2]),np.array([1,0]))
@@ -232,23 +238,21 @@ def test_forward():
     assert forward(simple_func, inputs, seeds).val_ == np.array([9]), 'forward mode is not correct'
     assert (forward(simple_func, inputs, seeds).ders_ == np.array([6.,6.])).all(), 'forward mode is not correct'
 
-def test_validate_input():
-    x = FuncInput(np.array([1]),np.array([1,0]))
-    def func(x):
-        return x ** 2
+# def test_validate_input():
+#     x = FuncInput(np.array([1]),np.array([1,0]))
+#     def func(x):
+#         return x ** 2
     
-    assert func(x).val_ == op.validate_input(func)(x).val_, 'validate input function is not correct'
-    assert (func(x).ders_ == op.validate_input(func)(x).ders_).all(), 'validate input function is not correct'
+#     assert func(x).val_ == op.validate_input(func)(x).val_, 'validate input function is not correct'
+#     assert (func(x).ders_ == op.validate_input(func)(x).ders_).all(), 'validate input function is not correct'
 
-def test_validate_input():
-    x = FuncInput(np.array([1]),np.array([1,0]))
-    y = FuncInput(np.array([2]),np.array([0,1]))
-    def func(x,y):
-        return x+y
+# def test_validate_input():
+#     x = FuncInput(np.array([1]),np.array([1,0]))
+#     y = FuncInput(np.array([i]),np.array([0,1]))
+#     def func(x,y):
+#         return x+y
+#     assert TypeError('Inputs must be type FuncInput or a real number')
     
-    assert func(x,y).val_ == FuncInput.validate_input(func)(x,y).val_, 'validate input function is not correct'
-    assert (func(x,y).ders_ == FuncInput.validate_input(func)(x,y).ders_).all(), 'validate input function is not correct'
-
 # x = FuncInput(np.array([1]),np.array([1,0]))
 # y = FuncInput(np.array([2]),np.array([0,1]))
 # def func(x,y):
