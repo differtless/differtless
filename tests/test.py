@@ -206,75 +206,104 @@ def test_tan():
     assert (abs(f2-np.tan(np.pi/3))<1e-6), "sin function is not correct"
 
 def test_arcsin():
-    x = FuncInput(np.array([1]),np.array([1,0]))
-    f = op.arcsin(x)
-    assert NotImplementedError('Function not yet implemented in differtless')
-
+    with pytest.raises(NotImplementedError):
+        x = FuncInput(np.array([1]),np.array([1,0]))
+        f = op.arcsin(x)
+    
 def test_arccos():
-    x = FuncInput(np.array([1]),np.array([1,0]))
-    f = op.arccos(x)
-    assert NotImplementedError('Function not yet implemented in differtless')
-
+    with pytest.raises(NotImplementedError):
+        x = FuncInput(np.array([1]),np.array([1,0]))
+        f = op.arccos(x)
+    
 def test_arctan():
-    x = FuncInput(np.array([1]),np.array([1,0]))
-    f = op.arctan(x)
-    assert NotImplementedError('Function not yet implemented in differtless')
-
+    with pytest.raises(NotImplementedError):
+        x = FuncInput(np.array([1]),np.array([1,0]))
+        f = op.arctan(x)
+    
 def test_hypot():
-    x = FuncInput(np.array([1]),np.array([1,0]))
-    f = op.hypot(x)
-    assert NotImplementedError('Function not yet implemented in differtless')
-
+    with pytest.raises(NotImplementedError):
+        x = FuncInput(np.array([1]),np.array([1]))
+        x2 = FuncInput(np.array([2]),np.array([1]))
+        f = op.hypot(x, x2)
+    
 def test_arctan2():
-    x = FuncInput(np.array([1]),np.array([1,0]))
-    f = op.arctan2(x)
-    assert NotImplementedError('Function not yet implemented in differtless')
-
+    with pytest.raises(NotImplementedError):
+        x = FuncInput(np.array([1]),np.array([1,0]))
+        x2 = FuncInput(np.array([2]),np.array([1]))
+        f = op.arctan2(x, x2)
+    
 # Hyperbolic functions
 
 def test_sinh():
-    x = FuncInput(np.array([1]),np.array([1,0]))
-    f = op.sinh(x)
-    assert NotImplementedError('Function not yet implemented in differtless')
-
+    with pytest.raises(NotImplementedError):
+        x = FuncInput(np.array([1]),np.array([1,0]))
+        f = op.sinh(x)
+    
 def test_cosh():
-    x = FuncInput(np.array([1]),np.array([1,0]))
-    f = op.cosh(x)
-    assert NotImplementedError('Function not yet implemented in differtless')
-
+    with pytest.raises(NotImplementedError):
+        x = FuncInput(np.array([1]),np.array([1,0]))
+        f = op.cosh(x)
+    
 def test_tanh():
-    x = FuncInput(np.array([1]),np.array([1,0]))
-    f = op.tanh(x)
-    assert NotImplementedError('Function not yet implemented in differtless')
-
+    with pytest.raises(NotImplementedError):
+        x = FuncInput(np.array([1]),np.array([1,0]))
+        f = op.tanh(x)
+    
 def test_arcsinh():
-    x = FuncInput(np.array([1]),np.array([1,0]))
-    f = op.arcsinh(x)
-    assert NotImplementedError('Function not yet implemented in differtless')
-
+    with pytest.raises(NotImplementedError):
+        x = FuncInput(np.array([1]),np.array([1,0]))
+        f = op.arcsinh(x)
+    
 def test_arccosh():
-    x = FuncInput(np.array([1]),np.array([1,0]))
-    f = op.arccosh(x)
-    assert NotImplementedError('Function not yet implemented in differtless')
-
+    with pytest.raises(NotImplementedError):
+        x = FuncInput(np.array([1]),np.array([1,0]))
+        f = op.arccosh(x)
+    
 def test_arctanh():
-    x = FuncInput(np.array([1]),np.array([1,0]))
-    f = op.arctanh(x)
-    assert NotImplementedError('Function not yet implemented in differtless')
-
+    with pytest.raises(NotImplementedError):
+        x = FuncInput(np.array([1]),np.array([1,0]))
+        f = op.arctanh(x)
+    
 
 def test_preprocess():
     inputs_1 = [1, 2]
     seed_1 = [[1,1],[2,2]]
+    inputs_2 = [[1],(2)]
     assert preprocess(inputs_1)[0].val_ == np.array([1]), 'preprocess is mishandling seed = []'
     assert preprocess(inputs_1)[1].val_ == np.array([2]), 'preprocess is mishandling seed = []'
     assert (preprocess(inputs_1)[0].ders_ == np.array([1,0])).all(), 'preprocess is mishandling seed = []'
     assert (preprocess(inputs_1)[1].ders_ == np.array([0,1])).all(), 'preprocess is mishandling seed = []'
-
+    assert preprocess(inputs_2)[0].val_ == np.array([1]), 'preprocess is mishandling seed = []'
+    assert preprocess(inputs_2)[1].val_ == np.array([2]), 'preprocess is mishandling seed = []'
+   
     assert preprocess(inputs_1, seed_1)[0].val_ == np.array([1]), 'preprocess is not creating correct gradients'
     assert preprocess(inputs_1, seed_1)[1].val_ == np.array([2]), 'preprocess is not creating correct gradients'
     assert (preprocess(inputs_1, seed_1)[0].ders_ == np.array([1,1])).all(), 'preprocess is not creating correct gradients'
     assert (preprocess(inputs_1, seed_1)[1].ders_ == np.array([2,2])).all(), 'preprocess is not creating correct gradients'
+
+def test_preprocess_string_input():
+    with pytest.raises(TypeError):
+        inputs_1 = [1, '2']
+        seed_1 = [[1,1],[2,2]]
+        preprocess(inputs_1) 
+
+def test_preprocess_bad_seed():
+    with pytest.raises(ValueError):
+        inputs_1 = [1, 2]
+        seed_1 = [[1,1]]
+        preprocess(inputs_1, seed_1)
+
+def test_preprocess_bad_seed2():
+    with pytest.raises(ValueError):
+        inputs_1 = [1, 2]
+        seed_1 = [[1], [1, 2]]
+        preprocess(inputs_1, seed_1)
+
+def test_preprocess_bad_seed3():
+    with pytest.raises(TypeError):
+        inputs_1 = [1, 2]
+        seed_1 = [[1,1], [2, '2']]
+        preprocess(inputs_1, seed_1)
 
 def test_forward():
     inputs = [1, 2]
