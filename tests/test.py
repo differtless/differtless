@@ -48,9 +48,12 @@ def test_floordiv():
 
 def test_pow():
     x = FuncInput(np.array([2]),np.array([1,0]))
+    y = FuncInput(np.array([3]),np.array([0,1]))
     f = x ** 3
+    f_2 = x ** y
     assert f.val_ == 8, "pow function is not correct"
     assert (f.ders_ == np.array([12,0])).all(), "pow function is not correct"
+    assert f_2.val_ == 8, "pow function is not correct"
 
 def test_neg():
     x = FuncInput(np.array([2]),np.array([1,0]))
@@ -201,55 +204,106 @@ def test_tan():
     assert (abs(f.val_ - 1.73205081) < 1e-6).all(), "tan function is not correct"
     assert (abs(f.ders_ - np.array([4.,0.]))<1e-6).all(), "tan function is not correct"
     assert (abs(f2-np.tan(np.pi/3))<1e-6), "sin function is not correct"
-    
+
 def test_arcsin():
-    assert NotImplementedError('Function not yet implemented in differtless')
-
+    with pytest.raises(NotImplementedError):
+        x = FuncInput(np.array([1]),np.array([1,0]))
+        f = op.arcsin(x)
+    
 def test_arccos():
-    assert NotImplementedError('Function not yet implemented in differtless')
-
+    with pytest.raises(NotImplementedError):
+        x = FuncInput(np.array([1]),np.array([1,0]))
+        f = op.arccos(x)
+    
 def test_arctan():
-    assert NotImplementedError('Function not yet implemented in differtless')
-
+    with pytest.raises(NotImplementedError):
+        x = FuncInput(np.array([1]),np.array([1,0]))
+        f = op.arctan(x)
+    
 def test_hypot():
-    assert NotImplementedError('Function not yet implemented in differtless')
-
+    with pytest.raises(NotImplementedError):
+        x = FuncInput(np.array([1]),np.array([1]))
+        x2 = FuncInput(np.array([2]),np.array([1]))
+        f = op.hypot(x, x2)
+    
 def test_arctan2():
-    assert NotImplementedError('Function not yet implemented in differtless')
-
+    with pytest.raises(NotImplementedError):
+        x = FuncInput(np.array([1]),np.array([1,0]))
+        x2 = FuncInput(np.array([2]),np.array([1]))
+        f = op.arctan2(x, x2)
+    
 # Hyperbolic functions
 
 def test_sinh():
-    assert NotImplementedError('Function not yet implemented in differtless')
-
+    with pytest.raises(NotImplementedError):
+        x = FuncInput(np.array([1]),np.array([1,0]))
+        f = op.sinh(x)
+    
 def test_cosh():
-    assert NotImplementedError('Function not yet implemented in differtless')
-
+    with pytest.raises(NotImplementedError):
+        x = FuncInput(np.array([1]),np.array([1,0]))
+        f = op.cosh(x)
+    
 def test_tanh():
-    assert NotImplementedError('Function not yet implemented in differtless')
-
+    with pytest.raises(NotImplementedError):
+        x = FuncInput(np.array([1]),np.array([1,0]))
+        f = op.tanh(x)
+    
 def test_arcsinh():
-    assert NotImplementedError('Function not yet implemented in differtless')
-
+    with pytest.raises(NotImplementedError):
+        x = FuncInput(np.array([1]),np.array([1,0]))
+        f = op.arcsinh(x)
+    
 def test_arccosh():
-    assert NotImplementedError('Function not yet implemented in differtless')
-
+    with pytest.raises(NotImplementedError):
+        x = FuncInput(np.array([1]),np.array([1,0]))
+        f = op.arccosh(x)
+    
 def test_arctanh():
-    assert NotImplementedError('Function not yet implemented in differtless')
-
+    with pytest.raises(NotImplementedError):
+        x = FuncInput(np.array([1]),np.array([1,0]))
+        f = op.arctanh(x)
+    
 
 def test_preprocess():
     inputs_1 = [1, 2]
     seed_1 = [[1,1],[2,2]]
+    inputs_2 = [[1],(2)]
     assert preprocess(inputs_1)[0].val_ == np.array([1]), 'preprocess is mishandling seed = []'
     assert preprocess(inputs_1)[1].val_ == np.array([2]), 'preprocess is mishandling seed = []'
     assert (preprocess(inputs_1)[0].ders_ == np.array([1,0])).all(), 'preprocess is mishandling seed = []'
     assert (preprocess(inputs_1)[1].ders_ == np.array([0,1])).all(), 'preprocess is mishandling seed = []'
-
+    assert preprocess(inputs_2)[0].val_ == np.array([1]), 'preprocess is mishandling seed = []'
+    assert preprocess(inputs_2)[1].val_ == np.array([2]), 'preprocess is mishandling seed = []'
+   
     assert preprocess(inputs_1, seed_1)[0].val_ == np.array([1]), 'preprocess is not creating correct gradients'
     assert preprocess(inputs_1, seed_1)[1].val_ == np.array([2]), 'preprocess is not creating correct gradients'
     assert (preprocess(inputs_1, seed_1)[0].ders_ == np.array([1,1])).all(), 'preprocess is not creating correct gradients'
     assert (preprocess(inputs_1, seed_1)[1].ders_ == np.array([2,2])).all(), 'preprocess is not creating correct gradients'
+
+def test_preprocess_string_input():
+    with pytest.raises(TypeError):
+        inputs_1 = [1, '2']
+        seed_1 = [[1,1],[2,2]]
+        preprocess(inputs_1) 
+
+def test_preprocess_bad_seed():
+    with pytest.raises(ValueError):
+        inputs_1 = [1, 2]
+        seed_1 = [[1,1]]
+        preprocess(inputs_1, seed_1)
+
+def test_preprocess_bad_seed2():
+    with pytest.raises(ValueError):
+        inputs_1 = [1, 2]
+        seed_1 = [[1], [1, 2]]
+        preprocess(inputs_1, seed_1)
+
+def test_preprocess_bad_seed3():
+    with pytest.raises(TypeError):
+        inputs_1 = [1, 2]
+        seed_1 = [[1,1], [2, '2']]
+        preprocess(inputs_1, seed_1)
 
 def test_forward():
     inputs = [1, 2]
@@ -259,15 +313,15 @@ def test_forward():
     assert forward(simple_func, inputs, seeds).val_ == np.array([9]), 'forward mode is not correct'
     assert (forward(simple_func, inputs, seeds).ders_ == np.array([6.,6.])).all(), 'forward mode is not correct'
 
-x = FuncInput(np.array([2]),np.array([1,0]))
-f = + x
-print(f)
+# x = FuncInput(np.array([1]),np.array([1,0]))
+# f = op.sinh(x)
+# print(f)
 
 # def test_validate_input():
 #     x = FuncInput(np.array([1]),np.array([1,0]))
 #     def func(x):
 #         return x ** 2
-    
+
 #     assert func(x).val_ == op.validate_input(func)(x).val_, 'validate input function is not correct'
 #     assert (func(x).ders_ == op.validate_input(func)(x).ders_).all(), 'validate input function is not correct'
 
@@ -277,7 +331,7 @@ print(f)
 #     def func(x,y):
 #         return x+y
 #     assert TypeError('Inputs must be type FuncInput or a real number')
-    
+
 # x = FuncInput(np.array([1]),np.array([1,0]))
 # y = FuncInput(np.array([2]),np.array([0,1]))
 # def func(x,y):
@@ -285,5 +339,3 @@ print(f)
 # print(func(x,y).val_ == FuncInput.validate_input(func)(x,y).val_)
 
 # print(func == op.validate_input(func))
-
-
