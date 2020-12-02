@@ -61,6 +61,12 @@ def test_neg():
     assert f.val_ == -2, "neg function is not correct"
     assert (f.ders_ == np.array([-1,0])).all(), "neg function is not correct"
 
+def test_pos():
+    x = FuncInput(np.array([2]),np.array([1,0]))
+    f = + x
+    assert f.val_ == 2, "pos function is not correct"
+    assert (f.ders_ == np.array([1,0])).all(), "pos function is not correct"
+
 def test_abs():
     x = FuncInput(np.array([-2]),np.array([1,0]))
     f = abs(x)

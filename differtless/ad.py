@@ -242,6 +242,10 @@ class FuncInput():
         new_ders = -self.ders_
         return FuncInput(new_vals, new_ders)
 
+    # Positive
+    def __pos__(self):
+        return self
+
     # Absolute value
     def __abs__(self):
         print(self.val_)
