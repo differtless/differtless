@@ -238,8 +238,8 @@ class FuncInput():
 
     # Negate
     def __neg__(self):
-        new_vals = -self.val_
-        new_ders = -self.ders_
+        self.val_ = -self.val_
+        self.ders_ = -self.ders_
         return FuncInput(new_vals, new_ders)
 
     # Positive
@@ -248,7 +248,6 @@ class FuncInput():
 
     # Absolute value
     def __abs__(self):
-        print(self.val_)
         self.val_ = np.abs(self.val_)
         self.ders_ = np.abs(self.ders_)
         return self
