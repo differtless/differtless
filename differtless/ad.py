@@ -11,83 +11,83 @@ import numbers
 import numpy as np
 
 def preprocess(inputs, seeds = []):
-  """
-  Function that produces a list of FuncInput objects with respect to each input.
-  To be used within forward() to process inputs.
+    """
+    Function that produces a list of FuncInput objects with respect to each input.
+    To be used within forward() to process inputs.
 
-  PARAMETERS
-  ==========
+    PARAMETERS
+    ==========
       inputs : iterable type (list, np.array(), etc.)
           Iterable containing the input values to the functions
       seeds : iterable type (list, np,array(), etc.)
           Iterable containing the gradients of each input with respect to all other inputs (default is [])
-  RETURNS
-  =======
+    RETURNS
+    =======
       A list of FuncInput objects with the appropriate gradients (if no seed is
       specified the gradients are assigned to be unit vectors)
-  EXAMPLE
-  ========
-  >>> inputs = [1, 2]
-  >>> seeds = [[1, 0], [0, 1]]
-  >>> preprocess(inputs, seeds)
-  [FuncInput([1], [1 0]), FuncInput([2], [0 1])]
-  """
+    EXAMPLE
+    ========
+    >>> inputs = [1, 2]
+    >>> seeds = [[1, 0], [0, 1]]
+    >>> preprocess(inputs, seeds)
+    [FuncInput([1], [1 0]), FuncInput([2], [0 1])]
+    """
 
-  N = len(inputs)
-  for element in inputs:
-    if not isinstance(element, numbers.Real):
-      for e in element:
-        if not isinstance(e, numbers.Real):
-          raise TypeError("Please make sure all inputs are Real Numbers")
+    N = len(inputs)
+    for element in inputs:
+        if not isinstance(element, numbers.Real):
+          for e in element:
+            if not isinstance(e, numbers.Real):
+              raise TypeError("Please make sure all inputs are Real Numbers")
 
 
-  if (seeds == []):
-    # if seeds = [], make ID matrix
-    for i in range(N):
-      new_row = []
-      for j in range(N):
-        if (i==j):
-          new_row.append(1)
-        else:
-          new_row.append(0)
-      seeds.append(new_row)
+    if (seeds == []):
+        # if seeds = [], make ID matrix
+        for i in range(N):
+            new_row = []
+            for j in range(N):
+                if (i==j):
+                    new_row.append(1)
+                else:
+                    new_row.append(0)
+            seeds.append(new_row)
 
-  else:
-    # check if NXN matrix
-    len_seeds = len(seeds)
-    if (len_seeds != N):
-      raise ValueError("Make sure your seeds matrix is the right size")
     else:
-      for row in seeds:
-        if (len(row) !=N):
-          raise ValueError("Make sure your seeds matrix is the right size")
-        for element in row:
-          if not isinstance(element, numbers.Real):
-            raise TypeError("Please make sure all inputs are Real Numbers")
+        # check if NXN matrix
+        len_seeds = len(seeds)
+        if (len_seeds != N):
+            raise ValueError("Make sure your seeds matrix is the right size")
+        else:
+          for row in seeds:
+            if (len(row) !=N):
+              raise ValueError("Make sure your seeds matrix is the right size")
+            for element in row:
+              if not isinstance(element, numbers.Real):
+                raise TypeError("Please make sure all inputs are Real Numbers")
 
-  # make seed rows into np.arrays
-  new_seeds = []
-  for row in seeds:
-      new_seeds.append(np.array(row))
+    # make seed rows into np.arrays
+    new_seeds = []
+    for row in seeds:
+        new_seeds.append(np.array(row))
 
-  new_inputs = []
-  # make scalar values and tuples into np.arrays for inputs
-  for val in inputs:
-    if (isinstance(val, numbers.Real)):
-      new_inputs.append(np.array([val]))
-    elif (isinstance(val, list)):
-      new_inputs.append(np.array(val))
-    elif (isinstance(val, tuple)):
-      holder = []
-      for i in val:
-        holder.append(i)
-      new_inputs.append(np.array(holder))
+    new_inputs = []
+    # make scalar values and tuples into np.arrays for inputs
+    for val in inputs:
+        if (isinstance(val, numbers.Real)):
+          new_inputs.append(np.array([val]))
+        elif (isinstance(val, list)):
+          new_inputs.append(np.array(val))
+        elif (isinstance(val, tuple)):
+          holder = []
+          for i in val:
+            holder.append(i)
+          new_inputs.append(np.array(holder))
 
-  r = []
-  for i in range(N):
-    r.append(FuncInput(new_inputs[i], new_seeds[i]))
+    r = []
+    for i in range(N):
+        r.append(FuncInput(new_inputs[i], new_seeds[i]))
 
-  return r
+    return r
 
 
 
@@ -222,9 +222,13 @@ class FuncInput():
         def pow_rule(x, exp, dx, dexp): return (x ** exp) * (((exp * dx)/x) + dexp*np.log(x))
 
         if isinstance(other, FuncInput):
+            # check for negative bases in the case of even powers
+            self = abs(self) if other.val_%2 == 0 else self
             new_val = self.val_ ** other.val_
             new_ders = pow_rule(self.val_, other.val_, self.ders_, other.ders_)
         else:
+            # check for negative bases in the case of even powers
+            self = abs(self) if other%2 == 0 else self
             new_val = self.val_ ** other
             new_ders = pow_rule(self.val_, other, self.ders_, 0)
 
@@ -300,7 +304,7 @@ class FuncInput():
             raise TypeError('Inputs must be FuncInput or real numbers')
 
 
-def forward(fun, inputs, seeds = []):
+def forward(funs, inputs, seeds = []):
     """
     Function that executes forward mode of automatic differentiation. Executes a
     pre-defined function while keeping track of the gradients of the inputs with
@@ -309,7 +313,7 @@ def forward(fun, inputs, seeds = []):
     PARAMETERS
     ==========
         fun:
-            Pre-defined function to be executed
+            Pre-defined function, or list of functions, to be executed
         inputs : iterable type (list, np.array(), etc.)
             Iterable containing the input values to the functions
         seeds : iterable type (list, np,array(), etc.)
@@ -329,12 +333,31 @@ def forward(fun, inputs, seeds = []):
     >>> forward(simple_func, inputs, seeds)
     FuncInput([9], [6. 6.])
     """
+    # if multiple functions, run them all and stack the results
+    try:
+        result_val = []
+        result_grad = []
 
-    func_inputs = preprocess(inputs, seeds)
+        for fun in funs:
+            func_inputs = preprocess(inputs, seeds)
 
-    return fun(*func_inputs)
+            output = fun(*func_inputs)
+            out_val = output.value[0] if len(output.value == 1) else output.value
+            out_grad = output.gradients
 
-def Jacobian(fun, inputs):
+            result_val.append(out_val)
+            result_grad.append(out_grad)
+
+        result_val = np.array(result_val)
+        result_grad = np.array(result_grad)
+        return FuncInput(result_val, result_grad)
+
+    except TypeError:
+        func_inputs = preprocess(inputs, seeds)
+
+        return funs(*func_inputs)
+
+def Jacobian(funs, inputs):
     """
     Function that executes forward mode of automatic differentiation. Executes a
     pre-defined function while keeping track of the gradients of the inputs with
@@ -343,7 +366,7 @@ def Jacobian(fun, inputs):
     PARAMETERS
     ==========
         fun:
-            Pre-defined function to be executed
+            Pre-defined function, or list of functions, to be executed
         inputs : iterable type (list, np.array(), etc.)
             Iterable containing the input values to the functions
     ACTIONS
@@ -362,8 +385,25 @@ def Jacobian(fun, inputs):
     >>> forward(simple_func, inputs, seeds)
     FuncInput([9], [6. 6.])
     """
+    # if multiple functions, run them all and stack the results
+    try:
+        result_val = []
+        result_grad = []
 
-    func_inputs = preprocess(inputs)
-    output = fun(*func_inputs)
+        for fun in funs:
+            func_inputs = preprocess(inputs)
 
-    return output.gradients
+            output = fun(*func_inputs)
+            out_grad = output.gradients
+
+            result_grad.append(out_grad)
+
+        result_grad = np.array(result_grad)
+        return result_grad
+
+    except TypeError:
+
+        func_inputs = preprocess(inputs)
+        output = funs(*func_inputs)
+
+        return output.gradients
