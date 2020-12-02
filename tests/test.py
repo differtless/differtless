@@ -61,12 +61,6 @@ def test_neg():
     assert f.val_ == -2, "neg function is not correct"
     assert (f.ders_ == np.array([-1,0])).all(), "neg function is not correct"
 
-def test_pos():
-    x = FuncInput(np.array([2]),np.array([1,0]))
-    f = + x
-    assert f.val_ == 2, "pos function is not correct"
-    assert (f.ders_ == np.array([1,0])).all(), "pos function is not correct"
-
 def test_abs():
     x = FuncInput(np.array([-2]),np.array([1,0]))
     f = abs(x)
@@ -209,61 +203,61 @@ def test_arcsin():
     with pytest.raises(NotImplementedError):
         x = FuncInput(np.array([1]),np.array([1,0]))
         f = op.arcsin(x)
-    
+
 def test_arccos():
     with pytest.raises(NotImplementedError):
         x = FuncInput(np.array([1]),np.array([1,0]))
         f = op.arccos(x)
-    
+
 def test_arctan():
     with pytest.raises(NotImplementedError):
         x = FuncInput(np.array([1]),np.array([1,0]))
         f = op.arctan(x)
-    
+
 def test_hypot():
     with pytest.raises(NotImplementedError):
         x = FuncInput(np.array([1]),np.array([1]))
         x2 = FuncInput(np.array([2]),np.array([1]))
         f = op.hypot(x, x2)
-    
+
 def test_arctan2():
     with pytest.raises(NotImplementedError):
         x = FuncInput(np.array([1]),np.array([1,0]))
         x2 = FuncInput(np.array([2]),np.array([1]))
         f = op.arctan2(x, x2)
-    
+
 # Hyperbolic functions
 
 def test_sinh():
     with pytest.raises(NotImplementedError):
         x = FuncInput(np.array([1]),np.array([1,0]))
         f = op.sinh(x)
-    
+
 def test_cosh():
     with pytest.raises(NotImplementedError):
         x = FuncInput(np.array([1]),np.array([1,0]))
         f = op.cosh(x)
-    
+
 def test_tanh():
     with pytest.raises(NotImplementedError):
         x = FuncInput(np.array([1]),np.array([1,0]))
         f = op.tanh(x)
-    
+
 def test_arcsinh():
     with pytest.raises(NotImplementedError):
         x = FuncInput(np.array([1]),np.array([1,0]))
         f = op.arcsinh(x)
-    
+
 def test_arccosh():
     with pytest.raises(NotImplementedError):
         x = FuncInput(np.array([1]),np.array([1,0]))
         f = op.arccosh(x)
-    
+
 def test_arctanh():
     with pytest.raises(NotImplementedError):
         x = FuncInput(np.array([1]),np.array([1,0]))
         f = op.arctanh(x)
-    
+
 
 def test_preprocess():
     inputs_1 = [1, 2]
@@ -275,7 +269,7 @@ def test_preprocess():
     assert (preprocess(inputs_1)[1].ders_ == np.array([0,1])).all(), 'preprocess is mishandling seed = []'
     assert preprocess(inputs_2)[0].val_ == np.array([1]), 'preprocess is mishandling seed = []'
     assert preprocess(inputs_2)[1].val_ == np.array([2]), 'preprocess is mishandling seed = []'
-   
+
     assert preprocess(inputs_1, seed_1)[0].val_ == np.array([1]), 'preprocess is not creating correct gradients'
     assert preprocess(inputs_1, seed_1)[1].val_ == np.array([2]), 'preprocess is not creating correct gradients'
     assert (preprocess(inputs_1, seed_1)[0].ders_ == np.array([1,1])).all(), 'preprocess is not creating correct gradients'
@@ -285,7 +279,7 @@ def test_preprocess_string_input():
     with pytest.raises(TypeError):
         inputs_1 = [1, '2']
         seed_1 = [[1,1],[2,2]]
-        preprocess(inputs_1) 
+        preprocess(inputs_1)
 
 def test_preprocess_bad_seed():
     with pytest.raises(ValueError):
