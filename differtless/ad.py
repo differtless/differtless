@@ -150,6 +150,13 @@ class FuncInput():
             return func(self, other)
         return wrapper
 
+    # For VVFs returns derivatives in a form conducive for derivative calculation
+    def vectorize_ders(self, other):
+        self_ders = np.array([[der]*len(self.val_) for der in self.ders_])
+        other_ders = np.array([[der]*len(other.val_) for der in other.ders_])
+
+        return self_ders, other_ders
+
     ## Overwritten basic functions ##
 
     # Addition
@@ -260,14 +267,12 @@ class FuncInput():
 
     @validate_input
     def __rsub__(self, other):
-        if isinstance(other, FuncInput):
-            new_val = self.val_ - other.val_
-            new_ders = self.ders_ - other.ders_
-        else:
+        if isinstance(other, numbers.Real):
             new_val = self.val_ - other
             new_ders = self.ders_
-
-        return -self.__sub__(other)
+            return FuncInput(new_val, new_ders)
+        else:
+            raise TypeError('Inputs must be FuncInput or real numbers')
 
     # Reverse true division
     def __rtruediv__(self, other):
