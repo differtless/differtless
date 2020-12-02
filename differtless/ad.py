@@ -188,7 +188,7 @@ class FuncInput():
     def __mul__(self, other):
         if isinstance(other, FuncInput):
             new_val = self.val_ * other.val_
-            new_ders = self.val_ * other.ders_ + self.ders_ * other.val_
+            new_ders = [self.val_ * other.ders_[i] + self.ders_[i] * other.val_ for i in range(len(self.ders_))]
         else:
             new_val = self.val_ * other
             new_ders = [self_der * other for self_der in self.ders_]
@@ -202,7 +202,7 @@ class FuncInput():
 
         if isinstance(other, FuncInput):
             new_val = self.val_ / other.val_
-            new_ders = quot_rule(self.val_, other.val_, self.ders_, other.ders_)
+            new_ders = [quot_rule(self.val_, other.val_, self.ders_[i], other.ders_[i]) for i in range(len(self.ders_))]
         else:
             new_val = self.val_ / other
             new_ders = quot_rule(self.val_, other, self.ders_, 0)
@@ -216,10 +216,10 @@ class FuncInput():
 
         if isinstance(other, FuncInput):
             new_val = self.val_ // other.val_
-            new_ders = floor_quot_rule(self.val_, other.val_, self.ders_, other.ders_)
+            new_ders = [floor_quot_rule(self.val_, other.val_, self.ders_[i], other.ders_[i]) for i in range(len(self.ders_))]
         else:
             new_val = self.val_ // other
-            new_ders = floot_quot_rule(self.val_, other, self.ders_, other)
+            new_ders = floot_quot_rule(self.val_, other, self.ders_, 0)
 
 
         return FuncInput(new_val, new_ders)
@@ -231,8 +231,9 @@ class FuncInput():
         if isinstance(other, FuncInput):
             # check for negative bases in the case of even powers, do this iteratively for VVFs
             self.val_ = np.array([abs(self_val) if other.val_[i]%2 == 0 else self_val for i, self_val in enumerate(self.val_)])
+
             new_val = self.val_ ** other.val_
-            new_ders = pow_rule(self.val_, other.val_, self.ders_, other.ders_)
+            new_ders = [pow_rule(self.val_, other.val_, self.ders_[i], other.ders_[i]) for i in range(len(self.ders_))] 
         else:
             # check for negative bases in the case of even powers
             self = self.abs(self) if other%2 == 0 else self
