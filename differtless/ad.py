@@ -304,7 +304,7 @@ class FuncInput():
             raise TypeError('Inputs must be FuncInput or real numbers')
 
 
-def forward(fun, inputs, seeds = []):
+def forward(funs, inputs, seeds = []):
     """
     Function that executes forward mode of automatic differentiation. Executes a
     pre-defined function while keeping track of the gradients of the inputs with
@@ -313,7 +313,7 @@ def forward(fun, inputs, seeds = []):
     PARAMETERS
     ==========
         fun:
-            Pre-defined function to be executed
+            Pre-defined function, or list of functions, to be executed
         inputs : iterable type (list, np.array(), etc.)
             Iterable containing the input values to the functions
         seeds : iterable type (list, np,array(), etc.)
@@ -333,12 +333,31 @@ def forward(fun, inputs, seeds = []):
     >>> forward(simple_func, inputs, seeds)
     FuncInput([9], [6. 6.])
     """
+    # if multiple functions, run them all and stack the results
+    try:
+        result_val = []
+        result_grad = []
 
-    func_inputs = preprocess(inputs, seeds)
+        for fun in funs:
+            func_inputs = preprocess(inputs, seeds)
 
-    return fun(*func_inputs)
+            output = fun(*func_inputs)
+            out_val = output.value[0] if len(output.value == 1) else output.value
+            out_grad = output.gradients
 
-def Jacobian(fun, inputs):
+            result_val.append(out_val)
+            result_grad.append(out_grad)
+
+        result_val = np.array(result_val)
+        result_grad = np.array(result_grad)
+        return FuncInput(result_val, result_grad)
+
+    except TypeError:
+        func_inputs = preprocess(inputs, seeds)
+
+        return funs(*func_inputs)
+
+def Jacobian(funs, inputs):
     """
     Function that executes forward mode of automatic differentiation. Executes a
     pre-defined function while keeping track of the gradients of the inputs with
@@ -347,7 +366,7 @@ def Jacobian(fun, inputs):
     PARAMETERS
     ==========
         fun:
-            Pre-defined function to be executed
+            Pre-defined function, or list of functions, to be executed
         inputs : iterable type (list, np.array(), etc.)
             Iterable containing the input values to the functions
     ACTIONS
@@ -366,8 +385,25 @@ def Jacobian(fun, inputs):
     >>> forward(simple_func, inputs, seeds)
     FuncInput([9], [6. 6.])
     """
+    # if multiple functions, run them all and stack the results
+    try:
+        result_val = []
+        result_grad = []
 
-    func_inputs = preprocess(inputs)
-    output = fun(*func_inputs)
+        for fun in funs:
+            func_inputs = preprocess(inputs)
 
-    return output.gradients
+            output = fun(*func_inputs)
+            out_grad = output.gradients
+
+            result_grad.append(out_grad)
+
+        result_grad = np.array(result_grad)
+        return result_grad
+
+    except TypeError:
+
+        func_inputs = preprocess(inputs)
+        output = funs(*func_inputs)
+
+        return output.gradients
