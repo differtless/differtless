@@ -127,8 +127,18 @@ class FuncInput():
         self.val_ = value
         self.ders_ = seed
 
-    def __str__(self): 
-        return f'FuncInput object with value {self.val_[0] if len(self.val_) == 1 else self.val_} and gradients {np.array([list(der) if len(der) > 1 else der[0] for der in self.ders_])} with respect to each input'
+    def __str__(self):
+        try:
+            val = self.val_[0] if len(self.val_) == 1 else self.val_
+        except TypeError:
+            val = self.val_
+
+        try:
+            grad = np.array([list(der) if len(der) > 1 else der[0] for der in self.ders_])
+        except TypeError:
+            grad = self.ders_
+
+        return f'FuncInput object with value {val} and gradients {grad} with respect to each input'
 
     def __repr__(self):
         return f'FuncInput({self.val_}, {self.ders_})'
@@ -149,13 +159,6 @@ class FuncInput():
                 raise TypeError('Inputs must be type FuncInput or a real number')
             return func(self, other)
         return wrapper
-
-    # For VVFs returns derivatives in a form conducive for derivative calculation
-    def vectorize_ders(self, other):
-        self_ders = np.array([[der]*len(self.val_) for der in self.ders_])
-        other_ders = np.array([[der]*len(other.val_) for der in other.ders_])
-
-        return self_ders, other_ders
 
     ## Overwritten basic functions ##
 
@@ -236,9 +239,9 @@ class FuncInput():
             new_ders = [pow_rule(self.val_, other.val_, self.ders_[i], other.ders_[i]) for i in range(len(self.ders_))]
         else:
             # check for negative bases in the case of even powers
-            self = self.abs(self) if other%2 == 0 else self
+            self = abs(self) if other%2 == 0 else self
             new_val = self.val_ ** other
-            new_ders = pow_rule(self.val_, other, self.ders_, 0)
+            new_ders = [pow_rule(self.val_, other, self.ders_[i], 0) for i in range(len(self.ders_))]
 
         return FuncInput(new_val, new_ders)
 
