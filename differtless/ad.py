@@ -11,83 +11,83 @@ import numbers
 import numpy as np
 
 def preprocess(inputs, seeds = []):
-  """
-  Function that produces a list of FuncInput objects with respect to each input.
-  To be used within forward() to process inputs.
+    """
+    Function that produces a list of FuncInput objects with respect to each input.
+    To be used within forward() to process inputs.
 
-  PARAMETERS
-  ==========
+    PARAMETERS
+    ==========
       inputs : iterable type (list, np.array(), etc.)
           Iterable containing the input values to the functions
       seeds : iterable type (list, np,array(), etc.)
           Iterable containing the gradients of each input with respect to all other inputs (default is [])
-  RETURNS
-  =======
+    RETURNS
+    =======
       A list of FuncInput objects with the appropriate gradients (if no seed is
       specified the gradients are assigned to be unit vectors)
-  EXAMPLE
-  ========
-  >>> inputs = [1, 2]
-  >>> seeds = [[1, 0], [0, 1]]
-  >>> preprocess(inputs, seeds)
-  [FuncInput([1], [1 0]), FuncInput([2], [0 1])]
-  """
+    EXAMPLE
+    ========
+    >>> inputs = [1, 2]
+    >>> seeds = [[1, 0], [0, 1]]
+    >>> preprocess(inputs, seeds)
+    [FuncInput([1], [1 0]), FuncInput([2], [0 1])]
+    """
 
-  N = len(inputs)
-  for element in inputs:
-    if not isinstance(element, numbers.Real):
-      for e in element:
-        if not isinstance(e, numbers.Real):
-          raise TypeError("Please make sure all inputs are Real Numbers")
+    N = len(inputs)
+    for element in inputs:
+        if not isinstance(element, numbers.Real):
+          for e in element:
+            if not isinstance(e, numbers.Real):
+              raise TypeError("Please make sure all inputs are Real Numbers")
 
 
-  if (seeds == []):
-    # if seeds = [], make ID matrix
-    for i in range(N):
-      new_row = []
-      for j in range(N):
-        if (i==j):
-          new_row.append(1)
-        else:
-          new_row.append(0)
-      seeds.append(new_row)
+    if (seeds == []):
+        # if seeds = [], make ID matrix
+        for i in range(N):
+            new_row = []
+            for j in range(N):
+                if (i==j):
+                    new_row.append(1)
+                else:
+                    new_row.append(0)
+            seeds.append(new_row)
 
-  else:
-    # check if NXN matrix
-    len_seeds = len(seeds)
-    if (len_seeds != N):
-      raise ValueError("Make sure your seeds matrix is the right size")
     else:
-      for row in seeds:
-        if (len(row) !=N):
-          raise ValueError("Make sure your seeds matrix is the right size")
-        for element in row:
-          if not isinstance(element, numbers.Real):
-            raise TypeError("Please make sure all inputs are Real Numbers")
+        # check if NXN matrix
+        len_seeds = len(seeds)
+        if (len_seeds != N):
+            raise ValueError("Make sure your seeds matrix is the right size")
+        else:
+          for row in seeds:
+            if (len(row) !=N):
+              raise ValueError("Make sure your seeds matrix is the right size")
+            for element in row:
+              if not isinstance(element, numbers.Real):
+                raise TypeError("Please make sure all inputs are Real Numbers")
 
-  # make seed rows into np.arrays
-  new_seeds = []
-  for row in seeds:
-      new_seeds.append(np.array(row))
+    # make seed rows into np.arrays
+    new_seeds = []
+    for row in seeds:
+        new_seeds.append(np.array(row))
 
-  new_inputs = []
-  # make scalar values and tuples into np.arrays for inputs
-  for val in inputs:
-    if (isinstance(val, numbers.Real)):
-      new_inputs.append(np.array([val]))
-    elif (isinstance(val, list)):
-      new_inputs.append(np.array(val))
-    elif (isinstance(val, tuple)):
-      holder = []
-      for i in val:
-        holder.append(i)
-      new_inputs.append(np.array(holder))
+    new_inputs = []
+    # make scalar values and tuples into np.arrays for inputs
+    for val in inputs:
+        if (isinstance(val, numbers.Real)):
+          new_inputs.append(np.array([val]))
+        elif (isinstance(val, list)):
+          new_inputs.append(np.array(val))
+        elif (isinstance(val, tuple)):
+          holder = []
+          for i in val:
+            holder.append(i)
+          new_inputs.append(np.array(holder))
 
-  r = []
-  for i in range(N):
-    r.append(FuncInput(new_inputs[i], new_seeds[i]))
+    r = []
+    for i in range(N):
+        r.append(FuncInput(new_inputs[i], new_seeds[i]))
 
-  return r
+    return r
 
 
 
