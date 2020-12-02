@@ -222,9 +222,13 @@ class FuncInput():
         def pow_rule(x, exp, dx, dexp): return (x ** exp) * (((exp * dx)/x) + dexp*np.log(x))
 
         if isinstance(other, FuncInput):
+            # check for negative bases in the case of even powers
+            self = abs(self) if other.val_%2 == 0 else self
             new_val = self.val_ ** other.val_
             new_ders = pow_rule(self.val_, other.val_, self.ders_, other.ders_)
         else:
+            # check for negative bases in the case of even powers
+            self = abs(self) if other%2 == 0 else self
             new_val = self.val_ ** other
             new_ders = pow_rule(self.val_, other, self.ders_, 0)
 
