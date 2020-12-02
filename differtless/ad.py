@@ -242,17 +242,12 @@ class FuncInput():
         new_ders = -self.ders_
         return FuncInput(new_vals, new_ders)
 
-    # Positive
-    def __pos__(self):
-        new_vals = self.val_
-        new_ders = self.ders_
-        return FuncInput(new_vals, new_ders)
-
     # Absolute value
     def __abs__(self):
-        new_vals = np.abs(self.val_)
-        new_ders = np.abs(self.ders_)
-        return FuncInput(new_vals, new_ders)
+        print(self.val_)
+        self.val_ = np.abs(self.val_)
+        self.ders_ = np.abs(self.ders_)
+        return self
 
     ## Reverse commutative operations ##
     __radd__ = __add__
