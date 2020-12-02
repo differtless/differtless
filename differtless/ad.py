@@ -223,12 +223,12 @@ class FuncInput():
 
         if isinstance(other, FuncInput):
             # check for negative bases in the case of even powers
-            self = abs(self) if other.val_%2 == 0 else self
+            self = self.abs(self) if other.val_%2 == 0 else self
             new_val = self.val_ ** other.val_
             new_ders = pow_rule(self.val_, other.val_, self.ders_, other.ders_)
         else:
             # check for negative bases in the case of even powers
-            self = abs(self) if other%2 == 0 else self
+            self = self.abs(self) if other%2 == 0 else self
             new_val = self.val_ ** other
             new_ders = pow_rule(self.val_, other, self.ders_, 0)
 
@@ -250,12 +250,8 @@ class FuncInput():
 
     # Absolute value
     def __abs__(self):
-        if self.val_ < 0:
-            new_vals = -self.val_
-            new_ders = -self.ders_
-        else:
-            new_vals = self.val_
-            new_ders = self.ders_
+        new_vals = np.abs(self.val_)
+        new_ders = np.abs(self.ders_)
         return FuncInput(new_vals, new_ders)
 
     ## Reverse commutative operations ##
