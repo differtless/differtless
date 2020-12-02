@@ -127,8 +127,8 @@ class FuncInput():
         self.val_ = value
         self.ders_ = seed
 
-    def __str__(self):
-        return f'FuncInput object with value {self.val_} and gradients {self.ders_} with respect to each input'
+    def __str__(self): 
+        return f'FuncInput object with value {self.val_[0] if len(self.val_) == 1 else self.val_} and gradients {np.array([list(der) if len(der) > 1 else der[0] for der in self.ders_])} with respect to each input'
 
     def __repr__(self):
         return f'FuncInput({self.val_}, {self.ders_})'
@@ -233,7 +233,7 @@ class FuncInput():
             self.val_ = np.array([abs(self_val) if other.val_[i]%2 == 0 else self_val for i, self_val in enumerate(self.val_)])
 
             new_val = self.val_ ** other.val_
-            new_ders = [pow_rule(self.val_, other.val_, self.ders_[i], other.ders_[i]) for i in range(len(self.ders_))] 
+            new_ders = [pow_rule(self.val_, other.val_, self.ders_[i], other.ders_[i]) for i in range(len(self.ders_))]
         else:
             # check for negative bases in the case of even powers
             self = self.abs(self) if other%2 == 0 else self
