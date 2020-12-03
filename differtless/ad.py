@@ -354,8 +354,8 @@ def forward(funs, inputs, seeds = []):
                         out_grad[i] = val[0]
             result_grad.append(out_grad)
 
-        result_val = np.array(result_val)
-        result_grad = np.array(result_grad)
+        result_val = np.squeeze(np.array(result_val))
+        result_grad = np.squeeze(np.array(result_grad))
         return FuncInput(result_val, result_grad)
 
     except TypeError:
@@ -369,6 +369,8 @@ def forward(funs, inputs, seeds = []):
                 if len(val) == 1:
                     out_grad[i] = val[0]
 
+        out_val = np.squeeze(np.array(out_val))
+        out_grad = np.squeeze(np.array(out_grad))
         return FuncInput(out_val, out_grad)
 
 
