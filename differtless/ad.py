@@ -128,15 +128,6 @@ class FuncInput():
         self.ders_ = seed
 
     def __str__(self):
-        # try:
-        #     val = self.val_[0] if len(self.val_) == 1 else self.val_
-        # except TypeError:
-        #     val = self.val_
-        #
-        # try:
-        #     grad = np.array([list(der) if len(der) > 1 else der[0] for der in self.ders_])
-        # except TypeError:
-        #     grad = self.ders_
         val = self.val_
         grad = self.ders_
 
