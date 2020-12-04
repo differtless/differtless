@@ -1,7 +1,7 @@
 import numpy as np
 import scipy as sp
 import numbers
-from differtless.ad import FuncInput
+from ad import FuncInput
 
 '''
 Re-defining numpy and scipy functions to return FuncInput objects of (value, gradient)
@@ -107,18 +107,31 @@ def tan(x):
 
 def arcsin(x):
     if isinstance(x, FuncInput):
-        assert x.val_ >= -1 and x.val_ <= 1, 'Input is outside the domain of arcsin'
-        new_vals = np.arcsin(x.val_)
-        new_ders = 1/sqrt(1 - x.val_)
+        assert x.val_ > -1 and x.val_ < 1, 'Input is outside the domain of arcsin or its derivative'
+        new_val = np.arcsin(x.val_)
+        new_ders = [(1/sqrt(1 - x.val_)) * self_der for self_der in self.ders_]
         return FuncInput(new_val, new_ders)
     elif isinstance(x, numbers.Real):
+        assert x > -1 and x < 1, 'Input is outside the domain of arcsin or its derivative'
         return np.arcsin(x)
 
 def arccos(x):
-    raise NotImplementedError('Function not yet implemented in differtless')
+    if isinstance(x, FuncInput):
+        assert x.val_ > -1 and x.val_ < 1, 'Input is outside the domain of arccos or its derivative'
+        new_val = np.arccos(x.val_)
+        new_ders = [(-(1/sqrt(1 - x.val_))) * self_der for self_der in self.ders_]
+        return FuncInput(new_val, new_ders)
+    elif isinstance(x, numbers.Real):
+        assert x > -1 and x < 1, 'Input is outside the domain of arccos or its derivative'
+        return np.arccos(x)
 
 def arctan(x):
-    raise NotImplementedError('Function not yet implemented in differtless')
+    if isinstance(x, FuncInput):
+        new_val = np.arctan(x.val_)
+        new_ders = [(1/(1 + x.val_)) * self_der for self_der in self.ders_]
+        return FuncInput(new_val, new_ders)
+    elif isinstance(x, numbers.Real):
+        return np.arctan(x)
 
 def hypot(x1, x2):
     raise NotImplementedError('Function not yet implemented in differtless')
