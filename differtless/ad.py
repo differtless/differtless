@@ -255,7 +255,7 @@ class FuncInput():
     # Absolute value
     def __abs__(self):
         new_val = np.abs(self.val_)
-        new_ders = +(self.ders_) if self.val_ > 0 else -(self.ders_)
+        new_ders = np.abs(self.ders_) if self.val_ > 0 else -(self.ders_)
         return FuncInput(new_val, new_ders)
 
     ## Reverse commutative operations ##
@@ -370,9 +370,9 @@ def forward(funs, inputs, seeds = []):
                 if len(val) == 1:
                     out_grad[i] = val[0]
         out_grad = np.array(out_grad)
-        print(out_grad)
-        # out_val = np.squeeze(np.array(out_val))
-        # out_grad = np.squeeze(np.array(out_grad))
+
+        out_val = np.squeeze(np.array(out_val))
+        out_grad = np.squeeze(np.array(out_grad))
         return FuncInput(out_val, out_grad)
 
 

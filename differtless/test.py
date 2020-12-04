@@ -27,8 +27,8 @@
 from ad import *
 import numpy as np
 
-x = FuncInput(np.array([-1]),np.array([1,0]))
-y = FuncInput(np.array([2]),np.array([0,1]))
-f = 1 - y
-f2 = x - y
-print(abs(x).value)
+inputs = [1, 2]
+seeds = [[1, 0], [0, 1]]
+def simple_func(x, y):
+    return (x + y) ** 2
+print(forward(simple_func, inputs, seeds).value)
