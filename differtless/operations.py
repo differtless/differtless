@@ -160,7 +160,7 @@ def cosh(x):
 def tanh(x):
     if isinstance(x, FuncInput):
         new_val = np.tanh(x.val_)
-        new_ders = [(np.sech(x.val_) ** 2) * self_der for self_der in self.ders_]
+        new_ders = [((1/cosh(x.val_)) ** 2) * self_der for self_der in self.ders_]
         return FuncInput(new_val, new_ders)
     elif isinstance(x, numbers.Real):
         return np.tanh(x)
