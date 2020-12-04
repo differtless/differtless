@@ -9,21 +9,21 @@ def test_add():
     x = FuncInput(np.array([1]),np.array([1,0]))
     y = FuncInput(np.array([2]),np.array([0,1]))
     f = x + y
-    assert f.val_ == 3, "add function is not correct"
+    assert f.val_ == [3], "add function is not correct"
     assert (f.ders_ == np.array([1,1])).all(), "add function is not correct"
 
 def test_sub():
     x = FuncInput(np.array([1]),np.array([1,0]))
     y = FuncInput(np.array([2]),np.array([0,1]))
     f = x - y
-    assert f.val_ == -1, "sub function is not correct"
+    assert f.val_ == [-1], "sub function is not correct"
     assert (f.ders_ == np.array([1,-1])).all(), "sub function is not correct"
 
 def test_mul():
     x = FuncInput(np.array([1]),np.array([1,0]))
     y = FuncInput(np.array([2]),np.array([0,1]))
     f = x * y
-    assert f.val_ == 2, "mul function is not correct"
+    assert f.val_ == [2], "mul function is not correct"
     assert (f.ders_ == np.array([2,1])).all(), "mul function is not correct"
 
 def test_truediv():
@@ -31,9 +31,9 @@ def test_truediv():
     y = FuncInput(np.array([2]),np.array([0,1]))
     f1 = x / y
     f2 = x / 2
-    assert f1.val_ == 0.5, "truediv function is not correct"
+    assert f1.val_ == [0.5], "truediv function is not correct"
     assert (f1.ders_ == np.array([0.5,-0.25])).all(), "truediv function is not correct"
-    assert f2.val_ == 0.5, "truediv function is not correct"
+    assert f2.val_ == [0.5], "truediv function is not correct"
     assert (f2.ders_ == np.array([0.5,0])).all(), "truediv function is not correct"
 
 def test_floordiv():
@@ -41,7 +41,7 @@ def test_floordiv():
     y = FuncInput(np.array([-5]),np.array([0,1]))
     f = y // x
     # f2 = y // 2
-    assert f.val_ == -3, "floordiv function is not correct"
+    assert f.val_ == [-3], "floordiv function is not correct"
     assert (f.ders_ == np.array([1,0])).all(), "floordiv function is not correct"
     # assert f2.val_ == -3, "floordiv function is not correct"
     # assert (f2.ders_ == np.array([0,0.5])).all(), "floordiv function is not correct"
@@ -51,20 +51,20 @@ def test_pow():
     y = FuncInput(np.array([3]),np.array([0,1]))
     f = x ** 3
     f_2 = x ** y
-    assert f.val_ == 8, "pow function is not correct"
+    assert f.val_ == [8], "pow function is not correct"
     assert (f.ders_ == np.array([12,0])).all(), "pow function is not correct"
-    assert f_2.val_ == 8, "pow function is not correct"
+    assert f_2.val_ == [8], "pow function is not correct"
 
 def test_neg():
     x = FuncInput(np.array([2]),np.array([1,0]))
     f = -x
-    assert f.val_ == -2, "neg function is not correct"
+    assert f.val_ == [-2], "neg function is not correct"
     assert (f.ders_ == np.array([-1,0])).all(), "neg function is not correct"
 
 def test_pos():
     x = FuncInput(np.array([2]),np.array([1,0]))
     f = + x
-    assert f.val_ == 2, "pos function is not correct"
+    assert f.val_ == [2], "pos function is not correct"
     assert (f.ders_ == np.array([1,0])).all(), "pos function is not correct"
 
 def test_abs():
@@ -72,15 +72,15 @@ def test_abs():
     f = abs(x)
     y = FuncInput(np.array([2]),np.array([1,0]))
     f2 = abs(y)
-    assert f.val_ == 2, "abs function is not correct"
+    assert f.val_ == [2], "abs function is not correct"
     assert (f.ders_ == np.array([-1,0])).all(), "abs function is not correct"
-    assert f2.val_ == 2, "abs function is not correct"
+    assert f2.val_ == [2], "abs function is not correct"
     assert (f2.ders_ == np.array([1,0])).all(), "abs function is not correct"
 
 def test_radd():
     y = FuncInput(np.array([2]),np.array([0,1]))
     f = 1 + y
-    assert f.val_ == 3, "radd function is not correct"
+    assert f.val_ == [3], "radd function is not correct"
     assert (f.ders_ == np.array([0,1])).all(), "radd function is not correct"
 
 def test_rsub():
@@ -88,53 +88,53 @@ def test_rsub():
     y = FuncInput(np.array([2]),np.array([0,1]))
     f = 1 - y
     f2 = x - y
-    assert f.val_ == -1, "rsub function is not correct"
+    assert f.val_ == [-1], "rsub function is not correct"
     assert (f.ders_ == np.array([0,-1])).all(), "rsub function is not correct"
-    assert f2.val_ == -1, "rsub function is not correct"
+    assert f2.val_ == [-1], "rsub function is not correct"
     assert (f2.ders_ == np.array([1,-1])).all(), "rsub function is not correct"
 
 def test_rmul():
     y = FuncInput(np.array([2]),np.array([0,1]))
     f = 2 * y
-    assert f.val_ == 4, "rmul function is not correct"
+    assert f.val_ == [4], "rmul function is not correct"
     assert (f.ders_ == np.array([0,2])).all(), "rmul function is not correct"
 
 def test_rtruediv():
     x = FuncInput(np.array([2]),np.array([1,0]))
     f = 1 / x
-    assert f.val_ == 0.5, "rtruediv function is not correct"
+    assert f.val_ == [0.5], "rtruediv function is not correct"
     assert (f.ders_ == np.array([-0.25,0])).all(), "rtruediv function is not correct"
 
 def test_rfloordiv():
     x = FuncInput(np.array([2]),np.array([1,0]))
     f = -5 // x
-    assert f.val_ == -3, "rfloordiv function is not correct"
+    assert f.val_ == [-3], "rfloordiv function is not correct"
     assert (f.ders_ == np.array([1,0])).all(), "rfloordiv function is not correct"
 
 def rpow():
     x = FuncInput(np.array([2]),np.array([1,0]))
     f = 2**x
-    assert f.val_ == 4, "rpow function is not correct"
+    assert f.val_ == [4], "rpow function is not correct"
     assert (abs(f.ders_ - np.array([2.77258872,0]))<1e-6).all(), "rpow function is not correct"
 
 def test_exp():
     x = FuncInput(np.array([0]),np.array([1,0]))
     f = op.exp(x)
     f2 = op.exp(1)
-    assert f.val_ == 1, "exp function is not correct"
+    assert f.val_ == [1], "exp function is not correct"
     assert (f.ders_ == np.array([1,0])).all(), "exp function is not correct"
     assert f2 == np.exp(1), "exp function is not correct"
 
 def test_expm1():
     x = FuncInput(np.array([0]),np.array([1,0]))
     f = op.expm1(x)
-    assert f.val_ == 0, "expm1 function is not correct"
+    assert f.val_ == [0], "expm1 function is not correct"
     assert (f.ders_ == np.array([1,0])).all(), "expm1 function is not correct"
 
 def test_exp2():
     x = FuncInput(np.array([2]),np.array([1,0]))
     f = op.exp2(x)
-    assert f.val_ == 4, "exp2 function is not correct"
+    assert f.val_ == [4], "exp2 function is not correct"
     assert (abs(f.ders_ - np.array([2.77258872,0]))<1e-6).all(), "exp2 function is not correct"
 
 def test_log():
@@ -164,7 +164,7 @@ def test_log2():
 def test_log1p():
     x = FuncInput(np.array([0]),np.array([1,0]))
     f = op.log1p(x)
-    assert f.val_ == 0, "log1p function is not correct"
+    assert f.val_ == [0], "log1p function is not correct"
     assert (f.ders_ == np.array([1,0])).all(), "log1p function is not correct"
 
 def test_logaddexp():
