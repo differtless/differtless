@@ -256,7 +256,7 @@ class FuncInput():
     def __abs__(self):
         new_val = np.abs(self.val_)
         new_ders = +(self.ders_) if self.val_ > 0 else -(self.ders_)
-        return self
+        return FuncInput(new_val, new_ders)
 
     ## Reverse commutative operations ##
     __radd__ = __add__
@@ -268,7 +268,7 @@ class FuncInput():
     def __rsub__(self, other):
         if isinstance(other, numbers.Real):
             new_val = other - self.val_
-            new_ders = self.ders_
+            new_ders = -self.ders_
             return FuncInput(new_val, new_ders)
         else:
             raise TypeError('Inputs must be FuncInput or real numbers')
