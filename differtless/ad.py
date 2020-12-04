@@ -136,7 +136,7 @@ class FuncInput():
         return f'Value:\n {value}\nGradient(s):\n {gradient}'
 
     def __repr__(self):
-        return f'FuncInput({self.val_}, {self.ders_})'
+        return f'FuncInput([{self.value}], [{self.gradients}])'
 
     @property
     def value(self):
