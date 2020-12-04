@@ -1,7 +1,7 @@
 import numpy as np
 import scipy as sp
 import numbers
-from ad import FuncInput
+from differtless.ad import FuncInput
 
 '''
 Re-defining numpy and scipy functions to return FuncInput objects of (value, gradient)
@@ -112,7 +112,7 @@ def arcsin(x):
         new_ders = [(1/sqrt(1 - x.val_)) * self_der for self_der in self.ders_]
         return FuncInput(new_val, new_ders)
     elif isinstance(x, numbers.Real):
-        assert x >= -1 and x =< 1, 'Input is outside the domain of arcsin'
+        assert x >= -1 and x <= 1, 'Input is outside the domain of arcsin'
         return np.arcsin(x)
 
 def arccos(x):
@@ -122,7 +122,7 @@ def arccos(x):
         new_ders = [(-(1/sqrt(1 - x.val_))) * self_der for self_der in self.ders_]
         return FuncInput(new_val, new_ders)
     elif isinstance(x, numbers.Real):
-        assert x >= -1 and x =< 1, 'Input is outside the domain of arccos'
+        assert x >= -1 and x <= 1, 'Input is outside the domain of arccos'
         return np.arccos(x)
 
 def arctan(x):
