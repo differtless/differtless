@@ -130,14 +130,8 @@ class FuncInput():
         self.ders_ = seed
 
     def __str__(self):
-        value = self.val_
-        gradient = self.ders_
-
-        for i, val in enumerate(gradient):
-            if not isinstance(val, numbers.Real):
-                if len(val) == 1:
-                    gradient[i] = val[0]
-        gradient = np.array(gradient)
+        value = self.value
+        gradient = self.gradients
 
         return f'Value:\n {value}\nGradient(s):\n {gradient}'
 
@@ -146,11 +140,12 @@ class FuncInput():
 
     @property
     def value(self):
-        return self.val_
+        return np.squeeze(self.val_)
 
     @property
     def gradients(self):
-        return self.ders_
+        print('hi')
+        return np.squeeze(self.ders_)
 
 
     # Wrapper that will make sure all inputs are type FuncInput or a real number
@@ -352,6 +347,13 @@ def forward(funs, inputs, seeds = []):
             out_grad = output.ders_
 
             result_val.append(out_val)
+
+
+            for i, val in enumerate(out_grad):
+                if not isinstance(val, numbers.Real):
+                    if len(val) == 1:
+                        out_grad[i] = val[0]
+            out_grad = np.array(out_grad)
             result_grad.append(out_grad)
 
         result_grad = np.squeeze(np.array(result_grad))
@@ -361,9 +363,15 @@ def forward(funs, inputs, seeds = []):
     except TypeError:
 
         output = funs(*func_inputs)
-        out_val = np.squeeze(output.val_)
-        out_grad = np.squeeze(output.ders_)
+        out_val = output.val_
+        out_grad = output.ders_
 
+        for i, val in enumerate(out_grad):
+            if not isinstance(val, numbers.Real):
+                if len(val) == 1:
+                    out_grad[i] = val[0]
+        out_grad = np.array(out_grad)
+        print(out_grad)
         # out_val = np.squeeze(np.array(out_val))
         # out_grad = np.squeeze(np.array(out_grad))
         return FuncInput(out_val, out_grad)
