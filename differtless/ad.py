@@ -348,12 +348,12 @@ def forward(funs, inputs, seeds = []):
         for fun in funs:
 
             output = fun(*func_inputs)
-            out_val = output.value
-            out_grad = output.gradients
+            out_val = output.val_
+            out_grad = output.ders_
 
             result_val.append(out_val)
             result_grad.append(out_grad)
-            
+
         result_grad = np.squeeze(np.array(result_grad))
         result_val = np.squeeze(np.array(result_val))
         return FuncInput(result_val, result_grad)
@@ -361,8 +361,8 @@ def forward(funs, inputs, seeds = []):
     except TypeError:
 
         output = funs(*func_inputs)
-        out_val = np.squeeze(output.value)
-        out_grad = np.squeeze(output.gradients)
+        out_val = np.squeeze(output.val_)
+        out_grad = np.squeeze(output.ders_)
 
         # out_val = np.squeeze(np.array(out_val))
         # out_grad = np.squeeze(np.array(out_grad))
