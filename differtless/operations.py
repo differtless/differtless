@@ -184,7 +184,14 @@ def arccosh(x):
         return np.arccosh(x)
 
 def arctanh(x):
-    raise NotImplementedError('Function not yet implemented in differtless')
+    if isinstance(x, FuncInput):
+        assert np.abs(x.val_) < 1, 'Input is outside the domain of arctanh or its derivative'
+        new_val = np.arctanh(x.val_)
+        new_ders = [(1/(1-x.val_**2)) * self_der for self_der in self.ders_]
+        return FuncInput(new_val, new_ders)
+    elif isinstance(x, numbers.Real):
+        assert abs(x) < 1, 'Input is outside the domain of arctanh or its derivative'
+        return np.arctanh(x)
 
 '''
 Scipy
