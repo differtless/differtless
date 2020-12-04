@@ -142,13 +142,28 @@ def arctan2(x1, x2):
 # Hyperbolic functions
 
 def sinh(x):
-    raise NotImplementedError('Function not yet implemented in differtless')
+    if isinstance(x, FuncInput):
+        new_val = np.sinh(x.val_)
+        new_ders = [np.cosh(x.val_) * self_der for self_der in self.ders_]
+        return FuncInput(new_val, new_ders)
+    elif isinstance(x, numbers.Real):
+        return np.sinh(x)
 
 def cosh(x):
-    raise NotImplementedError('Function not yet implemented in differtless')
+    if isinstance(x, FuncInput):
+        new_val = np.cosh(x.val_)
+        new_ders = [(-np.sinh(x.val_)) * self_der for self_der in self.ders_]
+        return FuncInput(new_val, new_ders)
+    elif isinstance(x, numbers.Real):
+        return np.cosh(x)
 
 def tanh(x):
-    raise NotImplementedError('Function not yet implemented in differtless')
+    if isinstance(x, FuncInput):
+        new_val = np.tanh(x.val_)
+        new_ders = [(np.sech(x.val_) ** 2) * self_der for self_der in self.ders_]
+        return FuncInput(new_val, new_ders)
+    elif isinstance(x, numbers.Real):
+        return np.tanh(x)
 
 def arcsinh(x):
     raise NotImplementedError('Function not yet implemented in differtless')
