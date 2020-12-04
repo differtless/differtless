@@ -139,7 +139,7 @@ class FuncInput():
                     gradient[i] = val[0]
         gradient = np.array(gradient)
 
-        return f'Value(s):\n{value}\nGradient(s):\n{gradient}'
+        return f'Value:\n {value}\nGradient(s):\n {gradient}'
 
     def __repr__(self):
         return f'FuncInput({self.val_}, {self.ders_})'
@@ -352,14 +352,9 @@ def forward(funs, inputs, seeds = []):
             out_grad = output.gradients
 
             result_val.append(out_val)
-            # processing to streamline formatting
-            for i, val in enumerate(out_grad):
-                if not isinstance(val, numbers.Real):
-                    if len(val) == 1:
-                        out_grad[i] = val[0]
-
             result_grad.append(out_grad)
-
+            
+        result_grad = np.squeeze(np.array(result_grad))
         result_val = np.squeeze(np.array(result_val))
         return FuncInput(result_val, result_grad)
 
