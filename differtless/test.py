@@ -29,4 +29,4 @@ print(result)
 #
 # x = FuncInput(np.array([1]),np.array([1,0]))
 # y = FuncInput(np.array([2]),np.array([0,1]))
-# print(x * y)
+# print((x * y).value)
