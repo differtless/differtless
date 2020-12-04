@@ -130,11 +130,16 @@ class FuncInput():
         self.ders_ = seed
 
     def __str__(self):
-        val = self.val_
-        grad = self.ders_
+        value = self.val_
+        gradient = self.ders_
 
+        for i, val in enumerate(gradient):
+            if not isinstance(val, numbers.Real):
+                if len(val) == 1:
+                    gradient[i] = val[0]
+        gradient = np.array(gradient)
 
-        return f'Value(s):\n{val}\nGradient(s):\n{grad}'
+        return f'Value(s):\n{value}\nGradient(s):\n{gradient}'
 
     def __repr__(self):
         return f'FuncInput({self.val_}, {self.ders_})'
@@ -352,25 +357,20 @@ def forward(funs, inputs, seeds = []):
                 if not isinstance(val, numbers.Real):
                     if len(val) == 1:
                         out_grad[i] = val[0]
+
             result_grad.append(out_grad)
 
         result_val = np.squeeze(np.array(result_val))
-        result_grad = np.squeeze(np.array(result_grad))
         return FuncInput(result_val, result_grad)
 
     except TypeError:
 
         output = funs(*func_inputs)
-        out_val = output.value
-        out_grad = output.gradients
+        out_val = np.squeeze(output.value)
+        out_grad = np.squeeze(output.gradients)
 
-        for i, val in enumerate(out_grad):
-            if not isinstance(val, numbers.Real):
-                if len(val) == 1:
-                    out_grad[i] = val[0]
-
-        out_val = np.squeeze(np.array(out_val))
-        out_grad = np.squeeze(np.array(out_grad))
+        # out_val = np.squeeze(np.array(out_val))
+        # out_grad = np.squeeze(np.array(out_grad))
         return FuncInput(out_val, out_grad)
 
 
@@ -402,33 +402,6 @@ def Jacobian(funs, inputs):
     >>> forward(simple_func, inputs, seeds)
     FuncInput([9], [6. 6.])
     """
-    # if multiple functions, run them all and stack the results
-    # try:
-    #     result_val = []
-    #     result_grad = []
-    #
-    #     for fun in funs:
-    #         func_inputs = preprocess(inputs)
-    #
-    #         output = fun(*func_inputs)
-    #         out_grad = output.gradients
-    #         # processing to streamline formatting
-    #         for i, val in enumerate(out_grad):
-    #             if not isinstance(val, numbers.Real):
-    #                 if len(val) == 1:
-    #                     out_grad[i] = val[0]
-    #                 elif len(val) > 1:
-    #                     out_grad[i] = val.tolist()
-    #         result_grad.append(out_grad)
-    #
-    #     return result_grad
-    #
-    # except TypeError:
-    #
-    #     func_inputs = preprocess(inputs)
-    #     output = funs(*func_inputs)
-    #
-    #     return output.gradients
 
     result = forward(funs, inputs)
     return result.gradients
