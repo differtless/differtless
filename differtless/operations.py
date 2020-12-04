@@ -37,6 +37,9 @@ def expm1(x):
 def exp2(x):
     return 2**x
 
+def sqrt(x):
+    return x**0.5
+
 @validate_input
 def log(x):
     if isinstance(x, FuncInput):
@@ -103,7 +106,13 @@ def tan(x):
         return np.tan(x)
 
 def arcsin(x):
-    raise NotImplementedError('Function not yet implemented in differtless')
+    if isinstance(x, FuncInput):
+        assert x.val_ >= -1 and x.val_ <= 1, 'Input is outside the domain of arcsin'
+        new_vals = np.arcsin(x.val_)
+        new_ders = 1/sqrt(1 - x.val_)
+        return FuncInput(new_val, new_ders)
+    elif isinstance(x, numbers.Real):
+        return np.arcsin(x)
 
 def arccos(x):
     raise NotImplementedError('Function not yet implemented in differtless')
