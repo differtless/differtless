@@ -25,7 +25,7 @@ def test_mul():
     f = x * y
     assert f.value == 2, "mul function is not correct"
     assert (f.gradients == np.array([2,1])).all(), "mul function is not correct"
-test_mul()
+
 def test_truediv():
     x = FuncInput(np.array([1]),np.array([1,0]))
     y = FuncInput(np.array([2]),np.array([0,1]))

@@ -29,4 +29,6 @@ import numpy as np
 
 x = FuncInput(np.array([1]),np.array([1,0]))
 y = FuncInput(np.array([2]),np.array([0,1]))
-print((x * y).gradients)
+f = 1 - y
+f2 = x - y
+print(f.value)

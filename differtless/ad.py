@@ -144,7 +144,6 @@ class FuncInput():
 
     @property
     def gradients(self):
-        print('hi')
         return np.squeeze(self.ders_)
 
 
@@ -247,7 +246,7 @@ class FuncInput():
     def __neg__(self):
         self.val_ = -self.val_
         self.ders_ = -self.ders_
-        return FuncInput(new_vals, new_ders)
+        return FuncInput(self.val_, self.ders_)
 
     # Positive
     def __pos__(self):
@@ -255,8 +254,8 @@ class FuncInput():
 
     # Absolute value
     def __abs__(self):
-        self.val_ = np.abs(self.val_)
-        self.ders_ = np.abs(self.ders_)
+        new_val = np.abs(self.val_)
+        new_ders = +(self.ders_) if self.val_ > 0 else -(self.ders_)
         return self
 
     ## Reverse commutative operations ##
@@ -268,7 +267,7 @@ class FuncInput():
     @validate_input
     def __rsub__(self, other):
         if isinstance(other, numbers.Real):
-            new_val = self.val_ - other
+            new_val = other - self.val_
             new_ders = self.ders_
             return FuncInput(new_val, new_ders)
         else:
