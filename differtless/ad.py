@@ -42,7 +42,6 @@ def preprocess(inputs, seeds = []):
             if not isinstance(e, numbers.Real):
               raise TypeError("Please make sure all inputs are Real Numbers")
 
-
     if (seeds == []):
         # if seeds = [], make ID matrix
         for i in range(N):
@@ -136,7 +135,7 @@ class FuncInput():
         return f'Value:\n {value}\nGradient(s):\n {gradient}'
 
     def __repr__(self):
-        return f'FuncInput([{self.value}], [{self.gradients}])'
+        return f'FuncInput({self.value}, {self.gradients})'
 
     @property
     def value(self):
@@ -255,7 +254,7 @@ class FuncInput():
     # Absolute value
     def __abs__(self):
         new_val = np.abs(self.val_)
-        new_ders = np.abs(self.ders_) if self.val_ > 0 else -(self.ders_)
+        new_ders = np.abs(self.ders_) if (self.val_ > 0).any() else -(self.ders_)
         return FuncInput(new_val, new_ders)
 
     ## Reverse commutative operations ##
