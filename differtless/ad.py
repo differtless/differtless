@@ -227,7 +227,7 @@ class FuncInput():
         def pow_rule(x, exp, dx, dexp):
             if x == 0:
                 return 0
-        
+
             return (x ** exp) * (((exp * dx)/x) + dexp*np.log(x))
 
         if isinstance(other, FuncInput):
@@ -286,7 +286,7 @@ class FuncInput():
     # Negate
     def __neg__(self):
         new_val = -self.val_
-        new_ders = [-self_der for self_ders in self.ders_]
+        new_ders = [-self_der for self_der in self.ders_]
         return FuncInput(self.val_, self.ders_)
 
     # Positive
