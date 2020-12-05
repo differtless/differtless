@@ -26,7 +26,7 @@ def validate_input(func):
 def exp(x):
     if isinstance(x, FuncInput):
         new_vals = np.exp(x.val_)
-        new_ders = x.ders_ * np.exp(x.val_)
+        new_ders = [x.ders_[i] * np.exp(x.val_) for i in range(len(x.ders_))]
         return FuncInput(new_vals, new_ders)
     elif isinstance(x, numbers.Real):
         return np.exp(x)
@@ -41,7 +41,7 @@ def exp2(x):
 def log(x):
     if isinstance(x, FuncInput):
         new_vals = np.log(x.val_)
-        new_ders = x.ders_ * (1/x.val_)
+        new_ders = [x.ders_[i] * (1/x.val_) for i in range(len(x.ders_))]
         return FuncInput(new_vals, new_ders)
     elif isinstance(x, numbers.Real):
         return np.log(x)
@@ -50,7 +50,7 @@ def log(x):
 def log10(x):
     if isinstance(x, FuncInput):
         new_vals = np.log10(x.val_)
-        new_ders = x.ders_ * (1/(x.val_ * np.log(10)))
+        new_ders = [x.ders_[i] * (1/(x.val_ * np.log(10))) for i in range(len(x.ders_))]
         return FuncInput(new_vals, new_ders)
     elif isinstance(x, numbers.Real):
         return np.log10(x)
@@ -59,7 +59,7 @@ def log10(x):
 def log2(x):
     if isinstance(x, FuncInput):
         new_vals = np.log2(x.val_)
-        new_ders = x.ders_ * (1/(x.val_ * np.log(2)))
+        new_ders = [x.ders_[i] * (1/(x.val_ * np.log(2))) for i in range(len(x.ders_))]
         return FuncInput(new_vals, new_ders)
     elif isinstance(x, numbers.Real):
         return np.log2(x)
@@ -80,7 +80,7 @@ def logaddexp2(x1, x2):
 def sin(x):
     if isinstance(x, FuncInput):
         new_vals = np.sin(x.val_)
-        new_ders = x.ders_ * np.cos(x.val_)
+        new_ders = [x.ders_[i] * np.cos(x.val_) for i in range(len(x.ders_))]
         return FuncInput(new_vals, new_ders)
     elif isinstance(x, numbers.Real):
         return np.sin(x)
@@ -89,7 +89,7 @@ def sin(x):
 def cos(x):
     if isinstance(x, FuncInput):
         new_vals = np.cos(x.val_)
-        new_ders = x.ders_ * (-np.sin(x.val_))
+        new_ders = [x.ders_[i] * (-np.sin(x.val_)) for i in range(len(x.ders_))]
         return FuncInput(new_vals, new_ders)
     elif isinstance(x, numbers.Real):
         return np.cos(x)
@@ -97,7 +97,7 @@ def cos(x):
 def tan(x):
     if isinstance(x, FuncInput):
         new_vals = np.tan(x.val_)
-        new_ders = x.ders_ * (1/np.cos(x.val_))**2
+        new_ders = [x.ders_[i] * (1/np.cos(x.val_))**2 for i in range(len(x.ders_))]
         return FuncInput(new_vals, new_ders)
     elif isinstance(x, numbers.Real):
         return np.tan(x)

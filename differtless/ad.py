@@ -9,6 +9,8 @@ Contents:
 
 import numbers
 import numpy as np
+# prettify prints (no scientific notation)
+np.set_printoptions(suppress=True)
 
 def preprocess(inputs, seeds = []):
     """
@@ -128,18 +130,21 @@ class FuncInput():
         self.ders_ = seed
 
     def __str__(self):
-        return f'FuncInput object with value {self.val_} and gradients {self.ders_} with respect to each input'
+        value = self.value
+        gradient = self.gradients
+
+        return f'Value:\n {value}\nGradient(s):\n {gradient}'
 
     def __repr__(self):
         return f'FuncInput({self.val_}, {self.ders_})'
 
     @property
     def value(self):
-        return self.val_
+        return np.squeeze(self.val_)
 
     @property
     def gradients(self):
-        return self.ders_
+        return np.squeeze(self.ders_)
 
 
     # Wrapper that will make sure all inputs are type FuncInput or a real number
@@ -157,7 +162,7 @@ class FuncInput():
     def __add__(self, other):
         if isinstance(other, FuncInput):
             new_val = self.val_ + other.val_
-            new_ders = self.ders_ + other.ders_
+            new_ders = [self.ders_[i] + other.ders_[i] for i in range(len(self.ders_))]
         else:
             new_val = self.val_ + other
             new_ders = self.ders_
@@ -169,7 +174,7 @@ class FuncInput():
     def __sub__(self, other):
         if isinstance(other, FuncInput):
             new_val = self.val_ - other.val_
-            new_ders = self.ders_ - other.ders_
+            new_ders = [self.ders_[i] - other.ders_[i] for i in range(len(self.ders_))]
         else:
             new_val = self.val_ - other
             new_ders = self.ders_
@@ -181,7 +186,7 @@ class FuncInput():
     def __mul__(self, other):
         if isinstance(other, FuncInput):
             new_val = self.val_ * other.val_
-            new_ders = self.val_ * other.ders_ + self.ders_ * other.val_
+            new_ders = [self.val_ * other.ders_[i] + self.ders_[i] * other.val_ for i in range(len(self.ders_))]
         else:
             new_val = self.val_ * other
             new_ders = [self_der * other for self_der in self.ders_]
@@ -195,10 +200,10 @@ class FuncInput():
 
         if isinstance(other, FuncInput):
             new_val = self.val_ / other.val_
-            new_ders = quot_rule(self.val_, other.val_, self.ders_, other.ders_)
+            new_ders = [quot_rule(self.val_, other.val_, self.ders_[i], other.ders_[i]) for i in range(len(self.ders_))]
         else:
             new_val = self.val_ / other
-            new_ders = quot_rule(self.val_, other, self.ders_, 0)
+            new_ders = [quot_rule(self.val_, other, self_der, 0) for self_der in self.ders_]
 
         return FuncInput(new_val, new_ders)
 
@@ -209,10 +214,10 @@ class FuncInput():
 
         if isinstance(other, FuncInput):
             new_val = self.val_ // other.val_
-            new_ders = floor_quot_rule(self.val_, other.val_, self.ders_, other.ders_)
+            new_ders = [floor_quot_rule(self.val_, other.val_, self.ders_[i], other.ders_[i]) for i in range(len(self.ders_))]
         else:
             new_val = self.val_ // other
-            new_ders = floot_quot_rule(self.val_, other, self.ders_, other)
+            new_ders = [floot_quot_rule(self.val_, other, self_der, 0) for self_der in self.ders_]
 
 
         return FuncInput(new_val, new_ders)
@@ -222,15 +227,16 @@ class FuncInput():
         def pow_rule(x, exp, dx, dexp): return (x ** exp) * (((exp * dx)/x) + dexp*np.log(x))
 
         if isinstance(other, FuncInput):
-            # check for negative bases in the case of even powers
-            self = abs(self) if other.val_%2 == 0 else self
+            # check for negative bases in the case of even powers, do this iteratively for VVFs
+            self.val_ = np.array([abs(self_val) if other.val_[i]%2 == 0 else self_val for i, self_val in enumerate(self.val_)])
+
             new_val = self.val_ ** other.val_
-            new_ders = pow_rule(self.val_, other.val_, self.ders_, other.ders_)
+            new_ders = [pow_rule(self.val_, other.val_, self.ders_[i], other.ders_[i]) for i in range(len(self.ders_))]
         else:
             # check for negative bases in the case of even powers
             self = abs(self) if other%2 == 0 else self
             new_val = self.val_ ** other
-            new_ders = pow_rule(self.val_, other, self.ders_, 0)
+            new_ders = [pow_rule(self.val_, other, self.ders_[i], 0) for i in range(len(self.ders_))]
 
         return FuncInput(new_val, new_ders)
 
@@ -280,25 +286,19 @@ class FuncInput():
 
     # Negate
     def __neg__(self):
-        new_vals = -self.val_
-        new_ders = -self.ders_
-        return FuncInput(new_vals, new_ders)
+        self.val_ = -self.val_
+        self.ders_ = -self.ders_
+        return FuncInput(self.val_, self.ders_)
 
     # Positive
     def __pos__(self):
-        new_vals = self.val_
-        new_ders = self.ders_
-        return FuncInput(new_vals, new_ders)
+        return self
 
     # Absolute value
     def __abs__(self):
-        if self.val_ < 0:
-            new_vals = -self.val_
-            new_ders = -self.ders_
-        else:
-            new_vals = self.val_
-            new_ders = self.ders_
-        return FuncInput(new_vals, new_ders)
+        new_val = np.abs(self.val_)
+        new_ders = np.abs(self.ders_) if self.val_ > 0 else -(self.ders_)
+        return FuncInput(new_val, new_ders)
 
     ## Reverse commutative operations ##
     __radd__ = __add__
@@ -308,20 +308,18 @@ class FuncInput():
 
     @validate_input
     def __rsub__(self, other):
-        if isinstance(other, FuncInput):
-            new_val = self.val_ - other.val_
-            new_ders = self.ders_ - other.ders_
+        if isinstance(other, numbers.Real):
+            new_val = other - self.val_
+            new_ders = -self.ders_
+            return FuncInput(new_val, new_ders)
         else:
-            new_val = self.val_ - other
-            new_ders = self.ders_
-
-        return -self.__sub__(other)
+            raise TypeError('Inputs must be FuncInput or real numbers')
 
     # Reverse true division
     def __rtruediv__(self, other):
         if isinstance(other, numbers.Real):
             new_val = other / self.val_
-            new_ders = -other * self.ders_ / self.val_ ** 2
+            new_ders = [-other * self.ders_[i] / self.val_ ** 2 for i in range(len(self.ders_))]
             return FuncInput(new_val, new_ders)
         else:
             raise TypeError('Inputs must be FuncInput or real numbers')
@@ -330,7 +328,7 @@ class FuncInput():
     def __rfloordiv__(self, other):
         if isinstance(other, numbers.Real):
             new_val = other // self.val_
-            new_ders = -other * self.ders_ // self.val_ ** 2
+            new_ders = [-other * self.ders_[i] // self.val_ ** 2 for i in range(len(self.ders_))]
             return FuncInput(new_val, new_ders)
         else:
             raise TypeError('Inputs must be FuncInput or real numbers')
@@ -340,7 +338,7 @@ class FuncInput():
 
         if isinstance(other, numbers.Real):
             new_val = other ** self.val_
-            new_ders = pow_rule(other, self.val_, 0, self.ders_)
+            new_ders = [pow_rule(other, self.val_, 0, self.ders_[i]) for i in range(len(self.ders_))]
             return FuncInput(new_val, new_ders)
         else:
             raise TypeError('Inputs must be FuncInput or real numbers')
@@ -375,29 +373,50 @@ def forward(funs, inputs, seeds = []):
     >>> forward(simple_func, inputs, seeds)
     FuncInput([9], [6. 6.])
     """
+
+    func_inputs = preprocess(inputs, seeds)
+
     # if multiple functions, run them all and stack the results
     try:
         result_val = []
         result_grad = []
 
         for fun in funs:
-            func_inputs = preprocess(inputs, seeds)
 
             output = fun(*func_inputs)
-            out_val = output.value[0] if len(output.value == 1) else output.value
-            out_grad = output.gradients
+            out_val = output.val_
+            out_grad = output.ders_
 
             result_val.append(out_val)
+
+
+            for i, val in enumerate(out_grad):
+                if not isinstance(val, numbers.Real):
+                    if len(val) == 1:
+                        out_grad[i] = val[0]
+            out_grad = np.array(out_grad)
             result_grad.append(out_grad)
 
-        result_val = np.array(result_val)
-        result_grad = np.array(result_grad)
+        result_grad = np.squeeze(np.array(result_grad))
+        result_val = np.squeeze(np.array(result_val))
         return FuncInput(result_val, result_grad)
 
     except TypeError:
-        func_inputs = preprocess(inputs, seeds)
 
-        return funs(*func_inputs)
+        output = funs(*func_inputs)
+        out_val = output.val_
+        out_grad = output.ders_
+
+        for i, val in enumerate(out_grad):
+            if not isinstance(val, numbers.Real):
+                if len(val) == 1:
+                    out_grad[i] = val[0]
+        out_grad = np.array(out_grad)
+
+        out_val = np.squeeze(np.array(out_val))
+        out_grad = np.squeeze(np.array(out_grad))
+        return FuncInput(out_val, out_grad)
+
 
 def Jacobian(funs, inputs):
     """
@@ -427,25 +446,6 @@ def Jacobian(funs, inputs):
     >>> forward(simple_func, inputs, seeds)
     FuncInput([9], [6. 6.])
     """
-    # if multiple functions, run them all and stack the results
-    try:
-        result_val = []
-        result_grad = []
 
-        for fun in funs:
-            func_inputs = preprocess(inputs)
-
-            output = fun(*func_inputs)
-            out_grad = output.gradients
-
-            result_grad.append(out_grad)
-
-        result_grad = np.array(result_grad)
-        return result_grad
-
-    except TypeError:
-
-        func_inputs = preprocess(inputs)
-        output = funs(*func_inputs)
-
-        return output.gradients
+    result = forward(funs, inputs)
+    return result.gradients
