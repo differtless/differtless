@@ -9,6 +9,7 @@ Contents:
 
 import numbers
 import numpy as np
+from scipy.optimize import minimize # needed for Minimize function
 # prettify prints (no scientific notation)
 np.set_printoptions(suppress=True)
 
@@ -407,3 +408,86 @@ def Jacobian(funs, inputs):
 
     result = forward(funs, inputs)
     return result.gradients
+
+
+def Minimize(fun, x0, descriptive=False, args=(), method=None, hess=None, hessp=None, bounds=None, 
+             constraints=(), tol=None, callback=None, options=None):
+    """
+    Wrapper for scipy.optimize.minimize that automatically uses differtless to feed in the Jacobian.
+    
+    PARAMETERS
+    ==========
+        fun : callable
+            Pre-defined function, or list of functions, to be executed
+        x0 : ndarray, shape (n,)
+            Initial guess. Array of real elements of size (n,),
+            where 'n' is the number of independent variables.
+        descriptive : Bool
+            If "True", returns full scipy `OptimizeResult`.
+            If "False", returns only the solution array.
+        args : tuple, optional
+            Same as for scipy.optimize.minimize
+            Extra arguments passed to the objective function and its derivatives.
+        method : str or callable, optional
+            Same as for scipy.optimize.minimize
+            Type of solver. If not given, chosen to be one of 
+            BFGS, L-BFGS-B, SLSQP, depending if the problem has constraints or bounds.
+        hess: {callable, '2-point', '3-point', 'cs', HessianUpdateStrategy}, optional
+            Same as for scipy.optimize.minimize
+            Method for computing the Hessian matrix.
+        hessp: callable, optional
+            Same as for scipy.optimize.minimize
+            Hessian of objective function times an arbitrary vector p.
+        bounds: sequence or `Bounds`, optional
+            Same as for scipy.optimize.minimize
+            Bounds on variables.
+        constraints: {Constraint, dict} or List of {Constraint, dict}, optional
+            Same as for scipy.optimize.minimize
+            Constraints definition.
+        tol: float, optional
+            Same as for scipy.optimize.minimize
+            Tolerance for termination.
+        options: dict, optional
+            Same as for scipy.optimize.minimize
+            A dictionary of solver options.
+            
+            
+    ACTIONS
+    =======
+        - Preprocesses inputs to FuncInput type
+        - Execute forward mode with inputs and default seed (identity)
+        
+    RETURNS
+    =======
+        If descriptive == False, returns the solution array.
+        If descriptive == True, returns scipy `OptimizeResult` object.
+        
+    EXAMPLE
+    ========
+    >>> guess = [1, 2]
+    >>> def simple_func(x, y):
+    ...     return 1/(x*y)
+    >>> minimize(simple_func, guess)
+    array([59.08683257, 44.60727855])
+    """
+    
+    def _fun_flat(args):
+        '''
+        Makes `fun` compatible with scipy, allowing for input of arguments as a single parameter.
+        '''
+        return fun(*args)
+    
+    def _jac(x):
+        '''
+        Uses differtless to return Jacobian.
+        '''
+        return Jacobian(fun, x)
+    
+    # Call scipy.optimize.minimize to perform optimization
+    optim = minimize(_fun_flat, x0, jac=_jac, args=args, method=method, hess=hess, hessp=hessp, bounds=bounds, 
+                     constraints=constraints, tol=tol, callback=callback, options=options)
+    
+    if descriptive == True:
+        return optim
+    else:
+        return optim['x']
