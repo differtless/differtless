@@ -224,13 +224,18 @@ class FuncInput():
 
     # Exponentiation
     def __pow__(self, other):
-        def pow_rule(x, exp, dx, dexp): return (x ** exp) * (((exp * dx)/x) + dexp*np.log(x))
+        def pow_rule(x, exp, dx, dexp):
+            if x == 0:
+                return 0
+
+            return (x ** exp) * (((exp * dx)/x) + dexp*np.log(x))
 
         if isinstance(other, FuncInput):
             # check for negative bases in the case of even powers, do this iteratively for VVFs
             self.val_ = np.array([abs(self_val) if other.val_[i]%2 == 0 else self_val for i, self_val in enumerate(self.val_)])
 
             new_val = self.val_ ** other.val_
+
             new_ders = [pow_rule(self.val_, other.val_, self.ders_[i], other.ders_[i]) for i in range(len(self.ders_))]
         else:
             # check for negative bases in the case of even powers
@@ -240,13 +245,49 @@ class FuncInput():
 
         return FuncInput(new_val, new_ders)
 
+    ## Comparison Operations ##
+    def __eq__(self, other):
+        if isinstance(other, FuncInput):
+            return self.val_ == other.val_ and self.ders_ == other.ders_
+        else:
+            raise ValueError('Cannot compare FuncInput to non-FuncInput')
+
+    def __neq__(self, other):
+        if isinstance(other, FuncInput):
+            return self.val_ != other.val_ or self.ders_ != other.ders_
+        else:
+            raise ValueError('Cannot compare FuncInput to non-FuncInput')
+
+    def __lt__(self, other):
+        if isinstance(other, FuncInput):
+            return self.val_ < other.val_
+        else:
+            raise ValueError('Cannot compare FuncInput to non-FuncInput')
+
+    def __gt__(self, other):
+        if isinstance(other, FuncInput):
+            return self.val_ > other.val_
+        else:
+            raise ValueError('Cannot compare FuncInput to non-FuncInput')
+
+    def __le__(self, other):
+        if isinstance(other, FuncInput):
+            return self.val_ <= other.val_
+        else:
+            raise ValueError('Cannot compare FuncInput to non-FuncInput')
+
+    def __ge__(self, other):
+        if isinstance(other, FuncInput):
+            return self.val_ >= other.val_
+        else:
+            raise ValueError('Cannot compare FuncInput to non-FuncInput')
     ## Unary operations ##
 
     # Negate
     def __neg__(self):
-        self.val_ = -self.val_
-        self.ders_ = -self.ders_
-        return FuncInput(self.val_, self.ders_)
+        new_val = -self.val_
+        new_ders = [-self_der for self_der in self.ders_]
+        return FuncInput(new_val, new_ders)
 
     # Positive
     def __pos__(self):
@@ -255,7 +296,7 @@ class FuncInput():
     # Absolute value
     def __abs__(self):
         new_val = np.abs(self.val_)
-        new_ders = np.abs(self.ders_) if self.val_ > 0 else -(self.ders_)
+        new_ders = np.abs(self.ders_) if self.val_ > 0 else [-self_der for self_der in self.ders_]
         return FuncInput(new_val, new_ders)
 
     ## Reverse commutative operations ##
