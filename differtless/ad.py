@@ -287,7 +287,7 @@ class FuncInput():
     def __neg__(self):
         new_val = -self.val_
         new_ders = [-self_der for self_der in self.ders_]
-        return FuncInput(self.val_, self.ders_)
+        return FuncInput(new_val, new_ders)
 
     # Positive
     def __pos__(self):
