@@ -265,13 +265,13 @@ class FuncInput():
         else:
             raise ValueError('Cannot compare FuncInput to non-FuncInput')
 
-    def le(self, other):
+    def __le__(self, other):
         if isinstance(other, FuncInput):
             return self.val_ <= other.val_
         else:
             raise ValueError('Cannot compare FuncInput to non-FuncInput')
 
-    def ge(self, other):
+    def __ge__(self, other):
         if isinstance(other, FuncInput):
             return self.val_ >= other.val_
         else:
