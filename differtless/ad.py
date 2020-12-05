@@ -454,8 +454,8 @@ def Minimize(fun, x0, descriptive=False, args=(), method=None, hess=None, hessp=
             
     ACTIONS
     =======
-        - Preprocesses inputs to FuncInput type
-        - Execute forward mode with inputs and default seed (identity)
+        - Makes function definition compatible with scipy and uses differtless to calculate Jacobian.
+        - Performs optimization using scipy.optimize.minimize
         
     RETURNS
     =======
