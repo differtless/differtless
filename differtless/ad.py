@@ -43,7 +43,6 @@ def preprocess(inputs, seeds = []):
             if not isinstance(e, numbers.Real):
               raise TypeError("Please make sure all inputs are Real Numbers")
 
-
     if (seeds == []):
         # if seeds = [], make ID matrix
         for i in range(N):
@@ -137,7 +136,7 @@ class FuncInput():
         return f'Value:\n {value}\nGradient(s):\n {gradient}'
 
     def __repr__(self):
-        return f'FuncInput({self.val_}, {self.ders_})'
+        return f'FuncInput({self.value}, {self.gradients})'
 
     @property
     def value(self):
@@ -259,29 +258,34 @@ class FuncInput():
         else:
             raise ValueError('Cannot compare FuncInput to non-FuncInput')
 
+    @validate_input
     def __lt__(self, other):
         if isinstance(other, FuncInput):
-            return self.val_ < other.val_
-        else:
-            raise ValueError('Cannot compare FuncInput to non-FuncInput')
+            return (self.val_ < other.val_).all()
+        elif isinstance(other, numbers.Real):
+            return (self.val_ < other).all()
 
+    @validate_input
     def __gt__(self, other):
         if isinstance(other, FuncInput):
-            return self.val_ > other.val_
-        else:
-            raise ValueError('Cannot compare FuncInput to non-FuncInput')
+            return (self.val_ > other.val_).all()
+        elif isinstance(other, numbers.Real):
+            return (self.val_ > other).all()
 
+    @validate_input
     def __le__(self, other):
         if isinstance(other, FuncInput):
-            return self.val_ <= other.val_
-        else:
-            raise ValueError('Cannot compare FuncInput to non-FuncInput')
+            return (self.val_ <= other.val_).all()
+        elif isinstance(other, numbers.Real):
+            return (self.val_ <= other).all()
 
+    @validate_input
     def __ge__(self, other):
         if isinstance(other, FuncInput):
-            return self.val_ >= other.val_
-        else:
-            raise ValueError('Cannot compare FuncInput to non-FuncInput')
+            return (self.val_ >= other.val_).all()
+        elif isinstance(other, numbers.Real):
+            return (self.val_ >= other).all()
+
     ## Unary operations ##
 
     # Negate
@@ -393,7 +397,7 @@ def forward(funs, inputs, seeds = []):
             for i, val in enumerate(out_grad):
                 if not isinstance(val, numbers.Real):
                     # if function is single value or all values are the same
-                    if len(val) == 1 or val.all():
+                    if len(val) == 1 or (val == np.min(val)).all():
                         out_grad[i] = val[0]
             out_grad = np.array(out_grad)
             result_grad.append(out_grad)
@@ -411,7 +415,7 @@ def forward(funs, inputs, seeds = []):
         for i, val in enumerate(out_grad):
             # if function is single value or all values are the same
             if not isinstance(val, numbers.Real):
-                if len(val) == 1 or val.all():
+                if len(val) == 1 or (val == np.min(val)).all():
                     out_grad[i] = val[0]
 
         out_grad = np.array(out_grad)

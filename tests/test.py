@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+import math
 import sys
 sys.path.append('../')
 import warnings
@@ -207,19 +208,28 @@ def test_tan():
     assert (abs(f2-np.tan(np.pi/3))<1e-6), "sin function is not correct"
 
 def test_arcsin():
-    with pytest.raises(NotImplementedError):
+    x = FuncInput(np.array([0.5]), np.array([1,0]))
+    f = op.arcsin(x)
+    assert (abs(f.value - (np.pi/6)) < 1e-6).all(), 'arcsin function is not correct'
+    assert (abs(f.gradients - np.array([1/math.sqrt(1 - 0.5**2), 0])) < 1e-6).all(), 'arcsin function not correct'
+    with pytest.raises(AssertionError):
         x = FuncInput(np.array([1]),np.array([1,0]))
         f = op.arcsin(x)
 
 def test_arccos():
-    with pytest.raises(NotImplementedError):
+    x = FuncInput(np.array([0.5]), np.array([1,0]))
+    f = op.arccos(x)
+    assert (abs(f.value - (np.pi/3)) < 1e-6).all(), 'arccos function is not correct'
+    assert (abs(f.gradients - np.array([-(1/math.sqrt(1 - 0.5**2)), 0])) < 1e-6).all(), 'arccos function not correct'
+    with pytest.raises(AssertionError):
         x = FuncInput(np.array([1]),np.array([1,0]))
         f = op.arccos(x)
 
 def test_arctan():
-    with pytest.raises(NotImplementedError):
-        x = FuncInput(np.array([1]),np.array([1,0]))
-        f = op.arctan(x)
+    x = FuncInput(np.array([1]),np.array([1,0]))
+    f = op.arctan(x)
+    assert (abs(f.value - np.pi/4) < 1e-6) , 'arctan function is not correcct'
+    assert (abs(f.gradients - np.array([0.5, 0])) < 1e-6).all(), 'arctan function is not correct'
 
 def test_hypot():
     with pytest.raises(NotImplementedError):
@@ -236,32 +246,44 @@ def test_arctan2():
 # Hyperbolic functions
 
 def test_sinh():
-    with pytest.raises(NotImplementedError):
-        x = FuncInput(np.array([1]),np.array([1,0]))
-        f = op.sinh(x)
+    x = FuncInput(np.array([1]),np.array([1,0]))
+    f = op.sinh(x)
+    assert (abs(f.value - (-1 + np.exp(2))/(2*np.exp(1))) < 1e-6).all(), 'sinh function is not correct'
+    assert (abs(f.gradients - np.array([op.cosh(x).value, 0])) < 1e-6).all(), 'sinh function is not correct'
 
 def test_cosh():
-    with pytest.raises(NotImplementedError):
-        x = FuncInput(np.array([1]),np.array([1,0]))
-        f = op.cosh(x)
+    x = FuncInput(np.array([1]),np.array([1,0]))
+    f = op.cosh(x)
+    assert (abs(f.value - (1 + np.exp(2))/(2*np.exp(1))) < 1e-6).all(), 'cosh function is not correct'
+    assert (abs(f.gradients - np.array([op.sinh(x).value, 0])) < 1e-6).all(), 'cosh function is not correct'
 
 def test_tanh():
-    with pytest.raises(NotImplementedError):
-        x = FuncInput(np.array([1]),np.array([1,0]))
-        f = op.tanh(x)
+    x = FuncInput(np.array([1]),np.array([1,0]))
+    f = op.tanh(x)
+    assert (abs(f.value - np.tanh(1)) < 1e-6).all(), 'tanh function is not correct'
+    assert (abs(f.gradients - np.array([(1/np.cosh(1)) **2, 0])) < 1e-6).all(), 'tanh function is not correct'
 
 def test_arcsinh():
-    with pytest.raises(NotImplementedError):
-        x = FuncInput(np.array([1]),np.array([1,0]))
-        f = op.arcsinh(x)
+    x = FuncInput(np.array([1]),np.array([1,0]))
+    f = op.arcsinh(x)
+    assert (abs(f.value - (np.arcsinh(1))) < 1e-6).all(), 'arcsinh function is not correct'
+    assert (abs(f.gradients - np.array([(1/math.sqrt(2)), 0])) < 1e-6).all(), 'arcsinh function is not correct'
 
 def test_arccosh():
-    with pytest.raises(NotImplementedError):
+    x = FuncInput(np.array([2]),np.array([1,0]))
+    f = op.arccosh(x)
+    assert (abs(f.value - np.arccosh(2)) < 1e-6).all(), 'arccosh function is not correct'
+    assert (abs(f.gradients - np.array([1/math.sqrt(3), 0])) < 1e-6).all(), 'arcosh function is not correct'
+    with pytest.raises(AssertionError):
         x = FuncInput(np.array([1]),np.array([1,0]))
         f = op.arccosh(x)
 
 def test_arctanh():
-    with pytest.raises(NotImplementedError):
+    x = FuncInput(np.array([0.5]),np.array([1,0]))
+    f = op.arctanh(x)
+    assert (abs(f.value - np.arctanh(0.5)) < 1e-6).all(), 'arctanh function is not correct'
+    assert (abs(f.gradients - np.array([1/(1-0.5**2), 0])) < 1e-6).all(), 'arctanh function is not correct'
+    with pytest.raises(AssertionError):
         x = FuncInput(np.array([1]),np.array([1,0]))
         f = op.arctanh(x)
 
