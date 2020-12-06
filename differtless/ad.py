@@ -225,13 +225,18 @@ class FuncInput():
 
     # Exponentiation
     def __pow__(self, other):
-        def pow_rule(x, exp, dx, dexp): return (x ** exp) * (((exp * dx)/x) + dexp*np.log(x))
+        def pow_rule(x, exp, dx, dexp):
+            if (x == 0).any():
+                return 0
+
+            return (x ** exp) * (((exp * dx)/x) + dexp*np.log(x))
 
         if isinstance(other, FuncInput):
             # check for negative bases in the case of even powers, do this iteratively for VVFs
             self.val_ = np.array([abs(self_val) if other.val_[i]%2 == 0 else self_val for i, self_val in enumerate(self.val_)])
 
             new_val = self.val_ ** other.val_
+
             new_ders = [pow_rule(self.val_, other.val_, self.ders_[i], other.ders_[i]) for i in range(len(self.ders_))]
         else:
             # check for negative bases in the case of even powers
@@ -241,13 +246,49 @@ class FuncInput():
 
         return FuncInput(new_val, new_ders)
 
+    ## Comparison Operations ##
+    def __eq__(self, other):
+        if isinstance(other, FuncInput):
+            return self.val_ == other.val_ and self.ders_ == other.ders_
+        else:
+            raise ValueError('Cannot compare FuncInput to non-FuncInput')
+
+    def __neq__(self, other):
+        if isinstance(other, FuncInput):
+            return self.val_ != other.val_ or self.ders_ != other.ders_
+        else:
+            raise ValueError('Cannot compare FuncInput to non-FuncInput')
+
+    def __lt__(self, other):
+        if isinstance(other, FuncInput):
+            return self.val_ < other.val_
+        else:
+            raise ValueError('Cannot compare FuncInput to non-FuncInput')
+
+    def __gt__(self, other):
+        if isinstance(other, FuncInput):
+            return self.val_ > other.val_
+        else:
+            raise ValueError('Cannot compare FuncInput to non-FuncInput')
+
+    def __le__(self, other):
+        if isinstance(other, FuncInput):
+            return self.val_ <= other.val_
+        else:
+            raise ValueError('Cannot compare FuncInput to non-FuncInput')
+
+    def __ge__(self, other):
+        if isinstance(other, FuncInput):
+            return self.val_ >= other.val_
+        else:
+            raise ValueError('Cannot compare FuncInput to non-FuncInput')
     ## Unary operations ##
 
     # Negate
     def __neg__(self):
-        self.val_ = -self.val_
-        self.ders_ = -self.ders_
-        return FuncInput(self.val_, self.ders_)
+        new_val = -self.val_
+        new_ders = [-self_der for self_der in self.ders_]
+        return FuncInput(new_val, new_ders)
 
     # Positive
     def __pos__(self):
@@ -256,7 +297,7 @@ class FuncInput():
     # Absolute value
     def __abs__(self):
         new_val = np.abs(self.val_)
-        new_ders = np.abs(self.ders_) if self.val_ > 0 else -(self.ders_)
+        new_ders = np.abs(self.ders_) if (self.val_ > 0).any() else [-self_der for self_der in self.ders_]
         return FuncInput(new_val, new_ders)
 
     ## Reverse commutative operations ##
@@ -268,8 +309,8 @@ class FuncInput():
     @validate_input
     def __rsub__(self, other):
         if isinstance(other, numbers.Real):
-            new_val = other - self.val_
-            new_ders = -self.ders_
+            new_val = other -self.val_
+            new_ders = [-self_der for self_der in self.ders_]
             return FuncInput(new_val, new_ders)
         else:
             raise TypeError('Inputs must be FuncInput or real numbers')
@@ -351,7 +392,8 @@ def forward(funs, inputs, seeds = []):
 
             for i, val in enumerate(out_grad):
                 if not isinstance(val, numbers.Real):
-                    if len(val) == 1:
+                    # if function is single value or all values are the same
+                    if len(val) == 1 or val.all():
                         out_grad[i] = val[0]
             out_grad = np.array(out_grad)
             result_grad.append(out_grad)
@@ -367,9 +409,11 @@ def forward(funs, inputs, seeds = []):
         out_grad = output.ders_
 
         for i, val in enumerate(out_grad):
+            # if function is single value or all values are the same
             if not isinstance(val, numbers.Real):
-                if len(val) == 1:
+                if len(val) == 1 or val.all():
                     out_grad[i] = val[0]
+
         out_grad = np.array(out_grad)
 
         out_val = np.squeeze(np.array(out_val))
@@ -414,7 +458,7 @@ def minimize(fun, x0, descriptive=False, args=(), method=None, hess=None, hessp=
              constraints=(), tol=None, callback=None, options=None):
     """
     Wrapper for scipy.optimize.minimize that automatically uses differtless to feed in the Jacobian.
-    
+
     PARAMETERS
     ==========
         fun : callable
@@ -430,7 +474,7 @@ def minimize(fun, x0, descriptive=False, args=(), method=None, hess=None, hessp=
             Extra arguments passed to the objective function and its derivatives.
         method : str or callable, optional
             Same as for scipy.optimize.minimize
-            Type of solver. If not given, chosen to be one of 
+            Type of solver. If not given, chosen to be one of
             BFGS, L-BFGS-B, SLSQP, depending if the problem has constraints or bounds.
         hess: {callable, '2-point', '3-point', 'cs', HessianUpdateStrategy}, optional
             Same as for scipy.optimize.minimize
@@ -449,11 +493,11 @@ def minimize(fun, x0, descriptive=False, args=(), method=None, hess=None, hessp=
             Tolerance for termination.
         options: dict, optional
             Same as for scipy.optimize.minimize
-            A dictionary of solver options.      
+            A dictionary of solver options.
     ACTIONS
     =======
         - Makes function definition compatible with scipy and uses differtless to calculate Jacobian.
-        - Performs optimization using scipy.optimize.minimize    
+        - Performs optimization using scipy.optimize.minimize
     RETURNS
     =======
         If descriptive == False, returns the solution array.
@@ -466,19 +510,19 @@ def minimize(fun, x0, descriptive=False, args=(), method=None, hess=None, hessp=
     >>> minimize(simple_func, guess)
     array([59.08683257, 44.60727855])
     """
-    
+
     def fun_flat(args):
         '''Makes `fun` compatible with scipy, allowing for input of arguments as a single parameter.'''
         return fun(*args)
-    
+
     def jac(x):
         '''Uses differtless to return Jacobian.'''
         return Jacobian(fun, x)
-    
+
     # Call scipy.optimize.minimize to perform optimization
     optim = spmin(fun_flat, x0, jac=jac, args=args, method=method, hess=hess, hessp=hessp, bounds=bounds, 
                   constraints=constraints, tol=tol, callback=callback, options=options)
-    
+
     if descriptive == True:
         return optim
     else:
