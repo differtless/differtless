@@ -285,7 +285,7 @@ class FuncInput():
             return (self.val_ >= other.val_).all()
         elif isinstance(other, numbers.Real):
             return (self.val_ >= other).all()
-            
+
     ## Unary operations ##
 
     # Negate
@@ -397,7 +397,7 @@ def forward(funs, inputs, seeds = []):
             for i, val in enumerate(out_grad):
                 if not isinstance(val, numbers.Real):
                     # if function is single value or all values are the same
-                    if len(val) == 1 or val.all():
+                    if len(val) == 1 or (val == np.min(val)).all():
                         out_grad[i] = val[0]
             out_grad = np.array(out_grad)
             result_grad.append(out_grad)
@@ -415,7 +415,7 @@ def forward(funs, inputs, seeds = []):
         for i, val in enumerate(out_grad):
             # if function is single value or all values are the same
             if not isinstance(val, numbers.Real):
-                if len(val) == 1 or val.all():
+                if len(val) == 1 or (val == np.min(val)).all():
                     out_grad[i] = val[0]
 
         out_grad = np.array(out_grad)
