@@ -1,5 +1,5 @@
 import numpy as np
-import scipy as sp
+from scipy import special
 import numbers
 from differtless.ad import FuncInput
 
@@ -148,11 +148,11 @@ Scipy
 @validate_input
 def erf(x):
     if isinstance(x, FuncInput):
-        new_vals = sp.special.erf(x.val_)
+        new_vals = special.erf(x.val_)
         new_ders = [x.ders_[i] * 2/(np.pi**0.5) * np.exp(- (x.val_)**2) for i in range(len(x.ders_))]
         return FuncInput(new_vals, new_ders)
     elif isinstance(x, numbers.Real):
-        return sp.special.erf(x)
+        return special.erf(x)
 
 
 class Normal():
@@ -168,7 +168,7 @@ class Normal():
         return f'Normal distribution with mean {self.loc} and standard deviation {self.scale}'
     
     def __repr__(self):
-        return f'norm(loc={self.loc}, scale={self.scale})'
+        return f'Normal(loc={self.loc}, scale={self.scale})'
     
     def pdf(self, x):
         return 1/(self.scale * (2*np.pi)**0.5) * exp(-0.5 * ((x - self.loc)/self.scale)**2)
