@@ -109,7 +109,7 @@ def arcsin(x):
     if isinstance(x, FuncInput):
         assert x.val_ > -1 and x.val_ < 1, 'Input is outside the domain of arcsin or its derivative'
         new_val = np.arcsin(x.val_)
-        new_ders = [(1/sqrt(1 - x.val_**2)) * self_der for self_der in self.ders_]
+        new_ders = [(1/sqrt(1 - x.val_**2)) * x_der for x_der in x.ders_]
         return FuncInput(new_val, new_ders)
     elif isinstance(x, numbers.Real):
         assert x >= -1 and x <= 1, 'Input is outside the domain of arcsin'
@@ -119,7 +119,7 @@ def arccos(x):
     if isinstance(x, FuncInput):
         assert x.val_ > -1 and x.val_ < 1, 'Input is outside the domain of arccos or its derivative'
         new_val = np.arccos(x.val_)
-        new_ders = [(-(1/sqrt(1 - x.val_**2))) * self_der for self_der in self.ders_]
+        new_ders = [(-(1/sqrt(1 - x.val_**2))) * x_der for x_der in x.ders_]
         return FuncInput(new_val, new_ders)
     elif isinstance(x, numbers.Real):
         assert x >= -1 and x <= 1, 'Input is outside the domain of arccos'
@@ -128,7 +128,7 @@ def arccos(x):
 def arctan(x):
     if isinstance(x, FuncInput):
         new_val = np.arctan(x.val_)
-        new_ders = [(1/(1 + x.val_**2)) * self_der for self_der in self.ders_]
+        new_ders = [(1/(1 + x.val_**2)) * x_der for x_der in x.ders_]
         return FuncInput(new_val, new_ders)
     elif isinstance(x, numbers.Real):
         return np.arctan(x)
@@ -144,7 +144,7 @@ def arctan2(x1, x2):
 def sinh(x):
     if isinstance(x, FuncInput):
         new_val = np.sinh(x.val_)
-        new_ders = [np.cosh(x.val_) * self_der for self_der in self.ders_]
+        new_ders = [np.cosh(x.val_) * x_der for x_der in x.ders_]
         return FuncInput(new_val, new_ders)
     elif isinstance(x, numbers.Real):
         return np.sinh(x)
@@ -152,7 +152,7 @@ def sinh(x):
 def cosh(x):
     if isinstance(x, FuncInput):
         new_val = np.cosh(x.val_)
-        new_ders = [(-np.sinh(x.val_)) * self_der for self_der in self.ders_]
+        new_ders = [(-np.sinh(x.val_)) * * x_der for x_der in x.ders_]
         return FuncInput(new_val, new_ders)
     elif isinstance(x, numbers.Real):
         return np.cosh(x)
@@ -160,7 +160,7 @@ def cosh(x):
 def tanh(x):
     if isinstance(x, FuncInput):
         new_val = np.tanh(x.val_)
-        new_ders = [((1/cosh(x.val_)) ** 2) * self_der for self_der in self.ders_]
+        new_ders = [((1/cosh(x.val_)) ** 2) * x_der for x_der in x.ders_]
         return FuncInput(new_val, new_ders)
     elif isinstance(x, numbers.Real):
         return np.tanh(x)
@@ -168,7 +168,7 @@ def tanh(x):
 def arcsinh(x):
     if isinstance(x, FuncInput):
         new_val = np.arcsinh(x.val_)
-        new_ders = [(1/sqrt(x.val_**2 + 1)) * self_der for self_der in self.ders_]
+        new_ders = [(1/sqrt(x.val_**2 + 1)) * x_der for x_der in x.ders_]
         return FuncInput(new_val, new_ders)
     elif isinstance(x, numbers.Real):
         return np.arcsinh(x)
@@ -177,7 +177,7 @@ def arccosh(x):
     if isinstance(x, FuncInput):
         assert x.val_ > 1, 'Input is outside the domain of arccosh or its derivative'
         new_val = np.arccosh(x.val_)
-        new_ders = [(1/sqrt(x.val_**2 - 1)) * self_der for self_der in self.ders_]
+        new_ders = [(1/sqrt(x.val_**2 - 1)) * x_der for x_der in x.ders_]
         return FuncInput(new_val, new_ders)
     elif isinstance(x, numbers.Real):
         assert x >= 0, 'Input is outside the domain of arccosh'
@@ -187,7 +187,7 @@ def arctanh(x):
     if isinstance(x, FuncInput):
         assert np.abs(x.val_) < 1, 'Input is outside the domain of arctanh or its derivative'
         new_val = np.arctanh(x.val_)
-        new_ders = [(1/(1-x.val_**2)) * self_der for self_der in self.ders_]
+        new_ders = [(1/(1-x.val_**2)) * x_der for x_der in x.ders_]
         return FuncInput(new_val, new_ders)
     elif isinstance(x, numbers.Real):
         assert abs(x) < 1, 'Input is outside the domain of arctanh or its derivative'
