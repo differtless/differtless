@@ -208,7 +208,7 @@ def test_tan():
 
 def test_arcsin():
     x = FuncInput(np.array([0.5]), np.array([1,0]))
-    f = arcsin(x)
+    f = op.arcsin(x)
     assert (f.value == np.pi/6), 'arcsin function is not correct'
     assert (f.gradients == np.array([1/math.sqrt(1 - 0.5**2), 0])), 'arcsin function not correct'
     with pytest.raises(ValueError):
