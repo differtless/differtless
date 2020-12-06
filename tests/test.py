@@ -250,19 +250,19 @@ def test_sinh():
     x = FuncInput(np.array([1]),np.array([1,0]))
     f = op.sinh(x)
     assert (abs(f.value - (-1 + np.exp(2))/(2*np.exp(1))) < 1e-6).all(), 'sinh function is not correct'
-    assert (abs(f.gradients - np.array([op.cosh(x), 0])) < 1e-6).all(), 'sinh function is not correct'
+    assert (abs(f.gradients - np.array([op.cosh(x).value, 0])) < 1e-6).all(), 'sinh function is not correct'
 
 def test_cosh():
     x = FuncInput(np.array([1]),np.array([1,0]))
     f = op.cosh(x)
     assert (abs(f.value - (1 + np.exp(2))/(2*np.exp(1))) < 1e-6).all(), 'cosh function is not correct'
-    assert (abs(f.gradients - np.array([op.sinh(x), 0])) < 1e-6).all(), 'cosh function is not correct'
+    assert (abs(f.gradients - np.array([op.sinh(x).value, 0])) < 1e-6).all(), 'cosh function is not correct'
 
 def test_tanh():
     x = FuncInput(np.array([1]),np.array([1,0]))
     f = op.tanh(x)
     assert (abs(f.value - (op.sinh(x)/op.cosh(x))) < 1e-6).all(), 'cosh function is not correct'
-    assert (abs(f.gradients - np.array([1/op.cosh(x), 0])) < 1e-6).all(), 'cosh function is not correct'
+    assert (abs(f.gradients - np.array([1/op.cosh(x).value, 0])) < 1e-6).all(), 'cosh function is not correct'
 
 def test_arcsinh():
     with pytest.raises(NotImplementedError):
