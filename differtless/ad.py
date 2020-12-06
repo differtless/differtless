@@ -4,12 +4,12 @@ Contents:
     - Preprocessing function
     - FuncInput class
     - forward AD function
-    - Minimize function
+    - minimize function
 """
 
 import numbers
 import numpy as np
-from scipy.optimize import minimize # needed for Minimize function
+from scipy.optimize import minimize as spmin # needed for Minimize function
 # prettify prints (no scientific notation)
 np.set_printoptions(suppress=True)
 
@@ -454,7 +454,7 @@ def Jacobian(funs, inputs):
     return result.gradients
 
 
-def Minimize(fun, x0, descriptive=False, args=(), method=None, hess=None, hessp=None, bounds=None,
+def minimize(fun, x0, descriptive=False, args=(), method=None, hess=None, hessp=None, bounds=None, 
              constraints=(), tol=None, callback=None, options=None):
     """
     Wrapper for scipy.optimize.minimize that automatically uses differtless to feed in the Jacobian.
@@ -494,18 +494,14 @@ def Minimize(fun, x0, descriptive=False, args=(), method=None, hess=None, hessp=
         options: dict, optional
             Same as for scipy.optimize.minimize
             A dictionary of solver options.
-
-
     ACTIONS
     =======
         - Makes function definition compatible with scipy and uses differtless to calculate Jacobian.
         - Performs optimization using scipy.optimize.minimize
-
     RETURNS
     =======
         If descriptive == False, returns the solution array.
-        If descriptive == True, returns scipy `OptimizeResult` object.
-
+        If descriptive == True, returns scipy `OptimizeResult` object.    
     EXAMPLE
     ========
     >>> guess = [1, 2]
@@ -515,21 +511,17 @@ def Minimize(fun, x0, descriptive=False, args=(), method=None, hess=None, hessp=
     array([59.08683257, 44.60727855])
     """
 
-    def _fun_flat(args):
-        '''
-        Makes `fun` compatible with scipy, allowing for input of arguments as a single parameter.
-        '''
+    def fun_flat(args):
+        '''Makes `fun` compatible with scipy, allowing for input of arguments as a single parameter.'''
         return fun(*args)
 
-    def _jac(x):
-        '''
-        Uses differtless to return Jacobian.
-        '''
+    def jac(x):
+        '''Uses differtless to return Jacobian.'''
         return Jacobian(fun, x)
 
     # Call scipy.optimize.minimize to perform optimization
-    optim = minimize(_fun_flat, x0, jac=_jac, args=args, method=method, hess=hess, hessp=hessp, bounds=bounds,
-                     constraints=constraints, tol=tol, callback=callback, options=options)
+    optim = spmin(fun_flat, x0, jac=jac, args=args, method=method, hess=hess, hessp=hessp, bounds=bounds, 
+                  constraints=constraints, tol=tol, callback=callback, options=options)
 
     if descriptive == True:
         return optim
