@@ -261,7 +261,7 @@ def test_cosh():
 def test_tanh():
     x = FuncInput(np.array([1]),np.array([1,0]))
     f = op.tanh(x)
-    assert (abs(f.value - (op.sinh(x)/op.cosh(x))) < 1e-6).all(), 'cosh function is not correct'
+    assert (abs(f.value - (op.sinh(x)/op.cosh(x)).value) < 1e-6).all(), 'cosh function is not correct'
     assert (abs(f.gradients - np.array([1/op.cosh(x).value, 0])) < 1e-6).all(), 'cosh function is not correct'
 
 def test_arcsinh():
