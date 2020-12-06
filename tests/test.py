@@ -276,7 +276,6 @@ def test_arccosh():
     with pytest.raises(AssertionError):
         x = FuncInput(np.array([1]),np.array([1,0]))
         f = op.arccosh(x)
-test_arccosh()
 
 def test_arctanh():
     x = FuncInput(np.array([0.5]),np.array([1,0]))
