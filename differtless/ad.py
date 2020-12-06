@@ -35,13 +35,17 @@ def preprocess(inputs, seeds = []):
     >>> preprocess(inputs, seeds)
     [FuncInput([1], [1 0]), FuncInput([2], [0 1])]
     """
-
+    check_num = isinstance(inputs, int) or isinstance(inputs, float)
+    if check_num: 
+        hold = [].append(inputs)
+        inputs = hold
+    
     N = len(inputs)
     for element in inputs:
         if not isinstance(element, numbers.Real):
-          for e in element:
+        for e in element:
             if not isinstance(e, numbers.Real):
-              raise TypeError("Please make sure all inputs are Real Numbers")
+            raise TypeError("Please make sure all inputs are Real Numbers")
 
     if (seeds == []):
         # if seeds = [], make ID matrix
@@ -55,6 +59,10 @@ def preprocess(inputs, seeds = []):
             seeds.append(new_row)
 
     else:
+        
+        if (isinstance(seeds, int) or isinstance(seeds, float)): 
+            hold = [[]][0].append(seeds)
+            seeds = hold
         # check if NXN matrix
         len_seeds = len(seeds)
         if (len_seeds != N):
