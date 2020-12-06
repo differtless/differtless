@@ -214,7 +214,6 @@ def test_arcsin():
     with pytest.raises(AssertionError):
         x = FuncInput(np.array([1]),np.array([1,0]))
         f = op.arcsin(x)
-test_arcsin()
 
 def test_arccos():
     x = FuncInput(np.array([0.5]), np.array([1,0]))
@@ -246,7 +245,7 @@ def test_arctan2():
 # Hyperbolic functions
 
 def test_sinh():
-    with pytest.raises(NotImplementedError):
+    with pytest.raises(AssertionError):
         x = FuncInput(np.array([1]),np.array([1,0]))
         f = op.sinh(x)
 
