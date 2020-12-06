@@ -309,8 +309,8 @@ class FuncInput():
     @validate_input
     def __rsub__(self, other):
         if isinstance(other, numbers.Real):
-            new_val = other - self.val_
-            new_ders = -self.ders_
+            new_val = other -self.val_
+            new_ders = [-self_der for self_der in self.ders_]
             return FuncInput(new_val, new_ders)
         else:
             raise TypeError('Inputs must be FuncInput or real numbers')
