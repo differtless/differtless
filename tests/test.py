@@ -210,17 +210,17 @@ def test_arcsin():
     x = FuncInput(np.array([0.5]), np.array([1,0]))
     f = op.arcsin(x)
     assert (f.value == np.pi/6), 'arcsin function is not correct'
-    assert (f.gradients == np.array([1/math.sqrt(1 - 0.5**2), 0])), 'arcsin function not correct'
+    assert (f.gradients == np.array([1/math.sqrt(1 - 0.5**2), 0])).all(), 'arcsin function not correct'
     with pytest.raises(AssertionError):
         x = FuncInput(np.array([1]),np.array([1,0]))
         f = op.arcsin(x)
-
+test_arcsin()
 
 def test_arccos():
     x = FuncInput(np.array([0.5]), np.array([1,0]))
     f = op.arccos(x)
     assert (f.value == np.pi/3), 'arccos function is not correct'
-    assert (f.gradients == np.array([-(1/math.sqrt(1 - 0.5**2)), 0])), 'arccos function not correct'
+    assert (f.gradients == np.array([-(1/math.sqrt(1 - 0.5**2)), 0])).all(), 'arccos function not correct'
     with pytest.raises(AssertionError):
         x = FuncInput(np.array([1]),np.array([1,0]))
         f = op.arccos(x)
@@ -229,7 +229,7 @@ def test_arctan():
     x = FuncInput(np.array([1]),np.array([1,0]))
     f = op.arctan(x)
     assert (f.value == np.pi/4), 'arctan function is not correcct'
-    assert (f.gradients == np.array([0.5, 0])), 'arctan function is not correct'
+    assert (f.gradients == np.array([0.5, 0])).all(), 'arctan function is not correct'
 
 def test_hypot():
     with pytest.raises(NotImplementedError):
