@@ -174,7 +174,8 @@ def factorial(x):
 def floor(x):
     if isinstance(x, FuncInput):
         new_vals = np.floor(x.val_)
-        new_ders = [x.ders_[i] * 0 for i in range(len(x.ders_))] # technically not defined at non-integers
+        warnings.warn('Using zero as derivatives for floor function (technically not defined at non-integers)...')
+        new_ders = [x.ders_[i] * 0 for i in range(len(x.ders_))]
         return FuncInput(new_vals, new_ders)
     elif isinstance(x, numbers.Real):
         return np.floor(x)
