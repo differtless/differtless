@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+import math
 import sys
 sys.path.append('../')
 from differtless.ad import FuncInput, preprocess, forward
@@ -206,9 +207,14 @@ def test_tan():
     assert (abs(f2-np.tan(np.pi/3))<1e-6), "sin function is not correct"
 
 def test_arcsin():
-    with pytest.raises(NotImplementedError):
+    x = FuncInput(np.array([0.5]), np.array([1,0]))
+    f = arcsin(x)
+    assert (f.value == np.pi/6), 'arcsin function is not correct'
+    assert (f.gradients == np.array([1/math.sqrt(1 - 0.5**2), 0])), 'arcsin function not correct'
+    with pytest.raises(ValueError):
         x = FuncInput(np.array([1]),np.array([1,0]))
         f = op.arcsin(x)
+
 
 def test_arccos():
     with pytest.raises(NotImplementedError):
