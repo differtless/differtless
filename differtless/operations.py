@@ -5,11 +5,8 @@ import warnings
 from differtless.ad import FuncInput
 
 '''
-Re-defining numpy and scipy functions to return FuncInput objects of (value, gradient)
-'''
-
-'''
-Numpy
+Re-defining numpy and scipy functions to return FuncInput objects of (value, gradient),
+as well as various other useful functions and statistical distributions.
 '''
 
 # Wrapper that will make sure the input is either type FuncInput or a real number
@@ -20,7 +17,9 @@ def validate_input(func):
         return func(x)
     return wrapper
 
-
+'''
+Numpy
+'''
 
 # Exponents and logarithms
 @validate_input
@@ -139,12 +138,8 @@ def arctanh(x):
     raise NotImplementedError('Function not yet implemented in differtless')
 
 '''
-Scipy
+Misc functions (not from numpy)
 '''
-
-# For both numpy and scipy we can implement functions like the PDFs of various distributions
-# as these are common use-cases for AD (e.g. in for samplers like HMC or VI)
-
 
 @validate_input
 def erf(x):
@@ -181,12 +176,14 @@ def floor(x):
         return np.floor(x)
 
 
+'''
+Statistical distributions
+'''
+
 class Normal():
     
     def __init__(self, loc=0, scale=1):
-        '''
-        Normal distribution with mean `loc` and standard deviation `scale`
-        '''
+        '''Normal distribution with mean `loc` and standard deviation `scale`'''
         self.loc = loc
         self.scale = scale
         
@@ -212,9 +209,7 @@ class Normal():
 class Poisson():
     
     def __init__(self, mu):
-        '''
-        Poisson distribution with shape parameter `mu`
-        '''
+        '''Poisson distribution with shape parameter `mu`'''
         self.mu = mu
         
     def __str__(self):
