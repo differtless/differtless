@@ -209,16 +209,18 @@ def test_tan():
 def test_arcsin():
     x = FuncInput(np.array([0.5]), np.array([1,0]))
     f = op.arcsin(x)
-    assert (f.value == np.pi/6), 'arcsin function is not correct'
-    assert (f.gradients == np.array([1/math.sqrt(1 - 0.5**2), 0])).all(), 'arcsin function not correct'
+    assert (abs(f.value - (np.pi/6)) < 1e-6).all(), 'arcsin function is not correct'
+    assert (f.gradients - np.array([1/math.sqrt(1 - 0.5**2), 0]) < 1e-6).all(), 'arcsin function not correct'
     with pytest.raises(AssertionError):
         x = FuncInput(np.array([1]),np.array([1,0]))
         f = op.arcsin(x)
 
+test_arcsin()
+
 def test_arccos():
     x = FuncInput(np.array([0.5]), np.array([1,0]))
     f = op.arccos(x)
-    assert (f.value == np.pi/3), 'arccos function is not correct'
+    assert (f.value == (np.pi/3)), 'arccos function is not correct'
     assert (f.gradients == np.array([-(1/math.sqrt(1 - 0.5**2)), 0])).all(), 'arccos function not correct'
     with pytest.raises(AssertionError):
         x = FuncInput(np.array([1]),np.array([1,0]))
