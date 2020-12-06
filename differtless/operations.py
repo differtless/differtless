@@ -242,4 +242,4 @@ please try using finite differences. Returning only CDF value instead of FuncInp
         elif isinstance(x, FuncInput):
             warnings.warn('Cannot provide derivative for CDF of a discrete distribution – \
 please try using finite differences. Returning only CDF value instead of FuncInput object...')
-            return -self.mu + log(sum([self.mu**i / factorial(i) for i in range(int(floor(x))+1)]))
+            return -self.mu + log(sum([self.mu**i / factorial(i) for i in range(int(floor(x.val_[0]))+1)]))
