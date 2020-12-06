@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 import sys
 sys.path.append('../')
+import warnings
 from differtless.ad import FuncInput, preprocess, forward
 import differtless.operations as op
 
@@ -264,6 +265,39 @@ def test_arctanh():
         x = FuncInput(np.array([1]),np.array([1,0]))
         f = op.arctanh(x)
 
+# Misc functions
+
+def test_erf():
+    x = FuncInput(np.array([1,20]),np.array([1]))
+    f = op.erf(x)
+    assert (op.erf(0) == 0), "erf function is not correct"
+    assert (abs(f.value - np.array([0.84270079, 1.]))<1e-6).all(), "erf function is not correct"
+    assert (abs(f.gradients - np.array([0.4151075, 0.]))<1e-6).all(), "erf function is not correct"
+
+def test_gamma():
+    x = FuncInput(np.array([1,4]),np.array([1]))
+    f = op.gamma(x)
+    assert (op.gamma(4.0) == 6.0), "gamma function is not correct"
+    assert (abs(f.value - np.array([1., 6.]))<1e-6).all(), "gamma function is not correct"
+    assert (abs(f.gradients - np.array([0.63353918, 3.96259814]))<1e-6).all(), "gamma function is not correct"
+
+def test_factorial():
+    x = FuncInput(np.array([0,3]),np.array([1]))
+    f = op.factorial(x)
+    assert (op.factorial(3.0) == 6.0), "factorial function is not correct"
+    assert (abs(f.value - np.array([1., 6.]))<1e-6).all(), "factorial function is not correct"
+    assert (abs(f.gradients - np.array([0.63353918, 3.96259814]))<1e-6).all(), "factorial function is not correct"
+
+def test_floor():
+    x = FuncInput(np.array([0,3]),np.array([1]))
+    f = op.floor(x)
+    assert (op.floor(2.2) == 2.0), "floor function is not correct"
+    assert (abs(f.value - np.array([0., 3.]))<1e-6).all(), "floor function is not correct"
+    with warnings.catch_warnings(record=True) as w:
+        op.floor(x)
+        assert len(w) > 0, "floor function does not display warning"
+
+# AD functionality
 
 def test_preprocess():
     inputs_1 = [1, 2]
