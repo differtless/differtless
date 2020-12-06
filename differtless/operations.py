@@ -177,7 +177,7 @@ def arccosh(x):
     if isinstance(x, FuncInput):
         assert x.val_ > 1, 'Input is outside the domain of arccosh or its derivative'
         new_val = np.arccosh(x.val_)
-        new_ders = [(1/sqrt(x.val_**2 - 1)) * x_der for x_der in x.ders_]
+        new_ders = [(1/sqrt((x.val_**2) - 1)) * x_der for x_der in x.ders_]
         return FuncInput(new_val, new_ders)
     elif isinstance(x, numbers.Real):
         assert x >= 0, 'Input is outside the domain of arccosh'
