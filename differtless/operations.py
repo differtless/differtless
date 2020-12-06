@@ -174,7 +174,7 @@ class Normal():
         return 1/(self.scale * (2*np.pi)**0.5) * exp(-0.5 * ((x - self.loc)/self.scale)**2)
     
     def logpdf(self, x):
-        return -np.log(self.scale * (2*np.pi)**0.5) - 0.5* ((x - self.loc)/self.scale)**2
+        return -log(self.scale * (2*np.pi)**0.5) - 0.5* ((x - self.loc)/self.scale)**2
     
     def cdf(self, x):
         return 0.5*(1 + erf((x-self.loc)/(self.scale * 2**0.5)))
