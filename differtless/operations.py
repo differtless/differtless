@@ -1,6 +1,7 @@
 import numpy as np
 from scipy import special
 import numbers
+import warnings
 from differtless.ad import FuncInput
 
 '''
@@ -155,6 +156,30 @@ def erf(x):
         return special.erf(x)
 
 
+@validate_input
+def gamma(x):
+    if isinstance(x, FuncInput):
+        new_vals = special.gamma(x.val_)
+        new_ders = [x.ders_[i] * 2/(np.pi**0.5) * np.exp(special.digamma(x.val_)) for i in range(len(x.ders_))]
+        return FuncInput(new_vals, new_ders)
+    elif isinstance(x, numbers.Real):
+        return special.gamma(x)
+
+
+def factorial(x):
+    return gamma(x+1)
+
+
+@validate_input
+def floor(x):
+    if isinstance(x, FuncInput):
+        new_vals = np.floor(x.val_)
+        new_ders = [x.ders_[i] * 0 for i in range(len(x.ders_))] # technically not defined at non-integers
+        return FuncInput(new_vals, new_ders)
+    elif isinstance(x, numbers.Real):
+        return np.floor(x)
+
+
 class Normal():
     
     def __init__(self, loc=0, scale=1):
@@ -181,3 +206,40 @@ class Normal():
     
     def logcdf(self, x):
         return log(0.5) + log(1 + erf((x-self.loc)/(self.scale * 2**0.5)))
+
+
+class Poisson():
+    
+    def __init__(self, mu):
+        '''
+        Poisson distribution with shape parameter `mu`
+        '''
+        self.mu = mu
+        
+    def __str__(self):
+        return f'Poisson distribution with shape parameter {self.mu}'
+    
+    def __repr__(self):
+        return f'Poisson(loc={self.loc}, scale={self.scale})'
+    
+    def pmf(self, x):
+        return exp(-self.mu)*(self.mu**x)/(factorial(x))
+    
+    def logpmf(self, x):
+        return -self.mu + x*log(self.mu) - log(factorial(x))
+    
+    def cdf(self, x):
+        if isinstance(x, numbers.Real):
+            return exp(-self.mu)*sum([self.mu**i / factorial(i) for i in range(int(floor(x))+1)])
+        elif isinstance(x, FuncInput):
+            warnings.warn('Cannot provide derivative for CDF of a discrete distribution – \
+please try using finite differences. Returning only CDF value instead of FuncInput object...')
+            return exp(-self.mu)*sum([self.mu**i / factorial(i) for i in range(int(floor(x.val_[0]))+1)])
+    
+    def logcdf(self, x):
+        if isinstance(x, numbers.Real):
+            return -self.mu + log(sum([self.mu**i / factorial(i) for i in range(int(floor(x))+1)]))
+        elif isinstance(x, FuncInput):
+            warnings.warn('Cannot provide derivative for CDF of a discrete distribution – \
+please try using finite differences. Returning only CDF value instead of FuncInput object...')
+            return -self.mu + log(sum([self.mu**i / factorial(i) for i in range(int(floor(x))+1)]))
