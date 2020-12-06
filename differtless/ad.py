@@ -258,29 +258,34 @@ class FuncInput():
         else:
             raise ValueError('Cannot compare FuncInput to non-FuncInput')
 
+    @validate_input
     def __lt__(self, other):
         if isinstance(other, FuncInput):
-            return self.val_ < other.val_
-        else:
-            raise ValueError('Cannot compare FuncInput to non-FuncInput')
+            return (self.val_ < other.val_).all()
+        elif isinstance(other, numbers.Real):
+            return (self.val_ < other).all()
 
+    @validate_input
     def __gt__(self, other):
         if isinstance(other, FuncInput):
-            return self.val_ > other.val_
-        else:
-            raise ValueError('Cannot compare FuncInput to non-FuncInput')
+            return (self.val_ > other.val_).all()
+        elif isinstance(other, numbers.Real):
+            return (self.val_ > other).all()
 
+    @validate_input
     def __le__(self, other):
         if isinstance(other, FuncInput):
-            return self.val_ <= other.val_
-        else:
-            raise ValueError('Cannot compare FuncInput to non-FuncInput')
+            return (self.val_ <= other.val_).all()
+        elif isinstance(other, numbers.Real):
+            return (self.val_ <= other).all()
 
+    @validate_input
     def __ge__(self, other):
         if isinstance(other, FuncInput):
-            return self.val_ >= other.val_
-        else:
-            raise ValueError('Cannot compare FuncInput to non-FuncInput')
+            return (self.val_ >= other.val_).all()
+        elif isinstance(other, numbers.Real):
+            return (self.val_ >= other).all()
+            
     ## Unary operations ##
 
     # Negate
