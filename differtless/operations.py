@@ -143,3 +143,41 @@ Scipy
 
 # For both numpy and scipy we can implement functions like the PDFs of various distributions
 # as these are common use-cases for AD (e.g. in for samplers like HMC or VI)
+
+
+@validate_input
+def erf(x):
+    if isinstance(x, FuncInput):
+        new_vals = sp.special.erf(x.val_)
+        new_ders = [x.ders_[i] * 2/(np.pi**0.5) * np.exp(- (x.val_)**2) for i in range(len(x.ders_))]
+        return FuncInput(new_vals, new_ders)
+    elif isinstance(x, numbers.Real):
+        return sp.special.erf(x)
+
+
+class Normal():
+    
+    def __init__(self, loc=0, scale=1):
+        '''
+        Normal distribution with mean `loc` and standard deviation `scale`
+        '''
+        self.loc = loc
+        self.scale = scale
+        
+    def __str__(self):
+        return f'Normal distribution with mean {self.loc} and standard deviation {self.scale}'
+    
+    def __repr__(self):
+        return f'norm(loc={self.loc}, scale={self.scale})'
+    
+    def pdf(self, x):
+        return 1/(self.scale * (2*np.pi)**0.5) * exp(-0.5 * ((x - self.loc)/self.scale)**2)
+    
+    def logpdf(self, x):
+        return -np.log(self.scale * (2*np.pi)**0.5) - 0.5* ((x - self.loc)/self.scale)**2
+    
+    def cdf(self, x):
+        return 0.5*(1 + erf((x-self.loc)/(self.scale * 2**0.5)))
+    
+    def logcdf(self, x):
+        return log(0.5) + log(1 + erf((x-self.loc)/(self.scale * 2**0.5)))
