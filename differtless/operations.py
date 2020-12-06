@@ -152,7 +152,7 @@ def sinh(x):
 def cosh(x):
     if isinstance(x, FuncInput):
         new_val = np.cosh(x.val_)
-        new_ders = [(-np.sinh(x.val_)) * * x_der for x_der in x.ders_]
+        new_ders = [(-np.sinh(x.val_)) * x_der for x_der in x.ders_]
         return FuncInput(new_val, new_ders)
     elif isinstance(x, numbers.Real):
         return np.cosh(x)
