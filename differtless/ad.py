@@ -140,11 +140,17 @@ class FuncInput():
 
     @property
     def value(self):
-        return np.squeeze(self.val_)
+        val = np.squeeze(self.val_)
+        if len(val) == 1:
+            val = val[0]
+        return val
 
     @property
     def gradients(self):
-        return np.squeeze(self.ders_)
+        grad = np.squeeze(self.ders_)
+        if len(grad == 1):
+            grad = grad[0]
+        return grad
 
 
     # Wrapper that will make sure all inputs are type FuncInput or a real number
