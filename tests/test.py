@@ -413,7 +413,17 @@ def test_Jacobian():
 def test_eq():
     x = FuncInput(np.array([0,3]),np.array([1]))
     y = FuncInput(np.array([0,3]),np.array([1]))
-    assert x == y, 'equal function is not correct'
+    assert (x == y).all(), 'equal function is not correct'
+
+def test_neq():
+    x = FuncInput(np.array([0,3]),np.array([1]))
+    y = FuncInput(np.array([1,3]),np.array([1]))
+    assert (x != y).any(), 'non-equal function is not correct'
+
+# def test_lt():
+#     x = FuncInput(np.array([0,3]),np.array([1]))
+#     y = FuncInput(np.array([0,3]),np.array([1]))
+#     assert x == y, 'equal function is not correct'
 
 # def test_validate_input():
 #     x = FuncInput(np.array([1]),np.array([1,0]))
