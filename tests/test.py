@@ -4,7 +4,7 @@ import math
 import sys
 sys.path.append('../')
 import warnings
-from differtless.ad import FuncInput, preprocess, forward
+from differtless.ad import FuncInput, preprocess, forward, Jacobian
 import differtless.operations as op
 
 def test_add():
@@ -400,19 +400,22 @@ def test_forward():
     assert (forward([simple_func,simple_func2], inputs, seeds).value == np.array([9,3])).all(), 'forward mode is not correct'
     assert (forward([simple_func,simple_func2], inputs, seeds).gradients == np.array([[6.,6.],[1.,1.]])).all(), 'forward mode is not correct'
 
-inputs = [1, 2]
-seeds = [[1, 0], [0, 1]]
-def simple_func(x, y):
-    return (x + y) ** 2
-def simple_func2(x, y):
-    return x + y
+def test_Jacobian():
+    inputs = [1, 2]
+    seeds = [[1, 0], [0, 1]]
+    def simple_func(x, y):
+        return (x + y) ** 2
+    assert (Jacobian(simple_func, inputs) == np.array([6.,6.])).all(), 'Jacobian is not correct'
 
-print((forward([simple_func,simple_func2], inputs, seeds).gradients == np.array([[6.,6.],[1.,1.]])).all())
+
+# inputs = [1, 2]
+# def simple_func(x, y):
+#     return (x + y) ** 2
+# def simple_func2(x, y):
+#     return x + y
+
+# print(Jacobian(simple_func2, inputs))
 # print(forward([simple_func,simple_func2], inputs, seeds).gradients)
-
-# x = FuncInput(np.array([1]),np.array([1,0]))
-# f = op.sinh(x)
-# print(f)
 
 # def test_validate_input():
 #     x = FuncInput(np.array([1]),np.array([1,0]))
