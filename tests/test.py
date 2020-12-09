@@ -397,7 +397,7 @@ def test_forward():
         return x + y
     assert forward(simple_func, inputs, seeds).value == np.array([9]), 'forward mode is not correct'
     assert (forward(simple_func, inputs, seeds).gradients == np.array([6.,6.])).all(), 'forward mode is not correct'
-    assert forward([simple_func,simple_func2], inputs, seeds).value == np.array([9,3]), 'forward mode is not correct'
+    assert (forward([simple_func,simple_func2], inputs, seeds).value == np.array([9,3])).all(), 'forward mode is not correct'
     assert (forward([simple_func,simple_func2], inputs, seeds).gradients == np.array([6.,6.],[1.,1.])).all(), 'forward mode is not correct'
 
 # inputs = [1, 2]
@@ -407,7 +407,7 @@ def test_forward():
 # def simple_func2(x, y):
 #     return x + y
 
-# print(forward([simple_func,simple_func2], inputs, seeds).value[0])
+# print((forward([simple_func,simple_func2], inputs, seeds).value == np.array([9,3])).all())
 # print(forward([simple_func,simple_func2], inputs, seeds).gradients)
 
 # x = FuncInput(np.array([1]),np.array([1,0]))
