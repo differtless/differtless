@@ -4,7 +4,7 @@ import math
 import sys
 sys.path.append('../')
 import warnings
-from differtless.ad import FuncInput, preprocess, forward, Jacobian
+from differtless.ad import FuncInput, preprocess, forward, Jacobian, minimize
 import differtless.operations as op
 
 def test_add():
@@ -407,15 +407,13 @@ def test_Jacobian():
         return (x + y) ** 2
     assert (Jacobian(simple_func, inputs) == np.array([6.,6.])).all(), 'Jacobian is not correct'
 
+# def test_minimize():
+    # minimize.jac
 
-# inputs = [1, 2]
-# def simple_func(x, y):
-#     return (x + y) ** 2
-# def simple_func2(x, y):
-#     return x + y
-
-# print(Jacobian(simple_func2, inputs))
-# print(forward([simple_func,simple_func2], inputs, seeds).gradients)
+def test_eq():
+    x = FuncInput(np.array([0,3]),np.array([1]))
+    y = FuncInput(np.array([0,3]),np.array([1]))
+    assert x == y, 'equal function is not correct'
 
 # def test_validate_input():
 #     x = FuncInput(np.array([1]),np.array([1,0]))
