@@ -246,7 +246,7 @@ def floor(x):
 
 
 @validate_input_multiple
-def gammainc(x, alpha):
+def gammainc(x, alpha): # lower incomplete gamma function
     if isinstance(x, FuncInput):
         new_vals = special.gammainc(alpha, x.val_)
         new_ders = [x.ders_[i] * (x**(alpha-1))*exp(-x) for i in range(len(x.ders_))]
@@ -331,7 +331,7 @@ class Gamma():
         return f'Gamma distribution with shape {self.alpha} and scale {self.beta}'
     
     def __repr__(self):
-        return f'Gamma(shape={self.alpha}, rate={self.beta})'
+        return f'Gamma(shape={self.alpha}, scale={self.beta})'
     
     def pdf(self, x):
         return (1/(gamma(self.alpha)*self.beta))*((x/self.beta)**(self.alpha-1))*exp(-x/self.beta)
