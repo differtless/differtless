@@ -422,8 +422,35 @@ def test_neq():
 
 def test_lt():
     x = FuncInput(np.array([0,3]),np.array([1]))
-    y = FuncInput(np.array([0,3]),np.array([1]))
-    assert x < y, 'equal function is not correct'
+    y = FuncInput(np.array([1,4]),np.array([1]))
+    assert x < y, 'less-than function is not correct'
+    xreal = 3
+    yreal = 4
+    assert xreal < yreal, 'less-than function is not correct'
+
+def test_gt():
+    x = FuncInput(np.array([0,3]),np.array([1]))
+    y = FuncInput(np.array([1,4]),np.array([1]))
+    assert y > x, 'greater-than function is not correct'
+    xreal = 3
+    yreal = 4
+    assert yreal > xreal, 'greater-than function is not correct'
+
+def test_le():
+    x = FuncInput(np.array([0,3]),np.array([1]))
+    y = FuncInput(np.array([1,3]),np.array([1]))
+    assert x <= y, 'less-or-equal-than function is not correct'
+    xreal = 3
+    yreal = 3
+    assert xreal <= yreal, 'less-or-equal-tha function is not correct'
+
+def test_ge():
+    x = FuncInput(np.array([0,3]),np.array([1]))
+    y = FuncInput(np.array([1,3]),np.array([1]))
+    assert y >= x, 'greater-or-equal-than function is not correct'
+    xreal = 3
+    yreal = 3
+    assert yreal >= xreal, 'greater-or-equal-than function is not correct'
 
 # def test_validate_input():
 #     x = FuncInput(np.array([1]),np.array([1,0]))
