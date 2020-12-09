@@ -60,12 +60,12 @@ def preprocess(inputs, seeds = []):
         if (len_seeds != N):
             raise ValueError("Make sure your seeds matrix is the right size")
         else:
-          for row in seeds:
-            if (len(row) !=N):
-              raise ValueError("Make sure your seeds matrix is the right size")
+            for row in seeds:
+                if (len(row) !=N):
+                    raise ValueError("Make sure your seeds matrix is the right size")
             for element in row:
-              if not isinstance(element, numbers.Real):
-                raise TypeError("Please make sure all inputs are Real Numbers")
+                if not isinstance(element, numbers.Real):
+                    raise TypeError("Please make sure all inputs are Real Numbers")
 
     # make seed rows into np.arrays
     new_seeds = []
@@ -76,14 +76,14 @@ def preprocess(inputs, seeds = []):
     # make scalar values and tuples into np.arrays for inputs
     for val in inputs:
         if (isinstance(val, numbers.Real)):
-          new_inputs.append(np.array([val]))
+            new_inputs.append(np.array([val]))
         elif (isinstance(val, list)):
-          new_inputs.append(np.array(val))
+            new_inputs.append(np.array(val))
         elif (isinstance(val, tuple)):
-          holder = []
-          for i in val:
-            holder.append(i)
-          new_inputs.append(np.array(holder))
+            holder = []
+            for i in val:
+                holder.append(i)
+            new_inputs.append(np.array(holder))
 
     r = []
     for i in range(N):
