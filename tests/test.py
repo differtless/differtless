@@ -406,6 +406,8 @@ def test_minimize():
 def test_root():
     assert abs(ad.root(lambda x: (x-3)**2, 2)[0] - 3)<1e-6
     assert abs(ad.root(lambda x: (x-3)**2, 2, descriptive=True)['x'][0] - 3)<1e-6
+    with pytest.raises(NotImplementedError):
+        ad.root(lambda x: (x-3)**2, [2, 3, 4])
 
 def test_least_squares():
     assert abs(ad.least_squares(lambda x: (x-3)**2, 2, bounds=[1,2.4])[0] - 2.4)<1e-6
