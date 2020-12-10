@@ -5,11 +5,15 @@ Contents:
     - FuncInput class
     - forward AD function
     - minimize function
+    - root function
+    - least_squares function
 """
 
 import numbers
 import numpy as np
-from scipy.optimize import minimize as spmin # needed for Minimize function
+from scipy.optimize import minimize as spmin # needed for minimize function
+from scipy.optimize import root as sproot # needed for root function
+from scipy.optimize import least_squares as spleast_squares # needed for least_squares function
 # prettify prints (no scientific notation)
 np.set_printoptions(suppress=True)
 
@@ -475,7 +479,7 @@ def minimize(fun, x0, descriptive=False, args=(), method=None, hess=None, hessp=
     PARAMETERS
     ==========
         fun : callable
-            Pre-defined function, or list of functions, to be executed
+            Pre-defined function to be minimized
         x0 : ndarray, shape (n,)
             Initial guess. Array of real elements of size (n,),
             where 'n' is the number of independent variables.
@@ -535,6 +539,163 @@ def minimize(fun, x0, descriptive=False, args=(), method=None, hess=None, hessp=
     # Call scipy.optimize.minimize to perform optimization
     optim = spmin(fun_flat, x0, jac=jac, args=args, method=method, hess=hess, hessp=hessp, bounds=bounds, 
                   constraints=constraints, tol=tol, callback=callback, options=options)
+
+    if descriptive == True:
+        return optim
+    else:
+        return optim['x']
+
+
+def root(fun, x0, descriptive=False, args=(), method='hybr', tol=None, callback=None, options=None):
+    """
+    Wrapper for scipy.optimize.root that automatically uses differtless to feed in the Jacobian.
+
+    PARAMETERS
+    ==========
+        fun : callable
+            A pre-defined (single-input) function to find a root of.
+        x0 : ndarray, shape (n,)
+            Initial guess. Array of real elements of size (n,),
+            where 'n' is the number of independent variables.
+        descriptive : Bool
+            If "True", returns full scipy `OptimizeResult`.
+            If "False", returns only the solution array.
+        args : tuple, optional
+            Same as for scipy.optimize.root
+            Extra arguments passed to the objective function and its Jacobian.
+        method : str or callable, optional
+            Same as for scipy.optimize.root
+            Type of solver. If not given, chosen to be one of
+            hybr, lm, broyden1, broyden2, anderson,linearmixing, diagbroyden, excitingmixing, krylov, df-sane
+        tol: float, optional
+            Same as for scipy.optimize.root
+            Tolerance for termination.
+        callback: function, optional
+            Same as for scipy.optimize.root
+            Optional callback function, called on every iteration as `callback(x, f)`.
+        options: dict, optional
+            Same as for scipy.optimize.root
+            A dictionary of solver options.
+    ACTIONS
+    =======
+        - Makes function definition compatible with scipy and uses differtless to calculate Jacobian.
+        - Performs root finding using scipy.optimize.root
+    RETURNS
+    =======
+        If descriptive == False, returns the solution array.
+        If descriptive == True, returns scipy `OptimizeResult` object.    
+    EXAMPLE
+    ========
+    >>> guess = 1
+    >>> def simple_func(x):
+    ...     return 2*x + 5
+    >>> root(simple_func, guess)
+    array([-2.5])
+    """
+    
+    if not isinstance(x0, numbers.Real):
+        raise NotImplementedError('Root finder currently only works for scalar inputs')
+    
+    def jac(x):
+        '''Uses differtless to return Jacobian.'''
+        return np.array([Jacobian(fun, x)])
+
+    # Call scipy.optimize.root to perform root finding
+    optim = sproot(fun, x0, jac=jac, args=args, method=method, tol=tol, callback=callback, options=options)
+
+    if descriptive == True:
+        return optim
+    else:
+        return optim['x']
+
+
+def least_squares(fun, x0, descriptive=False, bounds=(-np.inf, np.inf), method='trf', ftol=1e-08, xtol=1e-08, 
+                  gtol=1e-08, x_scale=1.0, loss='linear', f_scale=1.0, tr_solver=None, tr_options={}, 
+                  max_nfev=None, verbose=0):
+    """
+    Wrapper for scipy.optimize.least_squares that automatically uses differtless to feed in the Jacobian.
+
+    PARAMETERS
+    ==========
+        fun : callable
+            A pre-defined vector function which computes the vector of residuals. Minimization proceeds with
+            respect to its first argument. The argument x is an ndarray of shape (n,), and the function must return
+            a 1-D array_like of shape (m,) or a scaler.
+        x0 : ndarray, shape (n,)
+            Initial guess. Array of real elements of size (n,),
+            where 'n' is the number of independent variables.
+        descriptive : Bool
+            If "True", returns full scipy `OptimizeResult`.
+            If "False", returns only the solution array.
+        bounds : 2-tuple of array_like, optional
+            Same as for scipy.optimize.least_squares
+            Lower and upper bounds on independent variables, defaults to no bounds. Each array must match the size
+            of x0 or be a scalar. Use np.inf to disable bounds on all or some variables.
+        method : {'trf', 'dogbox', 'lm'}, optional
+            Same as for scipy.optimize.least_squares
+            Algorithm to perform minimization. Default is `trf`.
+        ftol : float or None, optional
+            Same as for scipy.optimize.least_squares
+            Tolerance for termination by the change of the cost function.
+        xtol : float or None, optional
+            Same as for scipy.optimize.least_squares
+            Tolerance for termination by the change of the independent variables.
+            If None, the termination by this condition is disabled.
+        gtol : float or None, optional
+            Same as for scipy.optimize.least_squares
+            Tolerance for termination by the norm of the gradient. Default is 1e-8.
+            If None, the termination by this condition is disabled.
+        x_scale : array_like or 'jac', optional
+            Same as for scipy.optimize.least_squares
+            Characteristic scale of each variable.
+        loss : {'linear', 'soft_l1', 'huber', 'cauchy', 'arctan'} or callable, optional
+            Same as for scipy.optimize.least_squares
+            Determines the loss function.
+        f_scale : float, optional
+            Same as for scipy.optimize.least_squares
+            Value of soft margin between inlier and outlier residuals, default is 1.0.
+        max_nfev : None or int, optional
+            Same as for scipy.optimize.least_squares
+            Maximum number of function evaluations before the termination.
+        tr_solver : {None, 'exact', 'lsmr'}, optional
+            Same as for scipy.optimize.least_squares
+            Method for solving trust-region subproblems, relevant only for 'trf'
+            and 'dogbox' methods.
+        tr_options : dict, optional
+            Same as for scipy.optimize.least_squares
+            Keyword options passed to trust-region solver.
+        verbose : {0, 1, 2}, optional
+            Same as for scipy.optimize.least_squares
+            Level of algorithm's verbosity:
+                * 0 (default) : work silently.
+                * 1 : display a termination report.
+                * 2 : display progress during iterations (not supported by 'lm'
+                  method).
+    ACTIONS
+    =======
+        - Makes function definition compatible with scipy and uses differtless to calculate Jacobian.
+        - Solves linear least-squares problem using scipy.optimize.least_squares
+    RETURNS
+    =======
+        If descriptive == False, returns the solution array.
+        If descriptive == True, returns scipy `OptimizeResult` object.    
+    EXAMPLE
+    ========
+    >>> guess = 1
+    >>> def simple_func(x):
+    ...     return 2*x + 5
+    >>> least_squares(simple_func, guess)
+    array([-2.5])
+    """
+    
+    def jac(x):
+        '''Uses differtless to return Jacobian.'''
+        return Jacobian(fun, x)
+
+    # Call scipy.optimize.least_squares to perform least_squares finding
+    optim = spleast_squares(fun, x0, jac=jac, bounds=bounds, method=method, ftol=ftol, xtol=xtol, 
+                            gtol=gtol, x_scale=x_scale, loss=loss, f_scale=f_scale, tr_solver=tr_solver, 
+                            tr_options=tr_options, max_nfev=max_nfev, verbose=verbose)
 
     if descriptive == True:
         return optim
