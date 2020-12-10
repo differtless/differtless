@@ -461,7 +461,7 @@ def test_Poisson():
 def test_gammainc():
     assert op.gammainc(3, 2)
     with pytest.raises(TypeError):
-        op.gammainc(3, [3, 2])
+        op.gammainc([3, 2], 3)
 
 # x = FuncInput(np.array([1]),np.array([1,0]))
 # f = op.sinh(x)
