@@ -261,13 +261,13 @@ class FuncInput():
     ## Comparison Operations ##
     def __eq__(self, other):
         if isinstance(other, FuncInput):
-            return self.val_ == other.val_ and self.ders_ == other.ders_
+            return (self.val_ == other.val_).all() and (self.ders_ == other.ders_).all()
         else:
             raise ValueError('Cannot compare FuncInput to non-FuncInput')
 
     def __neq__(self, other):
         if isinstance(other, FuncInput):
-            return self.val_ != other.val_ or self.ders_ != other.ders_
+            return (self.val_ != other.val_).any() or (self.ders_ != other.ders_).any()
         else:
             raise ValueError('Cannot compare FuncInput to non-FuncInput')
 

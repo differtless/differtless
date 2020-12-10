@@ -5,7 +5,7 @@ import sys
 sys.path.append('../')
 import warnings
 from differtless import ad
-from differtless.ad import FuncInput, preprocess, forward
+from differtless.ad import FuncInput, preprocess, forward, Jacobian, minimize
 import differtless.operations as op
 
 def test_add():
@@ -394,8 +394,13 @@ def test_forward():
     seeds = [[1, 0], [0, 1]]
     def simple_func(x, y):
         return (x + y) ** 2
+    def simple_func2(x, y):
+        return x + y
     assert forward(simple_func, inputs, seeds).value == np.array([9]), 'forward mode is not correct'
     assert (forward(simple_func, inputs, seeds).gradients == np.array([6.,6.])).all(), 'forward mode is not correct'
+    assert (forward([simple_func,simple_func2], inputs, seeds).value == np.array([9,3])).all(), 'forward mode is not correct'
+    assert (forward([simple_func,simple_func2], inputs, seeds).gradients == np.array([[6.,6.],[1.,1.]])).all(), 'forward mode is not correct'
+
 
 # Optimization routines
 
@@ -466,6 +471,58 @@ def test_gammainc():
 # x = FuncInput(np.array([1]),np.array([1,0]))
 # f = op.sinh(x)
 # print(f)
+
+def test_Jacobian():
+    inputs = [1, 2]
+    seeds = [[1, 0], [0, 1]]
+    def simple_func(x, y):
+        return (x + y) ** 2
+    assert (Jacobian(simple_func, inputs) == np.array([6.,6.])).all(), 'Jacobian is not correct'
+
+# def test_minimize():
+    # minimize.jac
+
+def test_eq():
+    x = FuncInput(np.array([0,3]),np.array([1]))
+    y = FuncInput(np.array([0,3]),np.array([1]))
+    assert x == y, 'equal function is not correct'
+
+def test_neq():
+    x = FuncInput(np.array([0,3]),np.array([1]))
+    y = FuncInput(np.array([1,3]),np.array([1]))
+    assert x != y, 'non-equal function is not correct'
+
+def test_lt():
+    x = FuncInput(np.array([0,3]),np.array([1]))
+    y = FuncInput(np.array([1,4]),np.array([1]))
+    assert x < y, 'less-than function is not correct'
+    xreal = 3
+    yreal = 4
+    assert xreal < yreal, 'less-than function is not correct'
+
+def test_gt():
+    x = FuncInput(np.array([0,3]),np.array([1]))
+    y = FuncInput(np.array([1,4]),np.array([1]))
+    assert y > x, 'greater-than function is not correct'
+    xreal = 3
+    yreal = 4
+    assert yreal > xreal, 'greater-than function is not correct'
+
+def test_le():
+    x = FuncInput(np.array([0,3]),np.array([1]))
+    y = FuncInput(np.array([1,3]),np.array([1]))
+    assert x <= y, 'less-or-equal-than function is not correct'
+    xreal = 3
+    yreal = 3
+    assert xreal <= yreal, 'less-or-equal-tha function is not correct'
+
+def test_ge():
+    x = FuncInput(np.array([0,3]),np.array([1]))
+    y = FuncInput(np.array([1,3]),np.array([1]))
+    assert y >= x, 'greater-or-equal-than function is not correct'
+    xreal = 3
+    yreal = 3
+    assert yreal >= xreal, 'greater-or-equal-than function is not correct'
 
 # def test_validate_input():
 #     x = FuncInput(np.array([1]),np.array([1,0]))
