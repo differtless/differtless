@@ -197,6 +197,19 @@ def arctanh(x):
 Misc functions (not from numpy)
 '''
 
+def validate_input_multiple(func):
+    '''
+    Same as validate_input but with flexibility for additional function arguments
+    (keeping these separate to increase robustness of validate_input to poorly specified inputs
+    in single argument functions)
+    '''
+    def wrapper(x, *args):
+        if not isinstance(x, FuncInput) and not isinstance(x, numbers.Real):
+            raise TypeError('Inputs must be type FuncInput or a real number')
+        return func(x, *args)
+    return wrapper
+
+
 @validate_input
 def erf(x):
     if isinstance(x, FuncInput):
@@ -230,6 +243,16 @@ def floor(x):
         return FuncInput(new_vals, new_ders)
     elif isinstance(x, numbers.Real):
         return np.floor(x)
+
+
+@validate_input_multiple
+def gammainc(x, alpha): # lower incomplete gamma function
+    if isinstance(x, FuncInput):
+        new_vals = special.gammainc(alpha, x.val_)
+        new_ders = [x.ders_[i] * (x**(alpha-1))*exp(-x) for i in range(len(x.ders_))]
+        return FuncInput(new_vals, new_ders)
+    elif isinstance(x, numbers.Real):
+        return special.gammainc(alpha, x)
 
 
 '''
@@ -295,3 +318,29 @@ please try using finite differences. Returning only CDF value instead of FuncInp
             warnings.warn('Cannot provide derivative for CDF of a discrete distribution – \
 please try using finite differences. Returning only CDF value instead of FuncInput object...')
             return -self.mu + log(sum([self.mu**i / factorial(i) for i in range(int(floor(x.val_[0]))+1)]))
+
+
+class Gamma():
+    
+    def __init__(self, alpha=0, beta=1):
+        '''Gamma distribution with shape `alpha` and scale `beta`'''
+        self.alpha = alpha
+        self.beta = beta
+        
+    def __str__(self):
+        return f'Gamma distribution with shape {self.alpha} and scale {self.beta}'
+    
+    def __repr__(self):
+        return f'Gamma(shape={self.alpha}, scale={self.beta})'
+    
+    def pdf(self, x):
+        return (1/(gamma(self.alpha)*self.beta))*((x/self.beta)**(self.alpha-1))*exp(-x/self.beta)
+    
+    def logpdf(self, x):
+        return -log(gamma(self.alpha)*self.beta) + (self.alpha-1)*log(x/self.beta) + (-x/self.beta)
+    
+    def cdf(self, x):
+        return (1/gamma(self.alpha))*gammainc(x/self.beta,self.alpha)
+    
+    def logcdf(self, x):
+        return -log(gamma(self.alpha)) + log(gammainc(x/self.beta,self.alpha))
