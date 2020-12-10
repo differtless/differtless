@@ -458,6 +458,11 @@ def test_Poisson():
         op.Poisson(mu=2).logcdf(x)
         assert len(w) > 0, "Poisson CDF does not display warning"
 
+def test_gammainc():
+    assert op.gammainc(3, 2)
+    with pytest.raises(TypeError):
+        op.gammainc(3, [3, 2])
+
 # x = FuncInput(np.array([1]),np.array([1,0]))
 # f = op.sinh(x)
 # print(f)
