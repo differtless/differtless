@@ -39,12 +39,13 @@ def preprocess(inputs, seeds = []):
     N = len(inputs)
     for element in inputs:
         if not isinstance(element, numbers.Real):
-          for e in element:
-            if not isinstance(e, numbers.Real):
-              raise TypeError("Please make sure all inputs are Real Numbers")
+            for e in element:
+                if not isinstance(e, numbers.Real):
+                    raise TypeError("Please make sure all inputs are Real Numbers")
 
-    if (seeds == []):
+    if seeds == []:
         # if seeds = [], make ID matrix
+        new_seeds = []
         for i in range(N):
             new_row = []
             for j in range(N):
@@ -52,8 +53,7 @@ def preprocess(inputs, seeds = []):
                     new_row.append(1)
                 else:
                     new_row.append(0)
-            seeds.append(new_row)
-
+            new_seeds.append(new_row)
     else:
         # check if NXN matrix
         len_seeds = len(seeds)
@@ -67,10 +67,10 @@ def preprocess(inputs, seeds = []):
                 if not isinstance(element, numbers.Real):
                     raise TypeError("Please make sure all inputs are Real Numbers")
 
-    # make seed rows into np.arrays
-    new_seeds = []
-    for row in seeds:
-        new_seeds.append(np.array(row))
+        # make seed rows into np.arrays
+        new_seeds = []
+        for row in seeds:
+            new_seeds.append(np.array(row))
 
     new_inputs = []
     # make scalar values and tuples into np.arrays for inputs
@@ -140,17 +140,11 @@ class FuncInput():
 
     @property
     def value(self):
-        val = np.squeeze(self.val_)
-        if len(val) == 1:
-            val = val[0]
-        return val
+        return np.squeeze(self.val_)
 
     @property
     def gradients(self):
-        grad = np.squeeze(self.ders_)
-        if len(grad == 1):
-            grad = grad[0]
-        return grad
+        return np.squeeze(self.ders_)
 
 
     # Wrapper that will make sure all inputs are type FuncInput or a real number
@@ -460,7 +454,7 @@ def Jacobian(funs, inputs):
     FuncInput([9], [6. 6.])
     """
 
-    result = forward(funs, inputs)
+    result = forward(funs, inputs, [])
     return result.gradients
 
 
