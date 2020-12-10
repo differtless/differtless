@@ -3,6 +3,7 @@ import pytest
 import math
 import sys
 sys.path.append('../')
+import warnings
 from differtless.ad import FuncInput, preprocess, forward
 import differtless.operations as op
 
@@ -214,6 +215,9 @@ def test_arcsin():
     with pytest.raises(AssertionError):
         x = FuncInput(np.array([1]),np.array([1,0]))
         f = op.arcsin(x)
+    xreal = 0.5
+    freal = op.arcsin(xreal)
+    assert (abs(freal - (np.pi/6)) < 1e-6).all(), 'arcsin function is not correct'
 
 def test_arccos():
     x = FuncInput(np.array([0.5]), np.array([1,0]))
@@ -223,12 +227,18 @@ def test_arccos():
     with pytest.raises(AssertionError):
         x = FuncInput(np.array([1]),np.array([1,0]))
         f = op.arccos(x)
+    xreal = 0.5
+    freal = op.arccos(xreal)
+    assert (abs(freal - (np.pi/3)) < 1e-6).all(), 'arcsin function is not correct'
 
 def test_arctan():
     x = FuncInput(np.array([1]),np.array([1,0]))
     f = op.arctan(x)
     assert (abs(f.value - np.pi/4) < 1e-6) , 'arctan function is not correcct'
     assert (abs(f.gradients - np.array([0.5, 0])) < 1e-6).all(), 'arctan function is not correct'
+    xreal = 1
+    freal = op.arctan(xreal)
+    assert (abs(freal - (np.pi/4)) < 1e-6).all(), 'arcsin function is not correct'
 
 def test_hypot():
     with pytest.raises(NotImplementedError):
@@ -249,24 +259,36 @@ def test_sinh():
     f = op.sinh(x)
     assert (abs(f.value - (-1 + np.exp(2))/(2*np.exp(1))) < 1e-6).all(), 'sinh function is not correct'
     assert (abs(f.gradients - np.array([op.cosh(x).value, 0])) < 1e-6).all(), 'sinh function is not correct'
+    xreal = 1
+    freal = op.sinh(xreal)
+    assert (abs(freal - (-1 + np.exp(2))/(2*np.exp(1))) < 1e-6).all(), 'sinh function is not correct'
 
 def test_cosh():
     x = FuncInput(np.array([1]),np.array([1,0]))
     f = op.cosh(x)
     assert (abs(f.value - (1 + np.exp(2))/(2*np.exp(1))) < 1e-6).all(), 'cosh function is not correct'
     assert (abs(f.gradients - np.array([op.sinh(x).value, 0])) < 1e-6).all(), 'cosh function is not correct'
+    xreal = 1
+    freal = op.cosh(xreal)
+    assert (abs(freal - (1 + np.exp(2))/(2*np.exp(1))) < 1e-6).all(), 'cosh function is not correct'
 
 def test_tanh():
     x = FuncInput(np.array([1]),np.array([1,0]))
     f = op.tanh(x)
     assert (abs(f.value - np.tanh(1)) < 1e-6).all(), 'tanh function is not correct'
     assert (abs(f.gradients - np.array([(1/np.cosh(1)) **2, 0])) < 1e-6).all(), 'tanh function is not correct'
+    xreal = 1
+    freal = op.tanh(xreal)
+    assert (abs(freal - np.tanh(1)) < 1e-6).all(), 'tanh function is not correct'
 
 def test_arcsinh():
     x = FuncInput(np.array([1]),np.array([1,0]))
     f = op.arcsinh(x)
     assert (abs(f.value - (np.arcsinh(1))) < 1e-6).all(), 'arcsinh function is not correct'
     assert (abs(f.gradients - np.array([(1/math.sqrt(2)), 0])) < 1e-6).all(), 'arcsinh function is not correct'
+    xreal = 1
+    freal = op.arcsinh(xreal)
+    assert (abs(freal - (np.arcsinh(1))) < 1e-6).all(), 'arcsinh function is not correct'
 
 def test_arccosh():
     x = FuncInput(np.array([2]),np.array([1,0]))
@@ -276,6 +298,9 @@ def test_arccosh():
     with pytest.raises(AssertionError):
         x = FuncInput(np.array([1]),np.array([1,0]))
         f = op.arccosh(x)
+    xreal = 2
+    freal = op.arccosh(xreal)
+    assert (abs(freal - np.arccosh(2)) < 1e-6).all(), 'arccosh function is not correct'
 
 def test_arctanh():
     x = FuncInput(np.array([0.5]),np.array([1,0]))
@@ -285,7 +310,43 @@ def test_arctanh():
     with pytest.raises(AssertionError):
         x = FuncInput(np.array([1]),np.array([1,0]))
         f = op.arctanh(x)
+    xreal = 0.5
+    freal = op.arctanh(xreal)
+    assert (abs(freal - np.arctanh(0.5)) < 1e-6).all(), 'arctanh function is not correct'
 
+# Misc functions
+
+def test_erf():
+    x = FuncInput(np.array([1,20]),np.array([1]))
+    f = op.erf(x)
+    assert (op.erf(0) == 0), "erf function is not correct"
+    assert (abs(f.value - np.array([0.84270079, 1.]))<1e-6).all(), "erf function is not correct"
+    assert (abs(f.gradients - np.array([0.4151075, 0.]))<1e-6).all(), "erf function is not correct"
+
+def test_gamma():
+    x = FuncInput(np.array([1,4]),np.array([1]))
+    f = op.gamma(x)
+    assert (op.gamma(4.0) == 6.0), "gamma function is not correct"
+    assert (abs(f.value - np.array([1., 6.]))<1e-6).all(), "gamma function is not correct"
+    assert (abs(f.gradients - np.array([0.63353918, 3.96259814]))<1e-6).all(), "gamma function is not correct"
+
+def test_factorial():
+    x = FuncInput(np.array([0,3]),np.array([1]))
+    f = op.factorial(x)
+    assert (op.factorial(3.0) == 6.0), "factorial function is not correct"
+    assert (abs(f.value - np.array([1., 6.]))<1e-6).all(), "factorial function is not correct"
+    assert (abs(f.gradients - np.array([0.63353918, 3.96259814]))<1e-6).all(), "factorial function is not correct"
+
+def test_floor():
+    x = FuncInput(np.array([0,3]),np.array([1]))
+    f = op.floor(x)
+    assert (op.floor(2.2) == 2.0), "floor function is not correct"
+    assert (abs(f.value - np.array([0., 3.]))<1e-6).all(), "floor function is not correct"
+    with warnings.catch_warnings(record=True) as w:
+        op.floor(x)
+        assert len(w) > 0, "floor function does not display warning"
+
+# AD functionality
 
 def test_preprocess():
     inputs_1 = [1, 2]
