@@ -338,7 +338,11 @@ class FuncInput():
             raise TypeError('Inputs must be FuncInput or real numbers')
 
     def __rpow__(self, other):
-        def pow_rule(x, exp, dx, dexp): return (x ** exp) * (((exp * dx)/x) + dexp*np.log(x))
+        def pow_rule(x, exp, dx, dexp):
+            if x == 0:
+                return 0
+            else:
+                return (x ** exp) * (((exp * dx)/x) + dexp*np.log(x))
 
         if isinstance(other, numbers.Real):
             new_val = other ** self.val_
