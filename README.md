@@ -1,6 +1,6 @@
 # Team #33 final project for CS107/AC207
 
-![logo](./docs/img/differtless_log.png)
+![logo](https://github.com/differtless/cs107-FinalProject/blob/Documentation-dev/docs/img/differtless_logo.png)
 
 ## Team members
 
