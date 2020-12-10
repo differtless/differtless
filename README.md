@@ -1,5 +1,7 @@
 # Team #33 final project for CS107/AC207
 
+![logo](./docs/img/differtless_log.png)
+
 ## Team members
 
 * Anastasia Ershova aershova@g.harvard.edu
