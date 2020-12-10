@@ -4,6 +4,7 @@ import math
 import sys
 sys.path.append('../')
 import warnings
+from differtless import ad
 from differtless.ad import FuncInput, preprocess, forward
 import differtless.operations as op
 
@@ -395,6 +396,20 @@ def test_forward():
         return (x + y) ** 2
     assert forward(simple_func, inputs, seeds).value == np.array([9]), 'forward mode is not correct'
     assert (forward(simple_func, inputs, seeds).gradients == np.array([6.,6.])).all(), 'forward mode is not correct'
+
+# Optimization routines
+
+def test_minimize():
+    assert abs(ad.minimize(lambda x: (x-3)**2, 2)[0] - 3)<1e-6
+    assert abs(ad.minimize(lambda x: (x-3)**2, 2, descriptive=True)['x'][0] - 3)<1e-6
+
+def test_root():
+    assert abs(ad.root(lambda x: (x-3)**2, 2)[0] - 3)<1e-6
+    assert abs(ad.root(lambda x: (x-3)**2, 2, descriptive=True)['x'][0] - 3)<1e-6
+
+def test_least_squares():
+    assert abs(ad.least_squares(lambda x: (x-3)**2, 2, bounds=[1,2.4])[0] - 2.4)<1e-6
+    abs(ad.least_squares(lambda x: (x-3)**2, 2, bounds=[1,2.4], descriptive=True)['x'][0] - 2.4)<1e-6
 
 # x = FuncInput(np.array([1]),np.array([1,0]))
 # f = op.sinh(x)
