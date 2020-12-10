@@ -351,27 +351,42 @@ Distance Functions
 '''
 
 def euclidean(x, y):
+    def match_lengths(x, y):
+        len_diff = len(x) - len(y)
+        pad = [0] * abs(len_diff)
+        x_val = np.append(x, pad) if len_diff < 0 else x
+        y_val = np.append(y, pad) if len_diff > 0 else y
+
+        return x_val, y_val
+
     x_func = isinstance(x, FuncInput)
     y_func = isinstance(y, FuncInput)
     if not x_func and not y_func:
-        return distance.euclidean(x, y)
+        x_val, y_val = match_lengths(x, y)
+        return distance.euclidean(x_val, y_val)
     elif x_func and not y_func:
-        new_val = distance.euclidean(x.value, y)
         try:
             iter(y)
-            if len(x.value > )
-            new_ders = [2 * (x.value - np.array(y)) * der for der in x.ders_]
+            y_val = np.array(y)
         except TypeError:
-            new_ders = [2 * (x.value - y) * der for der in x.ders_]
+            y_val = np.array([y])
+
+        x_val, y_val = match_lengths(x.value, y_val)
+        new_val = distance.euclidean(x.value, y)
+        new_ders = [2 * (x_val - y_val) * der for der in x.ders_]
     elif y_func and not x_func:
-        new_val = distance.euclidean(x, y.value)
         try:
             iter(x)
-            new_ders = [2 * (np.array(x) - y.value) * der for der in y.ders_]
+            x_val = np.array(x)
         except TypeError:
-            new_ders = [2 * (x - y.value) * (-der) for der in y.ders_]
+            x_val = np.array([x])
+
+        x_val, y_val = match_lengths(x_val, y.value)
+        new_val = distance.euclidean(x, y.value)
+        new_ders = [2 * (x_val - y_val) * (-der) for der in y.ders_]
     else:
-        new_val = distance.euclidean(x.value, y.value)
-        new_ders = [2 * (x.value - y.value) * (x.gradients[i] - y.gradients[i]) for i in range(len(x.ders_))]
+        x_val, y_val = match_lengths(x.value, y.value)
+        new_val = distance.euclidean(x_val, y_val)
+        new_ders = [2 * (x_val - y_val) * (x.gradients[i] - y.gradients[i]) for i in range(len(x.ders_))]
 
     return FuncInput(new_val, new_ders)

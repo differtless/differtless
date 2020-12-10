@@ -40,16 +40,16 @@ def preprocess(inputs, seeds = []):
     [FuncInput([1], [1 0]), FuncInput([2], [0 1])]
     """
     check_num = isinstance(inputs, numbers.Real)
-    if check_num: 
+    if check_num:
         hold = [].append(inputs)
         inputs = hold
-    
+
     N = len(inputs)
     for element in inputs:
         if not isinstance(element, numbers.Real):
             for e in element:
                 if not isinstance(e, numbers.Real):
-                    raise TypeError("Please make sure all inputs are Real Numbers")                    
+                    raise TypeError("Please make sure all inputs are Real Numbers")
 
 
     if seeds == []:
@@ -64,8 +64,8 @@ def preprocess(inputs, seeds = []):
                     new_row.append(0)
             new_seeds.append(new_row)
     else:
-        
-        if (isinstance(seeds, numbers.Real)): 
+
+        if (isinstance(seeds, numbers.Real)):
             hold = [[]][0].append(seeds)
             seeds = hold
         # check if NXN matrix
@@ -351,7 +351,10 @@ class FuncInput():
             raise TypeError('Inputs must be FuncInput or real numbers')
 
     def __rpow__(self, other):
-        def pow_rule(x, exp, dx, dexp): return (x ** exp) * (((exp * dx)/x) + dexp*np.log(x))
+        def pow_rule(x, exp, dx, dexp):
+            if x==0:
+                return 0
+            return (x ** exp) * (((exp * dx)/x) + dexp*np.log(x))
 
         if isinstance(other, numbers.Real):
             new_val = other ** self.val_
@@ -471,7 +474,7 @@ def Jacobian(funs, inputs):
     return result.gradients
 
 
-def minimize(fun, x0, descriptive=False, args=(), method=None, hess=None, hessp=None, bounds=None, 
+def minimize(fun, x0, descriptive=False, args=(), method=None, hess=None, hessp=None, bounds=None,
              constraints=(), tol=None, callback=None, options=None):
     """
     Wrapper for scipy.optimize.minimize that automatically uses differtless to feed in the Jacobian.
@@ -518,7 +521,7 @@ def minimize(fun, x0, descriptive=False, args=(), method=None, hess=None, hessp=
     RETURNS
     =======
         If descriptive == False, returns the solution array.
-        If descriptive == True, returns scipy `OptimizeResult` object.    
+        If descriptive == True, returns scipy `OptimizeResult` object.
     EXAMPLE
     ========
     >>> guess = [1, 2]
@@ -537,7 +540,7 @@ def minimize(fun, x0, descriptive=False, args=(), method=None, hess=None, hessp=
         return Jacobian(fun, x)
 
     # Call scipy.optimize.minimize to perform optimization
-    optim = spmin(fun_flat, x0, jac=jac, args=args, method=method, hess=hess, hessp=hessp, bounds=bounds, 
+    optim = spmin(fun_flat, x0, jac=jac, args=args, method=method, hess=hess, hessp=hessp, bounds=bounds,
                   constraints=constraints, tol=tol, callback=callback, options=options)
 
     if descriptive == True:
@@ -583,7 +586,7 @@ def root(fun, x0, descriptive=False, args=(), method='hybr', tol=None, callback=
     RETURNS
     =======
         If descriptive == False, returns the solution array.
-        If descriptive == True, returns scipy `OptimizeResult` object.    
+        If descriptive == True, returns scipy `OptimizeResult` object.
     EXAMPLE
     ========
     >>> guess = 1
@@ -592,10 +595,10 @@ def root(fun, x0, descriptive=False, args=(), method='hybr', tol=None, callback=
     >>> root(simple_func, guess)
     array([-2.5])
     """
-    
+
     if not isinstance(x0, numbers.Real):
         raise NotImplementedError('Root finder currently only works for scalar inputs')
-    
+
     def jac(x):
         '''Uses differtless to return Jacobian.'''
         return np.array([Jacobian(fun, x)])
@@ -609,8 +612,8 @@ def root(fun, x0, descriptive=False, args=(), method='hybr', tol=None, callback=
         return optim['x']
 
 
-def least_squares(fun, x0, descriptive=False, bounds=(-np.inf, np.inf), method='trf', ftol=1e-08, xtol=1e-08, 
-                  gtol=1e-08, x_scale=1.0, loss='linear', f_scale=1.0, tr_solver=None, tr_options={}, 
+def least_squares(fun, x0, descriptive=False, bounds=(-np.inf, np.inf), method='trf', ftol=1e-08, xtol=1e-08,
+                  gtol=1e-08, x_scale=1.0, loss='linear', f_scale=1.0, tr_solver=None, tr_options={},
                   max_nfev=None, verbose=0):
     """
     Wrapper for scipy.optimize.least_squares that automatically uses differtless to feed in the Jacobian.
@@ -678,7 +681,7 @@ def least_squares(fun, x0, descriptive=False, bounds=(-np.inf, np.inf), method='
     RETURNS
     =======
         If descriptive == False, returns the solution array.
-        If descriptive == True, returns scipy `OptimizeResult` object.    
+        If descriptive == True, returns scipy `OptimizeResult` object.
     EXAMPLE
     ========
     >>> guess = 1
@@ -687,14 +690,14 @@ def least_squares(fun, x0, descriptive=False, bounds=(-np.inf, np.inf), method='
     >>> least_squares(simple_func, guess)
     array([-2.5])
     """
-    
+
     def jac(x):
         '''Uses differtless to return Jacobian.'''
         return Jacobian(fun, x)
 
     # Call scipy.optimize.least_squares to perform least_squares finding
-    optim = spleast_squares(fun, x0, jac=jac, bounds=bounds, method=method, ftol=ftol, xtol=xtol, 
-                            gtol=gtol, x_scale=x_scale, loss=loss, f_scale=f_scale, tr_solver=tr_solver, 
+    optim = spleast_squares(fun, x0, jac=jac, bounds=bounds, method=method, ftol=ftol, xtol=xtol,
+                            gtol=gtol, x_scale=x_scale, loss=loss, f_scale=f_scale, tr_solver=tr_solver,
                             tr_options=tr_options, max_nfev=max_nfev, verbose=verbose)
 
     if descriptive == True:
