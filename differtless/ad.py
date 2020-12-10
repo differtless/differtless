@@ -45,10 +45,12 @@ def preprocess(inputs, seeds = []):
         if not isinstance(element, numbers.Real):
             for e in element:
                 if not isinstance(e, numbers.Real):
-                    raise TypeError("Please make sure all inputs are Real Numbers")                         
+                    raise TypeError("Please make sure all inputs are Real Numbers")                    
 
-    if (seeds == []):
+
+    if seeds == []:
         # if seeds = [], make ID matrix
+        new_seeds = []
         for i in range(N):
             new_row = []
             for j in range(N):
@@ -56,8 +58,7 @@ def preprocess(inputs, seeds = []):
                     new_row.append(1)
                 else:
                     new_row.append(0)
-            seeds.append(new_row)
-
+            new_seeds.append(new_row)
     else:
         
         if (isinstance(seeds, numbers.Real)): 
@@ -68,30 +69,30 @@ def preprocess(inputs, seeds = []):
         if (len_seeds != N):
             raise ValueError("Make sure your seeds matrix is the right size")
         else:
-          for row in seeds:
-            if (len(row) !=N):
-              raise ValueError("Make sure your seeds matrix is the right size")
+            for row in seeds:
+                if (len(row) !=N):
+                    raise ValueError("Make sure your seeds matrix is the right size")
             for element in row:
-              if not isinstance(element, numbers.Real):
-                raise TypeError("Please make sure all inputs are Real Numbers")
+                if not isinstance(element, numbers.Real):
+                    raise TypeError("Please make sure all inputs are Real Numbers")
 
-    # make seed rows into np.arrays
-    new_seeds = []
-    for row in seeds:
-        new_seeds.append(np.array(row))
+        # make seed rows into np.arrays
+        new_seeds = []
+        for row in seeds:
+            new_seeds.append(np.array(row))
 
     new_inputs = []
     # make scalar values and tuples into np.arrays for inputs
     for val in inputs:
         if (isinstance(val, numbers.Real)):
-          new_inputs.append(np.array([val]))
+            new_inputs.append(np.array([val]))
         elif (isinstance(val, list)):
-          new_inputs.append(np.array(val))
+            new_inputs.append(np.array(val))
         elif (isinstance(val, tuple)):
-          holder = []
-          for i in val:
-            holder.append(i)
-          new_inputs.append(np.array(holder))
+            holder = []
+            for i in val:
+                holder.append(i)
+            new_inputs.append(np.array(holder))
 
     r = []
     for i in range(N):
@@ -462,7 +463,7 @@ def Jacobian(funs, inputs):
     FuncInput([9], [6. 6.])
     """
 
-    result = forward(funs, inputs)
+    result = forward(funs, inputs, [])
     return result.gradients
 
 
