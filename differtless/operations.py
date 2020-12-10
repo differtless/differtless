@@ -1,8 +1,9 @@
 import numpy as np
 from scipy import special
+from scipy.spatial import distance
 import numbers
 import warnings
-from differtless.ad import FuncInput
+from ad import FuncInput
 
 '''
 Re-defining numpy and scipy functions to return FuncInput objects of (value, gradient),
@@ -260,49 +261,49 @@ Statistical distributions
 '''
 
 class Normal():
-    
+
     def __init__(self, loc=0, scale=1):
         '''Normal distribution with mean `loc` and standard deviation `scale`'''
         self.loc = loc
         self.scale = scale
-        
+
     def __str__(self):
         return f'Normal distribution with mean {self.loc} and standard deviation {self.scale}'
-    
+
     def __repr__(self):
         return f'Normal(loc={self.loc}, scale={self.scale})'
-    
+
     def pdf(self, x):
         return 1/(self.scale * (2*np.pi)**0.5) * exp(-0.5 * ((x - self.loc)/self.scale)**2)
-    
+
     def logpdf(self, x):
         return -log(self.scale * (2*np.pi)**0.5) - 0.5* ((x - self.loc)/self.scale)**2
-    
+
     def cdf(self, x):
         return 0.5*(1 + erf((x-self.loc)/(self.scale * 2**0.5)))
-    
+
     def logcdf(self, x):
         return log(0.5) + log(1 + erf((x-self.loc)/(self.scale * 2**0.5)))
 
 
 class Poisson():
-    
+
     def __init__(self, mu):
         '''Poisson distribution with shape parameter `mu`'''
         self.mu = mu
-        
+
     def __str__(self):
         return f'Poisson distribution with shape parameter {self.mu}'
-    
+
     def __repr__(self):
         return f'Poisson(loc={self.loc}, scale={self.scale})'
-    
+
     def pmf(self, x):
         return exp(-self.mu)*(self.mu**x)/(factorial(x))
-    
+
     def logpmf(self, x):
         return -self.mu + x*log(self.mu) - log(factorial(x))
-    
+
     def cdf(self, x):
         if isinstance(x, numbers.Real):
             return exp(-self.mu)*sum([self.mu**i / factorial(i) for i in range(int(floor(x))+1)])
@@ -310,7 +311,7 @@ class Poisson():
             warnings.warn('Cannot provide derivative for CDF of a discrete distribution – \
 please try using finite differences. Returning only CDF value instead of FuncInput object...')
             return exp(-self.mu)*sum([self.mu**i / factorial(i) for i in range(int(floor(x.val_[0]))+1)])
-    
+
     def logcdf(self, x):
         if isinstance(x, numbers.Real):
             return -self.mu + log(sum([self.mu**i / factorial(i) for i in range(int(floor(x))+1)]))
@@ -321,26 +322,56 @@ please try using finite differences. Returning only CDF value instead of FuncInp
 
 
 class Gamma():
-    
+
     def __init__(self, alpha=0, beta=1):
         '''Gamma distribution with shape `alpha` and scale `beta`'''
         self.alpha = alpha
         self.beta = beta
-        
+
     def __str__(self):
         return f'Gamma distribution with shape {self.alpha} and scale {self.beta}'
-    
+
     def __repr__(self):
         return f'Gamma(shape={self.alpha}, scale={self.beta})'
-    
+
     def pdf(self, x):
         return (1/(gamma(self.alpha)*self.beta))*((x/self.beta)**(self.alpha-1))*exp(-x/self.beta)
-    
+
     def logpdf(self, x):
         return -log(gamma(self.alpha)*self.beta) + (self.alpha-1)*log(x/self.beta) + (-x/self.beta)
-    
+
     def cdf(self, x):
         return (1/gamma(self.alpha))*gammainc(x/self.beta,self.alpha)
-    
+
     def logcdf(self, x):
         return -log(gamma(self.alpha)) + log(gammainc(x/self.beta,self.alpha))
+
+'''
+Distance Functions
+'''
+
+def euclidean(x, y):
+    x_func = isinstance(x, FuncInput)
+    y_func = isinstance(y, FuncInput)
+    if not x_func and not y_func:
+        return distance.euclidean(x, y)
+    elif x_func and not y_func:
+        new_val = distance.euclidean(x.value, y)
+        try:
+            iter(y)
+            if len(x.value > )
+            new_ders = [2 * (x.value - np.array(y)) * der for der in x.ders_]
+        except TypeError:
+            new_ders = [2 * (x.value - y) * der for der in x.ders_]
+    elif y_func and not x_func:
+        new_val = distance.euclidean(x, y.value)
+        try:
+            iter(x)
+            new_ders = [2 * (np.array(x) - y.value) * der for der in y.ders_]
+        except TypeError:
+            new_ders = [2 * (x - y.value) * (-der) for der in y.ders_]
+    else:
+        new_val = distance.euclidean(x.value, y.value)
+        new_ders = [2 * (x.value - y.value) * (x.gradients[i] - y.gradients[i]) for i in range(len(x.ders_))]
+
+    return FuncInput(new_val, new_ders)
