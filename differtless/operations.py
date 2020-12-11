@@ -25,6 +25,24 @@ Numpy
 # Exponents and logarithms
 @validate_input
 def exp(x):
+    """ 
+    Returns the exponential of FuncInput object.
+    
+    Parameters
+    =======
+    FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value based on exp(x) and gradients based on exp'(x) = exp(x) * x
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([0]),np.array([1,0]))
+    >>> f = op.exp(x)
+    >>> f
+    FuncInput([1], [1 0])
+    """
     if isinstance(x, FuncInput):
         new_vals = np.exp(x.val_)
         new_ders = [x.ders_[i] * np.exp(x.val_) for i in range(len(x.ders_))]
@@ -33,6 +51,7 @@ def exp(x):
         return np.exp(x)
 
 def expm1(x):
+
     return exp(x) - 1
 
 def exp2(x):
@@ -46,6 +65,24 @@ def sqrt(x):
 
 @validate_input
 def log(x):
+    """ 
+    Returns the natural log of FuncInput object.
+    
+    Parameters
+    =======
+    FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value based on log(x) and gradients based on log'(x) = 1/x * x'
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([3]),np.array([1,0]))
+    >>> f = op.log(x)
+    >>> f
+    FuncInput([1.09861229], [0.33333333,0 0])
+    """
     if isinstance(x, FuncInput):
         new_vals = np.log(x.val_)
         new_ders = [x.ders_[i] * (1/x.val_) for i in range(len(x.ders_))]
@@ -90,6 +127,24 @@ def logistic(x): # standard logistic function
 # Trigonometric functions
 @validate_input
 def sin(x):
+    """ 
+    Returns the sine of FuncInput object.
+    
+    Parameters
+    =======
+    FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value based on sin(x) and gradients based on cos(x) * x'
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([np.pi/6]),np.array([1,0]))
+    >>> f = op.sin(x)
+    >>> f
+    FuncInput([0.5], [0.8660254,0.])
+    """
     if isinstance(x, FuncInput):
         new_vals = np.sin(x.val_)
         new_ders = [x.ders_[i] * np.cos(x.val_) for i in range(len(x.ders_))]
@@ -99,6 +154,24 @@ def sin(x):
 
 @validate_input
 def cos(x):
+    """ 
+    Returns the sine of FuncInput object.
+    
+    Parameters
+    =======
+    FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value based on cos(x) and gradients based on -sin(x) * x'
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([np.pi/3]),np.array([1,0]))
+    >>> f = op.cos(x)
+    >>> f
+    FuncInput([0.5], [-0.8660254,0.])
+    """
     if isinstance(x, FuncInput):
         new_vals = np.cos(x.val_)
         new_ders = [x.ders_[i] * (-np.sin(x.val_)) for i in range(len(x.ders_))]
@@ -107,6 +180,24 @@ def cos(x):
         return np.cos(x)
 
 def tan(x):
+    """ 
+    Returns the sine of FuncInput object.
+    
+    Parameters
+    =======
+    FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value based on tan(x) and gradients based on 1/(cos(x))^2 * x'
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([np.pi/3]),np.array([1,0]))
+    >>> f = op.tan(x)
+    >>> f
+    FuncInput([1.73205081], [4.,0.])
+    """
     if isinstance(x, FuncInput):
         new_vals = np.tan(x.val_)
         new_ders = [x.ders_[i] * (1/np.cos(x.val_))**2 for i in range(len(x.ders_))]
@@ -115,6 +206,24 @@ def tan(x):
         return np.tan(x)
 
 def arcsin(x):
+    """ 
+    Returns the sine of FuncInput object.
+    
+    Parameters
+    =======
+    FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value based on arcsin(x) and gradients based on 1/sqrt(1-x^2) * x'
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([0.5]),np.array([1,0]))
+    >>> f = op.arcsin(x)
+    >>> f
+    FuncInput([0.5235988], [0.8660254, 0.])
+    """
     if isinstance(x, FuncInput):
         assert x.val_ > -1 and x.val_ < 1, 'Input is outside the domain of arcsin or its derivative'
         new_val = np.arcsin(x.val_)
@@ -125,6 +234,24 @@ def arcsin(x):
         return np.arcsin(x)
 
 def arccos(x):
+    """ 
+    Returns the sine of FuncInput object.
+    
+    Parameters
+    =======
+    FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value based on arccos(x) and gradients based on -1/sqrt(1-x^2) * x'
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([0.5]),np.array([1,0]))
+    >>> f = op.arcsin(x)
+    >>> f
+    FuncInput([1.04719755], [-0.8660254, 0.])
+    """
     if isinstance(x, FuncInput):
         assert x.val_ > -1 and x.val_ < 1, 'Input is outside the domain of arccos or its derivative'
         new_val = np.arccos(x.val_)
@@ -135,6 +262,24 @@ def arccos(x):
         return np.arccos(x)
 
 def arctan(x):
+    """ 
+    Returns the sine of FuncInput object.
+    
+    Parameters
+    =======
+    FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value based on arctan(x) and gradients based on 1/(1+x^2) * x'
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([0.5]),np.array([1,0]))
+    >>> f = op.arcsin(x)
+    >>> f
+    FuncInput([0.7853982], [0.5, 0.])
+    """
     if isinstance(x, FuncInput):
         new_val = np.arctan(x.val_)
         new_ders = [(1/(1 + x.val_**2)) * x_der for x_der in x.ders_]
