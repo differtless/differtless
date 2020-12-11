@@ -261,13 +261,13 @@ class FuncInput():
     ## Comparison Operations ##
     def __eq__(self, other):
         if isinstance(other, FuncInput):
-            return self.val_ == other.val_ and self.ders_ == other.ders_
+            return (self.val_ == other.val_).all() and (self.ders_ == other.ders_).all()
         else:
             raise ValueError('Cannot compare FuncInput to non-FuncInput')
 
     def __neq__(self, other):
         if isinstance(other, FuncInput):
-            return self.val_ != other.val_ or self.ders_ != other.ders_
+            return (self.val_ != other.val_).any() or (self.ders_ != other.ders_).any()
         else:
             raise ValueError('Cannot compare FuncInput to non-FuncInput')
 
@@ -598,13 +598,18 @@ def root(fun, x0, descriptive=False, args=(), method='hybr', tol=None, callback=
 
     if not isinstance(x0, numbers.Real):
         raise NotImplementedError('Root finder currently only works for scalar inputs')
-
+ 
+    def fun_flat(x):
+        if isinstance(x, (list, np.ndarray)):
+            return fun(x[0])
+        return fun(x)
+    
     def jac(x):
         '''Uses differtless to return Jacobian.'''
-        return np.array([Jacobian(fun, x)])
+        return np.array([Jacobian(fun_flat, x)])
 
     # Call scipy.optimize.root to perform root finding
-    optim = sproot(fun, x0, jac=jac, args=args, method=method, tol=tol, callback=callback, options=options)
+    optim = sproot(fun_flat, x0, jac=jac, args=args, method=method, tol=tol, callback=callback, options=options)
 
     if descriptive == True:
         return optim
@@ -691,13 +696,19 @@ def least_squares(fun, x0, descriptive=False, bounds=(-np.inf, np.inf), method='
     array([-2.5])
     """
 
+    def fun_flat(x):
+        if isinstance(x, (list, np.ndarray)):
+            return fun(x[0])
+        return fun(x)
+    
     def jac(x):
         '''Uses differtless to return Jacobian.'''
-        return Jacobian(fun, x)
+        return Jacobian(fun_flat, x)
 
     # Call scipy.optimize.least_squares to perform least_squares finding
-    optim = spleast_squares(fun, x0, jac=jac, bounds=bounds, method=method, ftol=ftol, xtol=xtol,
-                            gtol=gtol, x_scale=x_scale, loss=loss, f_scale=f_scale, tr_solver=tr_solver,
+
+    optim = spleast_squares(fun_flat, x0, jac=jac, bounds=bounds, method=method, ftol=ftol, xtol=xtol, 
+                            gtol=gtol, x_scale=x_scale, loss=loss, f_scale=f_scale, tr_solver=tr_solver, 
                             tr_options=tr_options, max_nfev=max_nfev, verbose=verbose)
 
     if descriptive == True:

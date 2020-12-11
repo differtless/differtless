@@ -4,7 +4,8 @@ import math
 import sys
 sys.path.append('../')
 import warnings
-from differtless.ad import FuncInput, preprocess, forward
+from differtless import ad
+from differtless.ad import FuncInput, preprocess, forward, Jacobian, minimize
 import differtless.operations as op
 
 def test_add():
@@ -393,12 +394,135 @@ def test_forward():
     seeds = [[1, 0], [0, 1]]
     def simple_func(x, y):
         return (x + y) ** 2
+    def simple_func2(x, y):
+        return x + y
     assert forward(simple_func, inputs, seeds).value == np.array([9]), 'forward mode is not correct'
     assert (forward(simple_func, inputs, seeds).gradients == np.array([6.,6.])).all(), 'forward mode is not correct'
+    assert (forward([simple_func,simple_func2], inputs, seeds).value == np.array([9,3])).all(), 'forward mode is not correct'
+    assert (forward([simple_func,simple_func2], inputs, seeds).gradients == np.array([[6.,6.],[1.,1.]])).all(), 'forward mode is not correct'
+
+
+# Optimization routines
+
+def test_minimize():
+    assert abs(ad.minimize(lambda x: (x-3)**2, 2)[0] - 3)<1e-6
+    assert abs(ad.minimize(lambda x: (x-3)**2, 2, descriptive=True)['x'][0] - 3)<1e-6
+
+def test_root():
+    assert abs(ad.root(lambda x: (x-3)**2, 2)[0] - 3)<1e-6
+    assert abs(ad.root(lambda x: (x-3)**2, 2, descriptive=True)['x'][0] - 3)<1e-6
+    with pytest.raises(NotImplementedError):
+        ad.root(lambda x: (x-3)**2, [2, 3, 4])
+
+def test_least_squares():
+    assert abs(ad.least_squares(lambda x: (x-3)**2, 2, bounds=[1,2.4])[0] - 2.4)<1e-6
+    abs(ad.least_squares(lambda x: (x-3)**2, 2, bounds=[1,2.4], descriptive=True)['x'][0] - 2.4)<1e-6
+
+# Probability distributions – placeholders to make sure functions are executable both for scalar and 'FuncInput'
+
+def test_Normal():
+    assert str(op.Normal())
+    assert repr(op.Normal())
+    x = FuncInput(np.array([1,20]),np.array([1]))
+    assert op.Normal(loc=2, scale=4).pdf(4)
+    assert op.Normal().pdf(x)
+    assert op.Normal().logpdf(4)
+    assert op.Normal().logpdf(x)
+    assert op.Normal().cdf(4)
+    assert op.Normal().cdf(x)
+    assert op.Normal().logcdf(4)
+    assert op.Normal().logcdf(x)
+
+def test_Gamma():
+    assert str(op.Gamma())
+    assert repr(op.Gamma())
+    x = FuncInput(np.array([1,20]),np.array([1]))
+    assert op.Gamma(alpha=1, beta=1).pdf(4)
+    assert op.Gamma(alpha=1, beta=1).pdf(x)
+    assert op.Gamma(alpha=1, beta=1).logpdf(4)
+    assert op.Gamma(alpha=1, beta=1).logpdf(x)
+    assert op.Gamma(alpha=1, beta=1).cdf(4)
+    assert op.Gamma(alpha=1, beta=1).cdf(x)
+    assert op.Gamma(alpha=1, beta=1).logcdf(4)
+    assert op.Gamma(alpha=1, beta=1).logcdf(x)
+
+def test_Poisson():
+    assert str(op.Poisson(mu=2))
+    assert repr(op.Poisson(mu=2))
+    x = FuncInput(np.array([1,20]),np.array([1]))
+    assert op.Poisson(mu=2).pmf(4)
+    assert op.Poisson(mu=2).pmf(x)
+    assert op.Poisson(mu=2).logpmf(4)
+    assert op.Poisson(mu=2).logpmf(x)
+    assert op.Poisson(mu=2).cdf(4)
+    with warnings.catch_warnings(record=True) as w:
+        op.Poisson(mu=2).cdf(x)
+        assert len(w) > 0, "Poisson CDF does not display warning"
+    assert op.Poisson(mu=2).logcdf(4)
+    with warnings.catch_warnings(record=True) as w:
+        op.Poisson(mu=2).logcdf(x)
+        assert len(w) > 0, "Poisson CDF does not display warning"
+
+def test_gammainc():
+    assert op.gammainc(3, 2)
+    with pytest.raises(TypeError):
+        op.gammainc([3, 2], 3)
 
 # x = FuncInput(np.array([1]),np.array([1,0]))
 # f = op.sinh(x)
 # print(f)
+
+def test_Jacobian():
+    inputs = [1, 2]
+    seeds = [[1, 0], [0, 1]]
+    def simple_func(x, y):
+        return (x + y) ** 2
+    assert (Jacobian(simple_func, inputs) == np.array([6.,6.])).all(), 'Jacobian is not correct'
+
+# def test_minimize():
+    # minimize.jac
+
+def test_eq():
+    x = FuncInput(np.array([0,3]),np.array([1]))
+    y = FuncInput(np.array([0,3]),np.array([1]))
+    assert x == y, 'equal function is not correct'
+
+def test_neq():
+    x = FuncInput(np.array([0,3]),np.array([1]))
+    y = FuncInput(np.array([1,3]),np.array([1]))
+    assert x != y, 'non-equal function is not correct'
+
+def test_lt():
+    x = FuncInput(np.array([0,3]),np.array([1]))
+    y = FuncInput(np.array([1,4]),np.array([1]))
+    assert x < y, 'less-than function is not correct'
+    xreal = 3
+    yreal = 4
+    assert xreal < yreal, 'less-than function is not correct'
+
+def test_gt():
+    x = FuncInput(np.array([0,3]),np.array([1]))
+    y = FuncInput(np.array([1,4]),np.array([1]))
+    assert y > x, 'greater-than function is not correct'
+    xreal = 3
+    yreal = 4
+    assert yreal > xreal, 'greater-than function is not correct'
+
+def test_le():
+    x = FuncInput(np.array([0,3]),np.array([1]))
+    y = FuncInput(np.array([1,3]),np.array([1]))
+    assert x <= y, 'less-or-equal-than function is not correct'
+    xreal = 3
+    yreal = 3
+    assert xreal <= yreal, 'less-or-equal-tha function is not correct'
+
+def test_ge():
+    x = FuncInput(np.array([0,3]),np.array([1]))
+    y = FuncInput(np.array([1,3]),np.array([1]))
+    assert y >= x, 'greater-or-equal-than function is not correct'
+    xreal = 3
+    yreal = 3
+    assert yreal >= xreal, 'greater-or-equal-than function is not correct'
 
 # def test_validate_input():
 #     x = FuncInput(np.array([1]),np.array([1,0]))

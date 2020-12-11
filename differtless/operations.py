@@ -296,8 +296,8 @@ class Poisson():
         return f'Poisson distribution with shape parameter {self.mu}'
 
     def __repr__(self):
-        return f'Poisson(loc={self.loc}, scale={self.scale})'
-
+        return f'Poisson(mu={self.mu})'
+    
     def pmf(self, x):
         return exp(-self.mu)*(self.mu**x)/(factorial(x))
 
