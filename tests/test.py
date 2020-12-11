@@ -1,6 +1,7 @@
 import numpy as np
 import pytest
 import math
+from scipy.spatial import distance
 import sys
 sys.path.append('../')
 import warnings
@@ -189,7 +190,7 @@ def test_logn():
     assert abs(op.logn(x,3).value - 1.0)<1e-6
     assert abs(op.logn(x,3).gradients - 0.3034130755422791)<1e-6
     assert abs(op.logn(3,3) - 1.0)<1e-6
-    
+
 def test_logistic():
     x = FuncInput(0,[1])
     assert abs(op.logistic(x).value - 0.5)<1e-6
@@ -541,6 +542,22 @@ def test_ge():
     xreal = 3
     yreal = 3
     assert yreal >= xreal, 'greater-or-equal-than function is not correct'
+
+def test_euclidean():
+    x = FuncInput(np.array([1,2]), np.array([1,0]))
+    y = FuncInput(np.array([4,5]), np.array([0,1]))
+    result1 = op.euclidean(x, y)
+    result2 = op.euclidean(1, y)
+    result3 = op.euclidean(x, 2)
+    expec_der1 = ((1-4) + (2-5))/distance.euclidean([1,2], [4,5])
+    expec_der2 = ((1-4) + (0-5))/distance.euclidean([1,0], [4,5])
+    expec_der3 = ((1-2) + (2-0))/distance.euclidean([1,2], [2,0])
+    assert result1.value == distance.euclidean([1,2], [4,5]), 'euclidean function is wrong'
+    assert (result1.gradients == np.array([expec_der1, -expec_der1])).all(), 'euclidean function is wrong'
+    assert result2.value == distance.euclidean([1,0], [4,5]), 'euclidean function is wrong'
+    assert (result2.gradients == np.array([0, -expec_der2])).all(), 'euclidean function is wrong'
+    assert result3.value == distance.euclidean([1,2], [2,0]), 'euclidean function is wrong'
+    assert (result3.gradients == np.array([expec_der3, 0])).all(), 'euclidean function is wrong'
 
 # def test_validate_input():
 #     x = FuncInput(np.array([1]),np.array([1,0]))
