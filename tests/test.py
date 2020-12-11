@@ -184,6 +184,18 @@ def test_logaddexp2():
     assert (abs(f.value - 2.32192809) < 1e-6).all(), "logaddexp2 function is not correct"
     assert (abs(f.gradients - np.array([1.15415603,0.57707802]))<1e-6).all(), "logaddexp2 function is not correct"
 
+def test_logn():
+    x = FuncInput(3,[1])
+    assert abs(op.logn(x,3).value - 1.0)<1e-6
+    assert abs(op.logn(x,3).gradients - 0.3034130755422791)<1e-6
+    assert abs(op.logn(3,3) - 1.0)<1e-6
+    
+def test_logistic():
+    x = FuncInput(0,[1])
+    assert abs(op.logistic(x).value - 0.5)<1e-6
+    assert abs(op.logistic(x).gradients - 0.25)<1e-6
+    assert abs(op.logistic(0) - 0.5)<1e-6
+
 def test_sin():
     x = FuncInput(np.array([np.pi/6]),np.array([1,0]))
     f = op.sin(x)

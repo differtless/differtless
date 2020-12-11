@@ -68,6 +68,9 @@ def log2(x):
     elif isinstance(x, numbers.Real):
         return np.log2(x)
 
+def logn(x, base): # log with arbitrary base
+    return log(x)/log(base)
+
 
 @validate_input
 def log1p(x):
@@ -78,6 +81,11 @@ def logaddexp(x1, x2):
 
 def logaddexp2(x1, x2):
     return log2(x1**2 + x2**2)
+
+
+def logistic(x): # standard logistic function
+    return 1/(1 + exp(-x))
+
 
 # Trigonometric functions
 @validate_input
