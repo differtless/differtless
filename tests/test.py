@@ -196,6 +196,12 @@ def test_logistic():
     assert abs(op.logistic(x).gradients - 0.25)<1e-6
     assert abs(op.logistic(0) - 0.5)<1e-6
 
+def test_expn():
+    x = FuncInput(3,[1])
+    assert abs(op.expn(x,3).value - 27)<1e-6
+    assert abs(op.expn(x,3).gradients - 29.662531794038966)<1e-6
+    assert abs(op.expn(3,3) - 27)<1e-6
+
 def test_sin():
     x = FuncInput(np.array([np.pi/6]),np.array([1,0]))
     f = op.sin(x)
