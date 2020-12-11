@@ -38,8 +38,7 @@ def expm1(x):
 def exp2(x):
     return 2**x
 
-def expn(x, n):
-	'''exponential with base n'''
+def expn(x, n): # exponential with base n
     return n**x
 
 
@@ -73,8 +72,7 @@ def log2(x):
     elif isinstance(x, numbers.Real):
         return np.log2(x)
 
-def logn(x, base):
-	'''log with arbitrary base'''
+def logn(x, base): # log with arbitrary base
     return log(x)/log(base)
 
 
@@ -89,8 +87,7 @@ def logaddexp2(x1, x2):
     return log2(x1**2 + x2**2)
 
 
-def logistic(x):
-	'''standard logistic function'''
+def logistic(x): # standard logistic function
     return 1/(1 + exp(-x))
 
 
