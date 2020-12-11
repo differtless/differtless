@@ -362,7 +362,17 @@ def euclidean(x, y):
     x_func = isinstance(x, FuncInput)
     y_func = isinstance(y, FuncInput)
     if not x_func and not y_func:
-        x_val, y_val = match_lengths(x, y)
+        try:
+            iter(y)
+            y_val = np.array(y)
+        except:
+            y_val = np.array([y])
+            try:
+                iter(x)
+                x_val = np.array(x)
+            except:
+                x_val = np.array([x])
+        x_val, y_val = match_lengths(x_val, y_val)
         return distance.euclidean(x_val, y_val)
     elif x_func and not y_func:
         try:
@@ -372,8 +382,8 @@ def euclidean(x, y):
             y_val = np.array([y])
 
         x_val, y_val = match_lengths(x.value, y_val)
-        new_val = distance.euclidean(x.value, y)
-        new_ders = [2 * (x_val - y_val) * der for der in x.ders_]
+        new_val = distance.euclidean(x_val, y_val)
+        new_ders = [((x_val - y_val)/new_val) * der for der in x.ders_]
     elif y_func and not x_func:
         try:
             iter(x)
@@ -382,11 +392,11 @@ def euclidean(x, y):
             x_val = np.array([x])
 
         x_val, y_val = match_lengths(x_val, y.value)
-        new_val = distance.euclidean(x, y.value)
-        new_ders = [2 * (x_val - y_val) * (-der) for der in y.ders_]
-    else:
-        x_val, y_val = match_lengths(x.value, y.value)
         new_val = distance.euclidean(x_val, y_val)
-        new_ders = [2 * (x_val - y_val) * (x.gradients[i] - y.gradients[i]) for i in range(len(x.ders_))]
+        new_ders = [((x_val - y_val)/new_val)  * (-der) for der in y.ders_]
+    else:
+        x_val, y_val = match_lengths(x.val_, y.val_)
+        new_val = distance.euclidean(x_val, y_val)
+        new_ders = [((x_val - y_val)/new_val) * (x.gradients[i] - y.gradients[i]) for i in range(len(x.ders_))]
 
     return FuncInput(new_val, new_ders)
