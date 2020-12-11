@@ -3,7 +3,7 @@ from scipy import special
 from scipy.spatial import distance
 import numbers
 import warnings
-from ad import FuncInput
+from differtless.ad import FuncInput
 
 '''
 Re-defining numpy and scipy functions to return FuncInput objects of (value, gradient),
