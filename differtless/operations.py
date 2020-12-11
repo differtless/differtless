@@ -3,7 +3,7 @@ from scipy import special
 from scipy.spatial import distance
 import numbers
 import warnings
-from differtless.ad import FuncInput
+from ad import FuncInput
 
 '''
 Re-defining numpy and scipy functions to return FuncInput objects of (value, gradient),
@@ -297,7 +297,7 @@ class Poisson():
 
     def __repr__(self):
         return f'Poisson(mu={self.mu})'
-    
+
     def pmf(self, x):
         return exp(-self.mu)*(self.mu**x)/(factorial(x))
 
@@ -356,8 +356,9 @@ def euclidean(x, y):
         pad = [0] * abs(len_diff)
         x_val = np.append(x, pad) if len_diff < 0 else x
         y_val = np.append(y, pad) if len_diff > 0 else y
+        new_der_num = sum(x_val - y_val)
 
-        return x_val, y_val
+        return x_val, y_val, new_der_num
 
     x_func = isinstance(x, FuncInput)
     y_func = isinstance(y, FuncInput)
@@ -372,7 +373,7 @@ def euclidean(x, y):
                 x_val = np.array(x)
             except:
                 x_val = np.array([x])
-        x_val, y_val = match_lengths(x_val, y_val)
+        x_val, y_val, new_der_num = match_lengths(x_val, y_val)
         return distance.euclidean(x_val, y_val)
     elif x_func and not y_func:
         try:
@@ -381,9 +382,9 @@ def euclidean(x, y):
         except TypeError:
             y_val = np.array([y])
 
-        x_val, y_val = match_lengths(x.value, y_val)
+        x_val, y_val, new_der_num = match_lengths(x.value, y_val)
         new_val = distance.euclidean(x_val, y_val)
-        new_ders = [((x_val - y_val)/new_val) * der for der in x.ders_]
+        new_ders = [(new_der_num/new_val) * der for der in x.ders_]
     elif y_func and not x_func:
         try:
             iter(x)
@@ -391,12 +392,12 @@ def euclidean(x, y):
         except TypeError:
             x_val = np.array([x])
 
-        x_val, y_val = match_lengths(x_val, y.value)
+        x_val, y_val, new_der_num = match_lengths(x_val, y.value)
         new_val = distance.euclidean(x_val, y_val)
-        new_ders = [((x_val - y_val)/new_val)  * (-der) for der in y.ders_]
+        new_ders = [(new_der_num/new_val)  * (-der) for der in y.ders_]
     else:
-        x_val, y_val = match_lengths(x.val_, y.val_)
+        x_val, y_val, new_der_num = match_lengths(x.val_, y.val_)
         new_val = distance.euclidean(x_val, y_val)
-        new_ders = [((x_val - y_val)/new_val) * (x.gradients[i] - y.gradients[i]) for i in range(len(x.ders_))]
+        new_ders = [(new_der_num/new_val) * (x.gradients[i] - y.gradients[i]) for i in range(len(x.ders_))]
 
     return FuncInput(new_val, new_ders)
