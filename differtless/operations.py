@@ -740,6 +740,7 @@ def floor(x):
 
 
 @validate_input_multiple
+def gammainc(x, alpha): # lower incomplete gamma function
     """ 
     Returns the lower incomplete gamma function of FuncInput object.
     
@@ -758,7 +759,6 @@ def floor(x):
     >>> f
     0.8008517265285442
     """
-def gammainc(x, alpha): # lower incomplete gamma function
     if isinstance(x, FuncInput):
         new_vals = special.gammainc(alpha, x.val_)
         new_ders = [x.ders_[i] * (x**(alpha-1))*exp(-x) for i in range(len(x.ders_))]
