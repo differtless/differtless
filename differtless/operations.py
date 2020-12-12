@@ -25,17 +25,17 @@ Numpy
 # Exponents and logarithms
 @validate_input
 def exp(x):
-    """ 
+    """
     Returns the exponential of FuncInput object.
-    
+
     Parameters
     =======
     FuncInput object or real number
-    
+
     Returns
     =======
     FuncInput object with value based on exp(x) and gradients based on exp'(x) = exp(x) * x
-    
+
     Examples
     =======
     >>> x = FuncInput(np.array([0]),np.array([1,0]))
@@ -51,17 +51,17 @@ def exp(x):
         return np.exp(x)
 
 def expm1(x):
-    """ 
+    """
     Returns the exponential minus 1 of FuncInput object.
-    
+
     Parameters
     =======
     FuncInput object or real number
-    
+
     Returns
     =======
     FuncInput object with value based on exp(x)-1 and gradients based on exp'(x) = exp(x) * x'
-    
+
     Examples
     =======
     >>> x = FuncInput(np.array([0]),np.array([1,0]))
@@ -72,17 +72,17 @@ def expm1(x):
     return exp(x) - 1
 
 def exp2(x):
-    """ 
+    """
     Returns the 2 to the power of x of FuncInput object.
-    
+
     Parameters
     =======
     FuncInput object or real number
-    
+
     Returns
     =======
     FuncInput object with value based on exp(x) and gradients based on 2**x * log(2) * x'
-    
+
     Examples
     =======
     >>> x = FuncInput(np.array([2]),np.array([1,0]))
@@ -96,17 +96,17 @@ def expn(x, n): # exponential with base n
     return n**x
 
 def sqrt(x):
-    """ 
+    """
     Returns the square root of FuncInput object.
-    
+
     Parameters
     =======
     FuncInput object or real number
-    
+
     Returns
     =======
     FuncInput object with value based on sqrt(x) and gradients based on 1/(2*sqrt(x)) * x'
-    
+
     Examples
     =======
     >>> x = FuncInput(np.array([4]),np.array([1,0]))
@@ -118,17 +118,17 @@ def sqrt(x):
 
 @validate_input
 def log(x):
-    """ 
+    """
     Returns the natural log of FuncInput object.
-    
+
     Parameters
     =======
     FuncInput object or real number
-    
+
     Returns
     =======
     FuncInput object with value based on log(x) and gradients based on log'(x) = 1/x * x'
-    
+
     Examples
     =======
     >>> x = FuncInput(np.array([3]),np.array([1,0]))
@@ -145,17 +145,17 @@ def log(x):
 
 @validate_input
 def log10(x):
-    """ 
+    """
     Returns the log of FuncInput object with the base of 10.
-    
+
     Parameters
     =======
     FuncInput object or real number
-    
+
     Returns
     =======
     FuncInput object with value based on log10(x) and gradients based on 1/(x*log(10)) * x'
-    
+
     Examples
     =======
     >>> x = FuncInput(np.array([3]),np.array([1,0]))
@@ -172,17 +172,17 @@ def log10(x):
 
 @validate_input
 def log2(x):
-    """ 
+    """
     Returns the log of FuncInput object with the base of 2.
-    
+
     Parameters
     =======
     FuncInput object or real number
-    
+
     Returns
     =======
     FuncInput object with value based on log2(x) and gradients based on 1/(x*log(2)) * x'
-    
+
     Examples
     =======
     >>> x = FuncInput(np.array([3]),np.array([1,0]))
@@ -202,17 +202,17 @@ def logn(x, base): # log with arbitrary base
 
 @validate_input
 def log1p(x):
-    """ 
+    """
     Returns the log(1+x) of FuncInput object.
-    
+
     Parameters
     =======
     FuncInput object or real number
-    
+
     Returns
     =======
     FuncInput object with value based on log(1+x) and gradients based on 1/(1+x) * x'
-    
+
     Examples
     =======
     >>> x = FuncInput(np.array([0]),np.array([1,0]))
@@ -223,18 +223,18 @@ def log1p(x):
     return log(1 + x)
 
 def logaddexp(x1, x2):
-    """ 
+    """
     Returns the log(exp(x1) + exp(x2)) of FuncInput object.
-    
+
     Parameters
     =======
     FuncInput object or real number
-    
+
     Returns
     =======
-    FuncInput object with value based on log(exp(x1) + exp(x2)) 
+    FuncInput object with value based on log(exp(x1) + exp(x2))
     and gradients based on exp(x)/(exp(x)+exp(y)) with respect to x and exp(y)/(exp(x)+exp(y)) with respect to y
-    
+
     Examples
     =======
     >>> x = FuncInput(np.array([0]),np.array([1,0]))
@@ -246,18 +246,18 @@ def logaddexp(x1, x2):
     return log(exp(x1) + exp(x2))
 
 def logaddexp2(x1, x2):
-    """ 
+    """
     Returns the log(x1**2 + x2**2) of FuncInput object.
-    
+
     Parameters
     =======
     FuncInput object or real number
-    
+
     Returns
     =======
     FuncInput object with value based on log(x1**2 + x2**2)
     and gradients based on 2x/(x**2+y**2) with respect to x and 2y/(x**2+y**2) with respect to y
-    
+
     Examples
     =======
     >>> x = FuncInput(np.array([2]),np.array([1,0]))
@@ -274,17 +274,17 @@ def logistic(x): # standard logistic function
 # Trigonometric functions
 @validate_input
 def sin(x):
-    """ 
+    """
     Returns the sine of FuncInput object.
-    
+
     Parameters
     =======
     FuncInput object or real number
-    
+
     Returns
     =======
     FuncInput object with value based on sin(x) and gradients based on cos(x) * x'
-    
+
     Examples
     =======
     >>> x = FuncInput(np.array([np.pi/6]),np.array([1,0]))
@@ -301,18 +301,18 @@ def sin(x):
 
 @validate_input
 def cos(x):
-    """ 
+    """
     Returns the cos of FuncInput object.
-    
+
     Parameters
     =======
     x:
         FuncInput object or real number
-    
+
     Returns
     =======
     FuncInput object with value based on cos(x) and gradients based on -sin(x) * x'
-    
+
     Examples
     =======
     >>> x = FuncInput(np.array([np.pi/3]),np.array([1,0]))
@@ -328,18 +328,18 @@ def cos(x):
         return np.cos(x)
 
 def tan(x):
-    """ 
+    """
     Returns the tan of FuncInput object.
-    
+
     Parameters
     =======
     x:
         FuncInput object or real number
-    
+
     Returns
     =======
     FuncInput object with value based on tan(x) and gradients based on 1/(cos(x))^2 * x'
-    
+
     Examples
     =======
     >>> x = FuncInput(np.array([np.pi/3]),np.array([1,0]))
@@ -355,18 +355,18 @@ def tan(x):
         return np.tan(x)
 
 def arcsin(x):
-    """ 
+    """
     Returns the arcsin of FuncInput object.
-    
+
     Parameters
     =======
     x:
         FuncInput object or real number
-    
+
     Returns
     =======
     FuncInput object with value based on arcsin(x) and gradients based on 1/sqrt(1-x^2) * x'
-    
+
     Examples
     =======
     >>> x = FuncInput(np.array([0.5]),np.array([1,0]))
@@ -384,18 +384,18 @@ def arcsin(x):
         return np.arcsin(x)
 
 def arccos(x):
-    """ 
+    """
     Returns the arccos of FuncInput object.
-    
+
     Parameters
     =======
     x:
         FuncInput object or real number
-    
+
     Returns
     =======
     FuncInput object with value based on arccos(x) and gradients based on -1/sqrt(1-x^2) * x'
-    
+
     Examples
     =======
     >>> x = FuncInput(np.array([0.5]),np.array([1,0]))
@@ -413,18 +413,18 @@ def arccos(x):
         return np.arccos(x)
 
 def arctan(x):
-    """ 
+    """
     Returns the arctan of FuncInput object.
-    
+
     Parameters
     =======
     x:
         FuncInput object or real number
-    
+
     Returns
     =======
     FuncInput object with value based on arctan(x) and gradients based on 1/(1+x^2) * x'
-    
+
     Examples
     =======
     >>> x = FuncInput(np.array([0.5]),np.array([1,0]))
@@ -448,18 +448,18 @@ def arctan2(x1, x2):
 # Hyperbolic functions
 
 def sinh(x):
-    """ 
+    """
     Returns the sinh of FuncInput object.
-    
+
     Parameters
     =======
     x:
         FuncInput object or real number
-    
+
     Returns
     =======
     FuncInput object with value based on sinh(x) = (exp(x) - exp(-x)) * 1/2 and gradients based on cosh(x) * x'
-    
+
     Examples
     =======
     >>> x = FuncInput(np.array([1]),np.array([1,0]))
@@ -475,18 +475,18 @@ def sinh(x):
         return np.sinh(x)
 
 def cosh(x):
-    """ 
+    """
     Returns the cosh of FuncInput object.
-    
+
     Parameters
     =======
     x:
         FuncInput object or real number
-    
+
     Returns
     =======
     FuncInput object with value based on sinh(x) = (exp(x) + exp(-x)) * 1/2 and gradients based on sinh(x) * x'
-    
+
     Examples
     =======
     >>> x = FuncInput(np.array([1]),np.array([1,0]))
@@ -502,18 +502,18 @@ def cosh(x):
         return np.cosh(x)
 
 def tanh(x):
-    """ 
+    """
     Returns the tanh of FuncInput object.
-    
+
     Parameters
     =======
     x:
         FuncInput object or real number
-    
+
     Returns
     =======
     FuncInput object with value based on tanh(x) = sinh(x) / cosh(x) and gradients based on 1 / cosh(x) ** 2 * x'
-    
+
     Examples
     =======
     >>> x = FuncInput(np.array([2]),np.array([1,0]))
@@ -529,18 +529,18 @@ def tanh(x):
         return np.tanh(x)
 
 def arcsinh(x):
-    """ 
+    """
     Returns the arcsinh of FuncInput object.
-    
+
     Parameters
     =======
     x:
         FuncInput object or real number
-    
+
     Returns
     =======
     FuncInput object with value based on arcsinh(x) = log(x + sqrt(x**2+1)) and gradients based on 1 / sqrt(x**2+1) * x'
-    
+
     Examples
     =======
     >>> x = FuncInput(np.array([2]),np.array([1,0]))
@@ -556,18 +556,18 @@ def arcsinh(x):
         return np.arcsinh(x)
 
 def arccosh(x):
-    """ 
+    """
     Returns the arccosh of FuncInput object.
-    
+
     Parameters
     =======
     x:
         FuncInput object or real number
-    
+
     Returns
     =======
     FuncInput object with value based on arcsinh(x) = log(x + sqrt(x**2-1)) and gradients based on 1 / sqrt(x**2-1) * x'
-    
+
     Examples
     =======
     >>> x = FuncInput(np.array([2]),np.array([1,0]))
@@ -585,18 +585,18 @@ def arccosh(x):
         return np.arccosh(x)
 
 def arctanh(x):
-    """ 
+    """
     Returns the arctanh of FuncInput object.
-    
+
     Parameters
     =======
     x:
         FuncInput object or real number
-    
+
     Returns
     =======
     FuncInput object with value based on arcsinh(x) = log((1+x)/(1-x))/2 and gradients based on 1 / (1-x**2) * x'
-    
+
     Examples
     =======
     >>> x = FuncInput(np.array([0.5]),np.array([1,0]))
@@ -632,18 +632,18 @@ def validate_input_multiple(func):
 
 @validate_input
 def erf(x):
-    """ 
+    """
     Returns the error function of FuncInput object.
-    
+
     Parameters
     =======
     x:
         FuncInput object or real number
-    
+
     Returns
     =======
     FuncInput object with value based on error function from scipy and gradients based on 2 * exp(-x**2) / sqrt(pi) * x'
-    
+
     Examples
     =======
     >>> x = FuncInput(np.array([1,20]),np.array([1]))
@@ -661,18 +661,18 @@ def erf(x):
 
 @validate_input
 def gamma(x):
-    """ 
+    """
     Returns the gamma function of FuncInput object.
-    
+
     Parameters
     =======
     x:
         FuncInput object or real number
-    
+
     Returns
     =======
     FuncInput object with value and gradients based on gamma function from scipy
-    
+
     Examples
     =======
     >>> x = FuncInput(np.array([1,4]),np.array([1]))
@@ -689,18 +689,18 @@ def gamma(x):
 
 
 def factorial(x):
-    """ 
+    """
     Returns the factorial function of FuncInput object.
-    
+
     Parameters
     =======
     x:
         FuncInput object or real number
-    
+
     Returns
     =======
     FuncInput object with value and gradients from x! based on gamma function from scipy
-    
+
     Examples
     =======
     >>> x = FuncInput(np.array([0,3]),np.array([1]))
@@ -716,18 +716,18 @@ def factorial(x):
 
 @validate_input
 def floor(x):
-    """ 
+    """
     Returns the floor value of FuncInput object.
-    
+
     Parameters
     =======
     x:
         FuncInput object or real number
-    
+
     Returns
     =======
     FuncInput object with value and gradients from x! based on gamma function from scipy
-    
+
     Examples
     =======
     >>> x = FuncInput(np.array([0,3]),np.array([1]))
@@ -749,18 +749,18 @@ def floor(x):
 
 @validate_input_multiple
 def gammainc(x, alpha): # lower incomplete gamma function
-    """ 
+    """
     Returns the lower incomplete gamma function of FuncInput object.
-    
+
     Parameters
     =======
     x:
         FuncInput object or real number
-    
+
     Returns
     =======
     FuncInput object with value and gradients based on gammainc function from scipy
-    
+
     Examples
     =======
     >>> f = op.gammainc(3,2)
@@ -870,6 +870,26 @@ Distance Functions
 '''
 
 def euclidean(x, y):
+    """
+    Returns the Euclidean distance between any two real number or FuncInput
+    objects.
+
+    Parameters
+    =======
+    FuncInput object and/or real number. Parameters need not be the same dimension.
+
+    Returns
+    =======
+    Euclidean distance between two points as well as the derivative.
+
+    Examples
+    =======
+    >>> x = FuncInput(np.array([1,2,3]),np.array([1,0]))
+    >>> y = FuncInput(np.array([9,8,7]),np.array([0,1])
+    >>> f = op.euclidean(x,y)
+    >>> f
+    FuncInput([10.7703], [-1.6713, 1.6713])
+    """
     def match_lengths(x, y):
         len_diff = len(x) - len(y)
         pad = [0] * abs(len_diff)
