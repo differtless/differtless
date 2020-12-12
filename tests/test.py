@@ -366,6 +366,8 @@ def test_floor():
         op.floor(x)
         assert len(w) > 0, "floor function does not display warning"
 
+# x = FuncInput(np.array([0,3]),np.array([1]))
+# print(op.factorial(x))
 # AD functionality
 
 def test_preprocess():
@@ -487,8 +489,8 @@ def test_gammainc():
     with pytest.raises(TypeError):
         op.gammainc([3, 2], 3)
 
-# x = FuncInput(np.array([1]),np.array([1,0]))
-# f = op.sinh(x)
+# x = FuncInput(np.array([3,2]),np.array([1,0]))
+# f = op.gammainc(3,2)
 # print(f)
 
 def test_Jacobian():
@@ -498,8 +500,6 @@ def test_Jacobian():
         return (x + y) ** 2
     assert (Jacobian(simple_func, inputs) == np.array([6.,6.])).all(), 'Jacobian is not correct'
 
-# def test_minimize():
-    # minimize.jac
 
 def test_eq():
     x = FuncInput(np.array([0,3]),np.array([1]))

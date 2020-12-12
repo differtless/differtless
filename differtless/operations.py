@@ -41,7 +41,7 @@ def exp(x):
     >>> x = FuncInput(np.array([0]),np.array([1,0]))
     >>> f = op.exp(x)
     >>> f
-    FuncInput([1], [1 0])
+    FuncInput([1], [1, 0])
     """
     if isinstance(x, FuncInput):
         new_vals = np.exp(x.val_)
@@ -51,16 +51,69 @@ def exp(x):
         return np.exp(x)
 
 def expm1(x):
-
+    """ 
+    Returns the exponential minus 1 of FuncInput object.
+    
+    Parameters
+    =======
+    FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value based on exp(x)-1 and gradients based on exp'(x) = exp(x) * x'
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([0]),np.array([1,0]))
+    >>> f = op.expm1(x)
+    >>> f
+    FuncInput([0], [1, 0])
+    """
     return exp(x) - 1
 
 def exp2(x):
+    """ 
+    Returns the 2 to the power of x of FuncInput object.
+    
+    Parameters
+    =======
+    FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value based on exp(x) and gradients based on 2**x * log(2) * x'
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([2]),np.array([1,0]))
+    >>> f = op.exp2(x)
+    >>> f
+    FuncInput([4], [2.77258872, 0])
+    """
     return 2**x
 
 def expn(x, n): # exponential with base n
     return n**x
 
 def sqrt(x):
+    """ 
+    Returns the square root of FuncInput object.
+    
+    Parameters
+    =======
+    FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value based on sqrt(x) and gradients based on 1/(2*sqrt(x)) * x'
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([4]),np.array([1,0]))
+    >>> f = op.sqrt(x)
+    >>> f
+    FuncInput([2], [0.25, 0])
+    """
     return x**0.5
 
 @validate_input
@@ -81,7 +134,7 @@ def log(x):
     >>> x = FuncInput(np.array([3]),np.array([1,0]))
     >>> f = op.log(x)
     >>> f
-    FuncInput([1.09861229], [0.33333333,0 0])
+    FuncInput([1.09861229], [0.33333333,0])
     """
     if isinstance(x, FuncInput):
         new_vals = np.log(x.val_)
@@ -92,6 +145,24 @@ def log(x):
 
 @validate_input
 def log10(x):
+    """ 
+    Returns the log of FuncInput object with the base of 10.
+    
+    Parameters
+    =======
+    FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value based on log10(x) and gradients based on 1/(x*log(10)) * x'
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([3]),np.array([1,0]))
+    >>> f = op.log10(x)
+    >>> f
+    FuncInput([0.47712125], [0.14476483,0])
+    """
     if isinstance(x, FuncInput):
         new_vals = np.log10(x.val_)
         new_ders = [x.ders_[i] * (1/(x.val_ * np.log(10))) for i in range(len(x.ders_))]
@@ -101,6 +172,24 @@ def log10(x):
 
 @validate_input
 def log2(x):
+    """ 
+    Returns the log of FuncInput object with the base of 2.
+    
+    Parameters
+    =======
+    FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value based on log2(x) and gradients based on 1/(x*log(2)) * x'
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([3]),np.array([1,0]))
+    >>> f = op.log2(x)
+    >>> f
+    FuncInput([1.5849625], [0.48089835,0])
+    """
     if isinstance(x, FuncInput):
         new_vals = np.log2(x.val_)
         new_ders = [x.ders_[i] * (1/(x.val_ * np.log(2))) for i in range(len(x.ders_))]
@@ -113,12 +202,70 @@ def logn(x, base): # log with arbitrary base
 
 @validate_input
 def log1p(x):
+    """ 
+    Returns the log(1+x) of FuncInput object.
+    
+    Parameters
+    =======
+    FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value based on log(1+x) and gradients based on 1/(1+x) * x'
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([0]),np.array([1,0]))
+    >>> f = op.log1p(x)
+    >>> f
+    FuncInput([0], [1,0])
+    """
     return log(1 + x)
 
 def logaddexp(x1, x2):
+    """ 
+    Returns the log(exp(x1) + exp(x2)) of FuncInput object.
+    
+    Parameters
+    =======
+    FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value based on log(exp(x1) + exp(x2)) 
+    and gradients based on exp(x)/(exp(x)+exp(y)) with respect to x and exp(y)/(exp(x)+exp(y)) with respect to y
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([0]),np.array([1,0]))
+    >>> y = FuncInput(np.array([1]),np.array([0,1]))
+    >>> f = op.logaddexp(x,y)
+    >>> f
+    FuncInput([1.31326169], [0.26894142,0.73105858])
+    """
     return log(exp(x1) + exp(x2))
 
 def logaddexp2(x1, x2):
+    """ 
+    Returns the log(x1**2 + x2**2) of FuncInput object.
+    
+    Parameters
+    =======
+    FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value based on log(x1**2 + x2**2)
+    and gradients based on 2x/(x**2+y**2) with respect to x and 2y/(x**2+y**2) with respect to y
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([2]),np.array([1,0]))
+    >>> y = FuncInput(np.array([1]),np.array([0,1]))
+    >>> f = op.logaddexp(x,y)
+    >>> f
+    FuncInput([2.32192809], [1.15415603,0.57707802])
+    """
     return log2(x1**2 + x2**2)
 
 def logistic(x): # standard logistic function
@@ -155,11 +302,12 @@ def sin(x):
 @validate_input
 def cos(x):
     """ 
-    Returns the sine of FuncInput object.
+    Returns the cos of FuncInput object.
     
     Parameters
     =======
-    FuncInput object or real number
+    x:
+        FuncInput object or real number
     
     Returns
     =======
@@ -181,11 +329,12 @@ def cos(x):
 
 def tan(x):
     """ 
-    Returns the sine of FuncInput object.
+    Returns the tan of FuncInput object.
     
     Parameters
     =======
-    FuncInput object or real number
+    x:
+        FuncInput object or real number
     
     Returns
     =======
@@ -207,11 +356,12 @@ def tan(x):
 
 def arcsin(x):
     """ 
-    Returns the sine of FuncInput object.
+    Returns the arcsin of FuncInput object.
     
     Parameters
     =======
-    FuncInput object or real number
+    x:
+        FuncInput object or real number
     
     Returns
     =======
@@ -235,11 +385,12 @@ def arcsin(x):
 
 def arccos(x):
     """ 
-    Returns the sine of FuncInput object.
+    Returns the arccos of FuncInput object.
     
     Parameters
     =======
-    FuncInput object or real number
+    x:
+        FuncInput object or real number
     
     Returns
     =======
@@ -263,11 +414,12 @@ def arccos(x):
 
 def arctan(x):
     """ 
-    Returns the sine of FuncInput object.
+    Returns the arctan of FuncInput object.
     
     Parameters
     =======
-    FuncInput object or real number
+    x:
+        FuncInput object or real number
     
     Returns
     =======
@@ -296,6 +448,25 @@ def arctan2(x1, x2):
 # Hyperbolic functions
 
 def sinh(x):
+    """ 
+    Returns the sinh of FuncInput object.
+    
+    Parameters
+    =======
+    x:
+        FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value based on sinh(x) = (exp(x) - exp(-x)) * 1/2 and gradients based on cosh(x) * x'
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([1]),np.array([1,0]))
+    >>> f = op.sinh(x)
+    >>> f
+    FuncInput([1.17520119], [1.54308063, 0.])
+    """
     if isinstance(x, FuncInput):
         new_val = np.sinh(x.val_)
         new_ders = [np.cosh(x.val_) * x_der for x_der in x.ders_]
@@ -304,6 +475,25 @@ def sinh(x):
         return np.sinh(x)
 
 def cosh(x):
+    """ 
+    Returns the cosh of FuncInput object.
+    
+    Parameters
+    =======
+    x:
+        FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value based on sinh(x) = (exp(x) + exp(-x)) * 1/2 and gradients based on sinh(x) * x'
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([1]),np.array([1,0]))
+    >>> f = op.cosh(x)
+    >>> f
+    FuncInput([1.54308063], [1.17520119, 0.])
+    """
     if isinstance(x, FuncInput):
         new_val = np.cosh(x.val_)
         new_ders = [(np.sinh(x.val_)) * x_der for x_der in x.ders_]
@@ -312,6 +502,25 @@ def cosh(x):
         return np.cosh(x)
 
 def tanh(x):
+    """ 
+    Returns the tanh of FuncInput object.
+    
+    Parameters
+    =======
+    x:
+        FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value based on tanh(x) = sinh(x) / cosh(x) and gradients based on 1 / cosh(x) ** 2 * x'
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([2]),np.array([1,0]))
+    >>> f = op.tanh(x)
+    >>> f
+    FuncInput([0.9640276], [0.0706508, 0.])
+    """
     if isinstance(x, FuncInput):
         new_val = np.tanh(x.val_)
         new_ders = [((1/np.cosh(x.val_)) ** 2) * x_der for x_der in x.ders_]
@@ -320,6 +529,25 @@ def tanh(x):
         return np.tanh(x)
 
 def arcsinh(x):
+    """ 
+    Returns the arcsinh of FuncInput object.
+    
+    Parameters
+    =======
+    x:
+        FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value based on arcsinh(x) = log(x + sqrt(x**2+1)) and gradients based on 1 / sqrt(x**2+1) * x'
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([2]),np.array([1,0]))
+    >>> f = op.tanh(x)
+    >>> f
+    FuncInput([0.88137359], [0.70710678, 0.])
+    """
     if isinstance(x, FuncInput):
         new_val = np.arcsinh(x.val_)
         new_ders = [(1/sqrt(x.val_**2 + 1)) * x_der for x_der in x.ders_]
@@ -328,6 +556,25 @@ def arcsinh(x):
         return np.arcsinh(x)
 
 def arccosh(x):
+    """ 
+    Returns the arccosh of FuncInput object.
+    
+    Parameters
+    =======
+    x:
+        FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value based on arcsinh(x) = log(x + sqrt(x**2-1)) and gradients based on 1 / sqrt(x**2-1) * x'
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([2]),np.array([1,0]))
+    >>> f = op.tanh(x)
+    >>> f
+    FuncInput([1.31695790], [0.57735027, 0.])
+    """
     if isinstance(x, FuncInput):
         assert x.val_ > 1, 'Input is outside the domain of arccosh or its derivative'
         new_val = np.arccosh(x.val_)
@@ -338,6 +585,25 @@ def arccosh(x):
         return np.arccosh(x)
 
 def arctanh(x):
+    """ 
+    Returns the arctanh of FuncInput object.
+    
+    Parameters
+    =======
+    x:
+        FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value based on arcsinh(x) = log((1+x)/(1-x))/2 and gradients based on 1 / (1-x**2) * x'
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([0.5]),np.array([1,0]))
+    >>> f = op.tanh(x)
+    >>> f
+    FuncInput([0.549306], [1.33333, 0.])
+    """
     if isinstance(x, FuncInput):
         assert np.abs(x.val_) < 1, 'Input is outside the domain of arctanh or its derivative'
         new_val = np.arctanh(x.val_)
@@ -366,6 +632,25 @@ def validate_input_multiple(func):
 
 @validate_input
 def erf(x):
+    """ 
+    Returns the error function of FuncInput object.
+    
+    Parameters
+    =======
+    x:
+        FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value based on error function from scipy and gradients based on 2 * exp(-x**2) / sqrt(pi) * x'
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([1,20]),np.array([1]))
+    >>> f = op.erf(x)
+    >>> f
+    FuncInput([0.84270079, 1.], [0.4151075, 0.])
+    """
     if isinstance(x, FuncInput):
         new_vals = special.erf(x.val_)
         new_ders = [x.ders_[i] * 2/(np.pi**0.5) * np.exp(- (x.val_)**2) for i in range(len(x.ders_))]
@@ -376,6 +661,25 @@ def erf(x):
 
 @validate_input
 def gamma(x):
+    """ 
+    Returns the gamma function of FuncInput object.
+    
+    Parameters
+    =======
+    x:
+        FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value and gradients based on gamma function from scipy
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([1,4]),np.array([1]))
+    >>> f = op.gamma(x)
+    >>> f
+    FuncInput([1., 6.], [0.63353918, 3.96259814])
+    """
     if isinstance(x, FuncInput):
         new_vals = special.gamma(x.val_)
         new_ders = [x.ders_[i] * 2/(np.pi**0.5) * np.exp(special.digamma(x.val_)) for i in range(len(x.ders_))]
@@ -385,11 +689,55 @@ def gamma(x):
 
 
 def factorial(x):
+    """ 
+    Returns the factorial function of FuncInput object.
+    
+    Parameters
+    =======
+    x:
+        FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value and gradients from x! based on gamma function from scipy
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([0,3]),np.array([1]))
+    >>> f = op.factorial(x)
+    >>> f
+    Value:
+    [1., 6.]
+    Gradient(s):
+    [0.63353918, 3.96259814]
+    """
     return gamma(x+1)
 
 
 @validate_input
 def floor(x):
+    """ 
+    Returns the floor value of FuncInput object.
+    
+    Parameters
+    =======
+    x:
+        FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value and gradients from x! based on gamma function from scipy
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([0,3]),np.array([1]))
+    >>> f = op.tanh(x)
+    >>> f
+    Value:
+    [0. 3.]
+    Gradient(s):
+    0
+    """
     if isinstance(x, FuncInput):
         new_vals = np.floor(x.val_)
         warnings.warn('Using zero as derivatives for floor function (technically not defined at non-integers)...')
@@ -401,6 +749,24 @@ def floor(x):
 
 @validate_input_multiple
 def gammainc(x, alpha): # lower incomplete gamma function
+    """ 
+    Returns the lower incomplete gamma function of FuncInput object.
+    
+    Parameters
+    =======
+    x:
+        FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value and gradients based on gammainc function from scipy
+    
+    Examples
+    =======
+    >>> f = op.gammainc(3,2)
+    >>> f
+    0.8008517265285442
+    """
     if isinstance(x, FuncInput):
         new_vals = special.gammainc(alpha, x.val_)
         new_ders = [x.ders_[i] * (x**(alpha-1))*exp(-x) for i in range(len(x.ders_))]
