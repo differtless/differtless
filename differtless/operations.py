@@ -791,8 +791,8 @@ class Normal():
     ========
     pdf: probability density function
     logpdf: log of probability density function
-    pdf: cumulative density function
-    logpdf: log of cumulative density function
+    cdf: cumulative density function
+    logcdf: log of cumulative density function
     
     Returns
     =======
@@ -844,8 +844,8 @@ class Poisson():
     ========
     pmf: probability mass function
     logpmf: log of probability mass function
-    pdf: cumulative density function
-    logpdf: log of cumulative density function
+    cdf: cumulative density function
+    logcdf: log of cumulative density function
     
     Returns
     =======
@@ -905,8 +905,8 @@ class Gamma():
     ========
     pdf: probability density function
     logpdf: log of probability density function
-    pdf: cumulative density function
-    logpdf: log of cumulative density function
+    cdf: cumulative density function
+    logcdf: log of cumulative density function
     
     Returns
     =======
