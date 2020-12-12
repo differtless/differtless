@@ -2,6 +2,8 @@ import numpy as np
 import pytest
 import math
 from scipy.spatial import distance
+from scipy import stats
+from scipy.misc import derivative
 import sys
 sys.path.append('../')
 import warnings
@@ -366,8 +368,6 @@ def test_floor():
         op.floor(x)
         assert len(w) > 0, "floor function does not display warning"
 
-# x = FuncInput(np.array([0,3]),np.array([1]))
-# print(op.factorial(x))
 # AD functionality
 
 def test_preprocess():
@@ -426,18 +426,18 @@ def test_forward():
 # Optimization routines
 
 def test_minimize():
-    assert abs(ad.minimize(lambda x: (x-3)**2, 2)[0] - 3)<1e-6
-    assert abs(ad.minimize(lambda x: (x-3)**2, 2, descriptive=True)['x'][0] - 3)<1e-6
+    assert abs(ad.minimize(lambda x: (x-3)**2, 2)[0] - 3)<1e-6,'minimize function is not correct'
+    assert abs(ad.minimize(lambda x: (x-3)**2, 2, descriptive=True)['x'][0] - 3)<1e-6,'minimize function is not correct'
 
 def test_root():
-    assert abs(ad.root(lambda x: (x-3)**2, 2)[0] - 3)<1e-6
-    assert abs(ad.root(lambda x: (x-3)**2, 2, descriptive=True)['x'][0] - 3)<1e-6
+    assert abs(ad.root(lambda x: (x-3)**2, 2)[0] - 3)<1e-6,'root function is not correct'
+    assert abs(ad.root(lambda x: (x-3)**2, 2, descriptive=True)['x'][0] - 3)<1e-6,'root function is not correct'
     with pytest.raises(NotImplementedError):
         ad.root(lambda x: (x-3)**2, [2, 3, 4])
 
 def test_least_squares():
-    assert abs(ad.least_squares(lambda x: (x-3)**2, 2, bounds=[1,2.4])[0] - 2.4)<1e-6
-    abs(ad.least_squares(lambda x: (x-3)**2, 2, bounds=[1,2.4], descriptive=True)['x'][0] - 2.4)<1e-6
+    assert abs(ad.least_squares(lambda x: (x-3)**2, 2, bounds=[1,2.4])[0] - 2.4)<1e-6,'least squares function is not correct'
+    abs(ad.least_squares(lambda x: (x-3)**2, 2, bounds=[1,2.4], descriptive=True)['x'][0] - 2.4)<1e-6,'least squares function is not correct'
 
 # Probability distributions – placeholders to make sure functions are executable both for scalar and 'FuncInput'
 
@@ -445,34 +445,63 @@ def test_Normal():
     assert str(op.Normal())
     assert repr(op.Normal())
     x = FuncInput(np.array([1,20]),np.array([1]))
-    assert op.Normal(loc=2, scale=4).pdf(4)
-    assert op.Normal().pdf(x)
-    assert op.Normal().logpdf(4)
-    assert op.Normal().logpdf(x)
-    assert op.Normal().cdf(4)
-    assert op.Normal().cdf(x)
-    assert op.Normal().logcdf(4)
-    assert op.Normal().logcdf(x)
+    assert op.Normal(loc=2, scale=4).pdf(4) == stats.norm(loc=2, scale=4).pdf(4), 'normal distribution pdf is not correct'
+    assert (op.Normal().pdf(x).value == stats.norm().pdf([1,20])).all(), 'normal distribution pdf is not correct'
+    assert (abs(op.Normal().pdf(x).gradients - [derivative(stats.norm.pdf,1,dx=1e-6),derivative(stats.norm.pdf,20,dx=1e-6)])<1e-6).all(), 'normal distribution pdf is not correct'
+    assert op.Normal().logpdf(4) == stats.norm().logpdf(4), 'normal distribution logpdf is not correct'
+    assert (op.Normal().logpdf(x).value == stats.norm().logpdf([1,20])).all(), 'normal distribution logpdf is not correct'
+    assert (abs(op.Normal().logpdf(x).gradients - [derivative(stats.norm.logpdf,1,dx=1e-6),derivative(stats.norm.logpdf,20,dx=1e-6)])<1e-6).all(), 'normal distribution logpdf is not correct'
+    assert op.Normal().cdf(4) == stats.norm().cdf(4), 'normal distribution cdf is not correct'
+    assert (op.Normal().cdf(x).value == stats.norm().cdf([1,20])).all(), 'normal distribution cdf is not correct'
+    assert (abs(op.Normal().cdf(x).gradients - [derivative(stats.norm.cdf,1,dx=1e-6),derivative(stats.norm.cdf,20,dx=1e-6)])<1e-6).all(), 'normal distribution cdf is not correct'
+    assert (op.Normal().logcdf(4) - stats.norm().logcdf(4))<1e-6, 'normal distribution logcdf is not correct'
+    assert (abs(op.Normal().logcdf(x).value - stats.norm().logcdf([1,20]))<1e-6).all(), 'normal distribution logcdf is not correct'
+    assert (abs(op.Normal().logcdf(x).gradients - [derivative(stats.norm.logcdf,1,dx=1e-6),derivative(stats.norm.logcdf,20,dx=1e-6)])<1e-6).all(), 'normal distribution logcdf is not correct'
+
 
 def test_Gamma():
     assert str(op.Gamma())
     assert repr(op.Gamma())
     x = FuncInput(np.array([1,20]),np.array([1]))
-    assert op.Gamma(alpha=1, beta=1).pdf(4)
-    assert op.Gamma(alpha=1, beta=1).pdf(x)
-    assert op.Gamma(alpha=1, beta=1).logpdf(4)
-    assert op.Gamma(alpha=1, beta=1).logpdf(x)
-    assert op.Gamma(alpha=1, beta=1).cdf(4)
-    assert op.Gamma(alpha=1, beta=1).cdf(x)
-    assert op.Gamma(alpha=1, beta=1).logcdf(4)
-    assert op.Gamma(alpha=1, beta=1).logcdf(x)
+    assert op.Gamma(alpha=1, beta=1).pdf(4) == stats.gamma(1).pdf(4), 'gamma distribution pdf is not correct'
+    assert (op.Gamma(alpha=1, beta=1).pdf(x).value == stats.gamma(1).pdf([1,20])).all(), 'gamma distribution pdf is not correct'
+    assert (abs(op.Gamma(alpha=1, beta=1).pdf(x).gradients - [derivative(stats.gamma(1).pdf,1,dx=1e-6),derivative(stats.gamma(1).pdf,20,dx=1e-6)])<1e-6).all(), 'gamma distribution pdf is not correct'
+
+    assert op.Gamma(alpha=1, beta=1).logpdf(4) == stats.gamma(1).logpdf(4), 'gamma distribution logpdf is not correct'
+    assert (op.Gamma(alpha=1, beta=1).logpdf(x).value == stats.gamma(1).logpdf([1,20])).all(), 'gamma distribution logpdf is not correct'
+    assert (abs(op.Gamma(alpha=1, beta=1).logpdf(x).gradients - [derivative(stats.gamma(1).logpdf,1,dx=1e-6),derivative(stats.gamma(1).logpdf,20,dx=1e-6)])<1e-6).all(), 'gamma distribution logpdf is not correct'
+
+    assert op.Gamma(alpha=1, beta=1).cdf(4) == stats.gamma(1).cdf(4), 'gamma distribution cdf is not correct'
+    assert (op.Gamma(alpha=1, beta=1).cdf(x).value == stats.gamma(1).cdf([1,20])).all(), 'gamma distribution cdf is not correct'
+    # assert (abs(op.Gamma(alpha=1, beta=1).cdf(x).gradients[0] - [derivative(stats.gamma(1).cdf,1,dx=1e-6),derivative(stats.gamma(1).cdf,20,dx=1e-6)])<1e-6).all(), 'gamma distribution cdf is not correct'
+
+    # assert op.Gamma(alpha=1, beta=1).logcdf(4) == stats.gamma(1).logcdf(4), 'gamma distribution logcdf is not correct'
+    # assert (op.Gamma(alpha=1, beta=1).logcdf(x).value == stats.gamma(1).logcdf([1,20])).all(), 'gamma distribution logcdf is not correct'
+    # assert (abs(op.Gamma(alpha=1, beta=1).logcdf(x).gradients[0] - [derivative(stats.gamma(1).logcdf,1,dx=1e-6),derivative(stats.gamma(1).logcdf,20,dx=1e-6)])<1e-6).all(), 'gamma distribution logcdf is not correct'
+
+
 
 def test_Poisson():
     assert str(op.Poisson(mu=2))
     assert repr(op.Poisson(mu=2))
     x = FuncInput(np.array([1,20]),np.array([1]))
-    assert op.Poisson(mu=2).pmf(4)
-    assert op.Poisson(mu=2).pmf(x)
+    # assert abs(op.Poisson(mu=2).pmf(4) - stats.poisson(2).pmf(4))<1e-6, 'poisson distribution pmf is not correct'
+    # assert (op.Poisson(mu=2).pmf(x).value == stats.poisson(2).pdf([1,20])).all(), 'poisson distribution pmf is not correct'
+    # assert (abs(op.Poisson(mu=2).pmf(x).gradients - [derivative(stats.poisson(mu=2).pmf,1,dx=1e-6),derivative(stats.poisson(mu=2).pmf,20,dx=1e-6)])<1e-6).all(), 'poisson distribution pmf is not correct'
+
+    # assert abs(op.Poisson(mu=2).logpmf(4) - stats.poisson(2).logpmf(4))<1e-6, 'poisson distribution logpmf is not correct'
+    # assert (op.Poisson(mu=2).logpmf(x).value == stats.poisson(2).pdf([1,20])).all(), 'poisson distribution logpmf is not correct'
+    # assert (abs(op.Poisson(mu=2).logpmf(x).gradients - [derivative(stats.poisson(mu=2).logpmf,1,dx=1e-6),derivative(stats.poisson(mu=2).logpmf,20,dx=1e-6)])<1e-6).all(), 'poisson distribution logpmf is not correct'
+
+    # assert abs(op.Poisson(mu=2).cdf(4) - stats.poisson(2).cdf(4))<1e-6, 'poisson distribution cdf is not correct'
+    # assert (op.Poisson(mu=2).cdf(x).value == stats.poisson(2).pdf([1,20])).all(), 'poisson distribution cdf is not correct'
+    # assert (abs(op.Poisson(mu=2).cdf(x).gradients - [derivative(stats.poisson(mu=2).cdf,1,dx=1e-6),derivative(stats.poisson(mu=2).cdf,20,dx=1e-6)])<1e-6).all(), 'poisson distribution cdf is not correct'
+
+    # assert abs(op.Poisson(mu=2).pmf(4) - stats.poisson(2).pmf(4))<1e-6, 'poisson distribution pmf is not correct'
+    # assert (op.Poisson(mu=2).pmf(x).value == stats.poisson(2).pdf([1,20])).all(), 'poisson distribution pmf is not correct'
+    # assert (abs(op.Poisson(mu=2).pmf(x).gradients - [derivative(stats.poisson(mu=2).pmf,1,dx=1e-6),derivative(stats.poisson(mu=2).pmf,20,dx=1e-6)])<1e-6).all(), 'poisson distribution pmf is not correct'
+
+
     assert op.Poisson(mu=2).logpmf(4)
     assert op.Poisson(mu=2).logpmf(x)
     assert op.Poisson(mu=2).cdf(4)
@@ -484,14 +513,12 @@ def test_Poisson():
         op.Poisson(mu=2).logcdf(x)
         assert len(w) > 0, "Poisson CDF does not display warning"
 
+
 def test_gammainc():
     assert op.gammainc(3, 2)
     with pytest.raises(TypeError):
         op.gammainc([3, 2], 3)
 
-# x = FuncInput(np.array([3,2]),np.array([1,0]))
-# f = op.gammainc(3,2)
-# print(f)
 
 def test_Jacobian():
     inputs = [1, 2]

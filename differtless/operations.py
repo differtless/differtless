@@ -780,6 +780,33 @@ Statistical distributions
 '''
 
 class Normal():
+    """ 
+    Returns the features of normal distribution function of FuncInput object.
+    
+    Parameters
+    =======
+    x: FuncInput object or real number
+        
+    METHODS
+    ========
+    pdf: probability density function
+    logpdf: log of probability density function
+    pdf: cumulative density function
+    logpdf: log of cumulative density function
+    
+    Returns
+    =======
+    FuncInput object with value and gradients based on the selected method
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([1,20]),np.array([1]))
+    >>> f = op.Normal().pdf(x)
+    Value:
+    [0.24197072 0.        ]
+    Gradient(s):
+    [-0.24197072 -0.        ]
+    """
 
     def __init__(self, loc=0, scale=1):
         '''Normal distribution with mean `loc` and standard deviation `scale`'''
@@ -806,7 +833,33 @@ class Normal():
 
 
 class Poisson():
-
+    """ 
+    Returns the features of Poisson distribution function of FuncInput object.
+    
+    Parameters
+    =======
+    x: FuncInput object or real number
+        
+    METHODS
+    ========
+    pmf: probability mass function
+    logpmf: log of probability mass function
+    pdf: cumulative density function
+    logpdf: log of cumulative density function
+    
+    Returns
+    =======
+    FuncInput object with value and gradients based on the selected method
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([1,20]),np.array([1]))
+    >>> f = op.Poisson(mu=2).pmf(x)
+    Value:
+    [0.27067057 0.        ]
+    Gradient(s):
+    [-0.27851754  0.        ]
+    """
     def __init__(self, mu):
         '''Poisson distribution with shape parameter `mu`'''
         self.mu = mu
@@ -841,7 +894,33 @@ please try using finite differences. Returning only CDF value instead of FuncInp
 
 
 class Gamma():
-
+    """ 
+    Returns the features of Poisson distribution function of FuncInput object.
+    
+    Parameters
+    =======
+    x: FuncInput object or real number
+        
+    METHODS
+    ========
+    pdf: probability density function
+    logpdf: log of probability density function
+    pdf: cumulative density function
+    logpdf: log of cumulative density function
+    
+    Returns
+    =======
+    FuncInput object with value and gradients based on the selected method
+    
+    Examples
+    =======
+    >>> x = FuncInput(np.array([1,20]),np.array([1]))
+    >>> f = op.Gamma(alpha=1, beta=1).pdf(x)
+    Value:
+    [0.36787944 0.        ]
+    Gradient(s):
+    [-0.36787944 -0.        ]
+    """
     def __init__(self, alpha=0, beta=1):
         '''Gamma distribution with shape `alpha` and scale `beta`'''
         self.alpha = alpha
