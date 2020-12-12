@@ -465,27 +465,27 @@ def test_Gamma():
     x = FuncInput(np.array([1,20]),np.array([1]))
     assert op.Gamma(alpha=1, beta=1).pdf(4) == stats.gamma(1).pdf(4), 'gamma distribution pdf is not correct'
     assert (op.Gamma(alpha=1, beta=1).pdf(x).value == stats.gamma(1).pdf([1,20])).all(), 'gamma distribution pdf is not correct'
-    assert (abs(op.Gamma(alpha=1, beta=1).pdf(x).gradients - [derivative(stats.gamma(1).pdf,1,dx=1e-6),derivative(stats.gamma(1).pdf,1,dx=1e-6)])<1e-6).all(), 'gamma distribution pdf is not correct'
+    assert (abs(op.Gamma(alpha=1, beta=1).pdf(x).gradients - [derivative(stats.gamma(1).pdf,1,dx=1e-6),derivative(stats.gamma(1).pdf,20,dx=1e-6)])<1e-6).all(), 'gamma distribution pdf is not correct'
 
     assert op.Gamma(alpha=1, beta=1).logpdf(4) == stats.gamma(1).logpdf(4), 'gamma distribution logpdf is not correct'
     assert (op.Gamma(alpha=1, beta=1).logpdf(x).value == stats.gamma(1).logpdf([1,20])).all(), 'gamma distribution logpdf is not correct'
-    assert (abs(op.Gamma(alpha=1, beta=1).logpdf(x).gradients - [derivative(stats.gamma(1).logpdf,1,dx=1e-6),derivative(stats.gamma(1).logpdf,1,dx=1e-6)])<1e-6).all(), 'gamma distribution logpdf is not correct'
+    assert (abs(op.Gamma(alpha=1, beta=1).logpdf(x).gradients - [derivative(stats.gamma(1).logpdf,1,dx=1e-6),derivative(stats.gamma(1).logpdf,20,dx=1e-6)])<1e-6).all(), 'gamma distribution logpdf is not correct'
 
     assert op.Gamma(alpha=1, beta=1).cdf(4) == stats.gamma(1).cdf(4), 'gamma distribution cdf is not correct'
     assert (op.Gamma(alpha=1, beta=1).cdf(x).value == stats.gamma(1).cdf([1,20])).all(), 'gamma distribution cdf is not correct'
-    assert (abs(op.Gamma(alpha=1, beta=1).cdf(x).gradients - [derivative(stats.gamma(1).cdf,1,dx=1e-6),derivative(stats.gamma(1).cdf,1,dx=1e-6)])<1e-6).all(), 'gamma distribution cdf is not correct'
+    assert (abs(op.Gamma(alpha=1, beta=1).cdf(x).gradients - [derivative(stats.gamma(1).cdf,1,dx=1e-6),derivative(stats.gamma(1).cdf,20,dx=1e-6)])<1e-6).all(), 'gamma distribution cdf is not correct'
 
     assert op.Gamma(alpha=1, beta=1).logcdf(4) == stats.gamma(1).logcdf(4), 'gamma distribution logcdf is not correct'
     assert (op.Gamma(alpha=1, beta=1).logcdf(x).value == stats.gamma(1).logcdf([1,20])).all(), 'gamma distribution logcdf is not correct'
-    assert (abs(op.Gamma(alpha=1, beta=1).logcdf(x).gradients - [derivative(stats.gamma(1).logcdf,1,dx=1e-6),derivative(stats.gamma(1).logcdf,1,dx=1e-6)])<1e-6).all(), 'gamma distribution logcdf is not correct'
+    assert (abs(op.Gamma(alpha=1, beta=1).logcdf(x).gradients - [derivative(stats.gamma(1).logcdf,1,dx=1e-6),derivative(stats.gamma(1).logcdf,20,dx=1e-6)])<1e-6).all(), 'gamma distribution logcdf is not correct'
 
 
 def test_Poisson():
     assert str(op.Poisson(mu=2))
     assert repr(op.Poisson(mu=2))
     x = FuncInput(np.array([1,20]),np.array([1]))
-    assert op.Poisson(mu=2).pmf(4) == stats.poisson(1).pdf(4), 'gamma distribution pdf is not correct'
-    assert op.Poisson(mu=2).pmf(x)
+    assert op.Poisson(mu=2).pmf(4) == stats.poisson(2).pmf(4), 'poisson distribution pmf is not correct'
+    assert (op.Poisson(mu=2).pmf(x).value == stats.poisson(2).pdf([1,20])).all(), 'poisson distribution pmf is not correct'
     assert op.Poisson(mu=2).logpmf(4)
     assert op.Poisson(mu=2).logpmf(x)
     assert op.Poisson(mu=2).cdf(4)
@@ -497,7 +497,7 @@ def test_Poisson():
         op.Poisson(mu=2).logcdf(x)
         assert len(w) > 0, "Poisson CDF does not display warning"
 
-print(op.Poisson(mu=2).pmf(4))
+# print(op.Poisson(mu=2).pmf(4))
 
 def test_gammainc():
     assert op.gammainc(3, 2)
