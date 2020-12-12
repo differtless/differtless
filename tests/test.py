@@ -2,6 +2,8 @@ import numpy as np
 import pytest
 import math
 from scipy.spatial import distance
+from scipy import stats
+from scipy.misc import derivative
 import sys
 sys.path.append('../')
 import warnings
@@ -366,8 +368,6 @@ def test_floor():
         op.floor(x)
         assert len(w) > 0, "floor function does not display warning"
 
-# x = FuncInput(np.array([0,3]),np.array([1]))
-# print(op.factorial(x))
 # AD functionality
 
 def test_preprocess():
@@ -426,18 +426,18 @@ def test_forward():
 # Optimization routines
 
 def test_minimize():
-    assert abs(ad.minimize(lambda x: (x-3)**2, 2)[0] - 3)<1e-6
-    assert abs(ad.minimize(lambda x: (x-3)**2, 2, descriptive=True)['x'][0] - 3)<1e-6
+    assert abs(ad.minimize(lambda x: (x-3)**2, 2)[0] - 3)<1e-6,'minimize function is not correct'
+    assert abs(ad.minimize(lambda x: (x-3)**2, 2, descriptive=True)['x'][0] - 3)<1e-6,'minimize function is not correct'
 
 def test_root():
-    assert abs(ad.root(lambda x: (x-3)**2, 2)[0] - 3)<1e-6
-    assert abs(ad.root(lambda x: (x-3)**2, 2, descriptive=True)['x'][0] - 3)<1e-6
+    assert abs(ad.root(lambda x: (x-3)**2, 2)[0] - 3)<1e-6,'root function is not correct'
+    assert abs(ad.root(lambda x: (x-3)**2, 2, descriptive=True)['x'][0] - 3)<1e-6,'root function is not correct'
     with pytest.raises(NotImplementedError):
         ad.root(lambda x: (x-3)**2, [2, 3, 4])
 
 def test_least_squares():
-    assert abs(ad.least_squares(lambda x: (x-3)**2, 2, bounds=[1,2.4])[0] - 2.4)<1e-6
-    abs(ad.least_squares(lambda x: (x-3)**2, 2, bounds=[1,2.4], descriptive=True)['x'][0] - 2.4)<1e-6
+    assert abs(ad.least_squares(lambda x: (x-3)**2, 2, bounds=[1,2.4])[0] - 2.4)<1e-6,'least squares function is not correct'
+    abs(ad.least_squares(lambda x: (x-3)**2, 2, bounds=[1,2.4], descriptive=True)['x'][0] - 2.4)<1e-6,'least squares function is not correct'
 
 # Probability distributions – placeholders to make sure functions are executable both for scalar and 'FuncInput'
 
@@ -445,14 +445,30 @@ def test_Normal():
     assert str(op.Normal())
     assert repr(op.Normal())
     x = FuncInput(np.array([1,20]),np.array([1]))
-    assert op.Normal(loc=2, scale=4).pdf(4)
-    assert op.Normal().pdf(x)
-    assert op.Normal().logpdf(4)
-    assert op.Normal().logpdf(x)
-    assert op.Normal().cdf(4)
-    assert op.Normal().cdf(x)
-    assert op.Normal().logcdf(4)
-    assert op.Normal().logcdf(x)
+    assert op.Normal(loc=2, scale=4).pdf(4) == stats.norm(loc=2, scale=4).pdf(4), 'normal distribution pdf is not correct'
+    assert (op.Normal().pdf(x).value == stats.norm().pdf([1,20])).all(), 'normal distribution pdf is not correct'
+    assert (abs(op.Normal().pdf(x).gradients - [derivative(stats.norm.pdf,1,dx=1e-6),derivative(stats.norm.pdf,20,dx=1e-6)])<1e-6).all(), 'normal distribution pdf is not correct'
+    assert op.Normal().logpdf(4) == stats.norm().logpdf(4), 'normal distribution logpdf is not correct'
+    assert (op.Normal().logpdf(x).value == stats.norm().logpdf([1,20])).all(), 'normal distribution logpdf is not correct'
+    assert (abs(op.Normal().logpdf(x).gradients - [derivative(stats.norm.logpdf,1,dx=1e-6),derivative(stats.norm.logpdf,20,dx=1e-6)])<1e-6).all(), 'normal distribution logpdf is not correct'
+    assert op.Normal().cdf(4) == stats.norm().cdf(4), 'normal distribution cdf is not correct'
+    assert (op.Normal().cdf(x).value == stats.norm().cdf([1,20])).all(), 'normal distribution cdf is not correct'
+    assert (abs(op.Normal().cdf(x).gradients - [derivative(stats.norm.cdf,1,dx=1e-6),derivative(stats.norm.cdf,20,dx=1e-6)])<1e-6).all(), 'normal distribution cdf is not correct'
+    assert op.Normal().logcdf(4) == stats.norm().logcdf(4), 'normal distribution logcdf is not correct'
+    assert (op.Normal().logcdf(x).value == stats.norm().logcdf([1,20])).all(), 'normal distribution logcdf is not correct'
+    assert (abs(op.Normal().logcdf(x).gradients - [derivative(stats.norm.logcdf,1,dx=1e-6),derivative(stats.norm.logcdf,20,dx=1e-6)])<1e-6).all(), 'normal distribution logcdf is not correct'
+
+
+# x = FuncInput(np.array([1,20]),np.array([1]))
+# # x = FuncInput(np.array([1]),np.array([1]))
+# print((abs(op.Normal().pdf(x).gradients - [derivative(stats.norm.pdf,1,dx=1e-6),derivative(stats.norm.pdf,20,dx=1e-6)])<1e-6).all())
+# print(FuncInput(np.array([0,3]),np.array([1])))
+# print(op.Normal().pdf(x))
+# assert op.Normal().logpdf(x)
+
+# assert op.Normal().cdf(x)
+
+# assert op.Normal().logcdf(x)
 
 def test_Gamma():
     assert str(op.Gamma())
@@ -489,9 +505,6 @@ def test_gammainc():
     with pytest.raises(TypeError):
         op.gammainc([3, 2], 3)
 
-# x = FuncInput(np.array([3,2]),np.array([1,0]))
-# f = op.gammainc(3,2)
-# print(f)
 
 def test_Jacobian():
     inputs = [1, 2]
