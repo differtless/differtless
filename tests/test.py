@@ -458,6 +458,8 @@ def test_Normal():
     assert (abs(op.Normal().logcdf(x).value - stats.norm().logcdf([1,20]))<1e-6).all(), 'normal distribution logcdf is not correct'
     assert (abs(op.Normal().logcdf(x).gradients - [derivative(stats.norm.logcdf,1,dx=1e-6),derivative(stats.norm.logcdf,20,dx=1e-6)])<1e-6).all(), 'normal distribution logcdf is not correct'
 
+# x = FuncInput(np.array([1,20]),np.array([1]))
+# print(op.Gamma(alpha=1, beta=1).pdf(x))
 
 def test_Gamma():
     assert str(op.Gamma())
