@@ -780,6 +780,24 @@ Statistical distributions
 '''
 
 class Normal():
+    """ 
+    Returns the probability density function for norm of FuncInput object.
+    
+    Parameters
+    =======
+    x:
+        FuncInput object or real number
+    
+    Returns
+    =======
+    FuncInput object with value and gradients based on gammainc function from scipy
+    
+    Examples
+    =======
+    >>> f = op.gammainc(3,2)
+    >>> f
+    0.8008517265285442
+    """
 
     def __init__(self, loc=0, scale=1):
         '''Normal distribution with mean `loc` and standard deviation `scale`'''
