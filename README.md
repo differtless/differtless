@@ -19,7 +19,7 @@ It's a portmanteau of "differentiation" and "effortless"
 
 ## Travis CI badge
 
-[![Build Status](https://travis-ci.com/differtless/cs107-FinalProject.svg?token=ZrM8oyab1Y4rgKUpwoqF&branch=master)](https://travis-ci.com/differtless/cs107-FinalProject)
+[![Build Status](https://travis-ci.com/differtless/differtless.svg?branch=master)](https://travis-ci.com/differtless/differtless)
 
 ## Inclusion Statement 
 Differtless is committed to developing a culture of inclusion. Only by learning from a diverse community of contributors are we able to build the best product and grow to be our best selves. We welcome all educational levels, cultures, ethnicities, races, gender identities and expressions, nations of origin, ages, languages spoken, veteran’s status, colors, religions, disabilities, geographic backgrounds, sexual orientations and beliefs.
